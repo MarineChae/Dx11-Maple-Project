@@ -3,10 +3,39 @@
 
 DWORD WINAPI WorkerThread(LPVOID param)
 {
+	DWORD dwTransfer;
+	ULONG_PTR KeyValue;
+	OVERLAPPED* overlap;
+	IocpModel* iocp = (IocpModel*)param;
 	while (1)
 	{
-		
+		if (WaitForSingleObject(iocp->GetIocpHandle(), 0) == WAIT_OBJECT_0)
+		{
+			break;
+		}
+		BOOL bRet = GetQueuedCompletionStatus(iocp->GetIocpHandle(), &dwTransfer, &KeyValue, &overlap,0);
 
+		if (bRet == TRUE)
+		{
+			std::cout << "join"<<std::endl;
+		}
+		else
+		{
+			DWORD Errmsg = GetLastError();
+			if (Errmsg == WAIT_TIMEOUT)
+			{
+
+				continue;
+			}
+			if (Errmsg == ERROR_HANDLE_EOF)
+			{
+				ERRORMSG(L"ERROR_HANDLE_EOF");
+				SetEvent(iocp->GetKillEvent());
+			}
+			ERRORMSG(L"ERROR ETC...");
+			SetEvent(iocp->GetKillEvent());
+			break;
+		}
 	}
 
 	return 0;
@@ -28,7 +57,7 @@ bool IocpModel::Init()
 	for (int iThread = 0; iThread < MAX_WORKER_THREAD; ++iThread)
 	{
 		m_hWorkerThread[iThread] = CreateThread(0, 0, WorkerThread, this, 0, &dwThreadID);
-
+		//IocpModel을 인자로 넘기는 스레드 생성
 	}
 
 
