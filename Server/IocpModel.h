@@ -1,4 +1,5 @@
 #pragma once
+#include "User.h"
 
 class IocpModel
 {
@@ -10,9 +11,9 @@ private:
 
 
 public:
-	HANDLE GetKillEvent() const { return m_hKillEvent; };
-	HANDLE GetIocpHandle() const { return m_hIocp; };
-	HANDLE GetWorkerThread() const { return m_hWorkerThread[MAX_WORKER_THREAD];};
+	HANDLE& GetKillEvent()  { return m_hKillEvent; };
+	HANDLE& GetIocpHandle()  { return m_hIocp; };
+	HANDLE& GetWorkerThread(int num)  { return m_hWorkerThread[num];};
 
 public:
 	virtual bool Init();

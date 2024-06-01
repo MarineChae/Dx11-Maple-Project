@@ -3,7 +3,7 @@
 
 #define PACKET_HEADER_SIZE 4
 #define PACKET_MSG_BUFFER_SIZE 2048
-#define PACKET_MAX_SIZE ( PACKET_HEADER_SIZE + PACKET_MSG_BUFFER_SIZE)
+#define PACKET_MAX_SIZE (PACKET_HEADER_SIZE+PACKET_MSG_BUFFER_SIZE)
 
 #pragma pack(push,1)
 
@@ -29,8 +29,11 @@ typedef struct
 
 }CHAT_MSG;
 
-#pragma pack(pop,1)
 
+//https://zelon.tistory.com/424 
+//주의하자 제발
+//bad pointer 오류 상황에서는 pragma pack 도 연관될 수 있다는 걸 깊이 새겨야겠다. 
+#pragma pack (pop)
 
 
 #define PACKET_CHAT_MSG		1000

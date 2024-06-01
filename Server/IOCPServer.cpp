@@ -5,42 +5,39 @@
 
 bool AcceptIocp::ThreadRun()
 {
-	SOCKADDR_IN ClientAddr;
-	SOCKET ClientSocket;
+	if (m_pServer == nullptr)return false;
 
-	while (1)
+	SOCKADDR_IN clientaddr;
+	int addlen = sizeof(clientaddr);
+	SOCKET clientsock = accept(m_pServer->GetNetWork().GetSocket(), (SOCKADDR*)&clientaddr, &addlen);
+	if (clientsock == SOCKET_ERROR)
 	{
-		int addlen = sizeof(ClientAddr);
-		ClientSocket = accept(IOCPServer::GetInstance().GetSocket(), (SOCKADDR*)&ClientAddr, &addlen);
-		if (ClientSocket == SOCKET_ERROR)
+		int iError = WSAGetLastError();
+		if (iError != WSAEWOULDBLOCK)
 		{
-			int iErr = WSAGetLastError();
-			if (iErr != WSAEWOULDBLOCK)
-			{
-				break;
-			}
+			
+			return false;
 		}
-		else
-		{
-			User* user = new User(ClientSocket, ClientAddr);
-			user->bind(m_pServer->GetIocpModel().GetIocpHandle());
-			user->Recv();
-			m_pServer->PushUser(user);
-			printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
+	}
+	else
+	{
 
-		}
+		User* user = new User(clientsock, clientaddr);
+		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
+		user->Recv();
+		m_pServer->GetNetWork().GetSessionMgr().GetUserList().push_back(user);
+		printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
 
 	}
 
-
-
-
-	return false;
+	return true;
 }
 
+void IOCPServer::AddPacket(UserPacket& packet)
+{
 
 
-
+}
 
 void IOCPServer::ChatMsg(UserPacket& packet)
 {
@@ -76,7 +73,7 @@ int IOCPServer::SendPacket(User* pUser, UserPacket& packet)
 
 bool IOCPServer::Broadcasting(UserPacket packet)
 {
-	for (auto& iterSend : m_lUserList)
+	for (auto& iterSend : m_NetworkBase.GetSessionMgr().GetUserList())
 	{
 		if (iterSend->IsConnected() == false) continue;
 
@@ -108,18 +105,21 @@ bool IOCPServer::Init()
 	// SOCKET SockUDP = socket(AF_INET,SOCK_DGRAM, IPPROTO_UDP);
 	// Stream 은 무조건 TCP    DGRAM은 UDP
 	// 굳이 뒤에 넣지 말고 그냥 0넣으면 알아서 적용
-	m_hSock = socket(AF_INET, SOCK_STREAM, 0);
+	m_NetworkBase.SetSocket(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 
-
+	SOCKADDR_IN SockAddr;
 	//전송 주소의 주소 패밀리, 항상 AF_INET
-	m_SockAddr.sin_family = AF_INET;
+	SockAddr.sin_family = AF_INET;
+	SockAddr.sin_addr.s_addr = htons(INADDR_ANY);
 	//IPv4 전송 주소를 포함하는 IN_ADDR 구조체 
 	//INADDR_ANY - 자동으로 이 컴퓨터에 존재하는 랜카드 중 사용가능한 랜카드의 IP주소를 사용
-	m_SockAddr.sin_addr.s_addr = htons(INADDR_ANY);
-	m_SockAddr.sin_port = htons(m_iPort);
+	SockAddr.sin_port = htons(m_NetworkBase.GetPort());
+	m_NetworkBase.SetSockAddr(SockAddr);
+
+
 
 	//소켓에 주소를 할당
-	ret = bind(m_hSock, (SOCKADDR*)&m_SockAddr, sizeof(m_SockAddr));
+	ret = bind(m_NetworkBase.GetSocket(), (SOCKADDR*)&m_NetworkBase.GetSockAddr(), sizeof(m_NetworkBase.GetSockAddr()));
 	if (ret == SOCKET_ERROR)
 	{
 		ERRORMSG(L"SOCKET BIND ERROR");
@@ -128,7 +128,7 @@ bool IOCPServer::Init()
 
 	//연결요청을 대기상태로
 	//SOMAXCONN - 보류 중인 연결 큐의 최대 길이. SOMAXCONN으로 설정하면 소켓을 담당하는 기본 서비스 공급자가 백로그를 적절한 최대 값으로 설정
-	ret = listen(m_hSock, SOMAXCONN);
+	ret = listen(m_NetworkBase.GetSocket(), SOMAXCONN);
 	if (ret == SOCKET_ERROR)
 	{
 		ERRORMSG(L"SOCKET LISTEN ERROR");
@@ -137,12 +137,11 @@ bool IOCPServer::Init()
 
 	std::cout << "Server Is Running!" << std::endl;
 
-
+	m_iocpModel.Init();
+	m_AcceptIocp.SetServer(this);
 
 	MyThread::Create();
 
-	m_iocpModel.Init();
-	m_AcceptIocp.SetServer(this);
 
 
 
@@ -161,7 +160,7 @@ bool IOCPServer::ThreadRun()
 
 	}
 	m_BroadcastPacketPool.GetPacketList().clear();
-	for (auto& iterSend : m_lUserList)
+	for (auto& iterSend : m_NetworkBase.GetSessionMgr().GetUserList())
 	{
 		if (iterSend->IsConnected() == false) continue;
 
@@ -178,14 +177,14 @@ bool IOCPServer::ThreadRun()
 
 
 
-	for (auto iter = m_lUserList.begin(); iter != m_lUserList.end();)
+	for (auto iter = m_NetworkBase.GetSessionMgr().GetUserList().begin(); iter != m_NetworkBase.GetSessionMgr().GetUserList().end();)
 	{
 		auto user = *iter;
 		if (!user->IsConnected())
 		{
 			printf("Client Disconnect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
 			user->Close();
-			m_lUserList.erase(iter);
+			m_NetworkBase.GetSessionMgr().GetUserList().erase(iter);
 		}
 		else
 		{

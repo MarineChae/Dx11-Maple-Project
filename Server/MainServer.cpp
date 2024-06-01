@@ -14,7 +14,7 @@ int main()
 	WaitForSingleObject(IOCPServer::GetInstance().GetKillEvent(), INFINITE);
 
 
-    closesocket(IOCPServer::GetInstance().GetSocket());
+    closesocket(IOCPServer::GetInstance().GetNetWork().GetSocket());
     //2)윈속 해제
     WSACleanup();
 

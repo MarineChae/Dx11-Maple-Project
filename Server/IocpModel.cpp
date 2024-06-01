@@ -9,7 +9,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
 	IocpModel* iocp = (IocpModel*)param;
 	while (1)
 	{
-		if (WaitForSingleObject(iocp->GetIocpHandle(), 0) == WAIT_OBJECT_0)
+		if (WaitForSingleObject(iocp->GetKillEvent(), 0) == WAIT_OBJECT_0)
 		{
 			break;
 		}
@@ -17,7 +17,11 @@ DWORD WINAPI WorkerThread(LPVOID param)
 
 		if (bRet == TRUE)
 		{
-			std::cout << "join"<<std::endl;
+			User* pUser = (User*)KeyValue;
+			if (pUser != nullptr)
+			{
+				pUser->Dispatch(dwTransfer,overlap);
+			}
 		}
 		else
 		{

@@ -17,14 +17,18 @@ void User::bind(HANDLE iocp)
 
 void User::Recv()
 {
-	DWORD dwTransfer;
-	DWORD dwFlag;
-	MyOV* myov = new MyOV(MyOV::MODE_RECV);
 
+	DWORD dwTransfer;
+	DWORD dwFlag = 0;
+	MyOV* myov = new MyOV(MyOV::MODE_RECV);
 	m_wsaRecvBuffer.buf = m_buffer;
 	m_wsaRecvBuffer.len = sizeof(m_buffer);
-	WSARecv(m_UserSock, &m_wsaRecvBuffer, 1, &dwTransfer, &dwFlag, (LPOVERLAPPED)myov, NULL);
-
+	int iret = WSARecv(m_UserSock, &m_wsaRecvBuffer, 1, &dwTransfer, &dwFlag, (LPOVERLAPPED)myov, NULL);
+	if (iret == SOCKET_ERROR)
+	{
+		int i = WSAGetLastError();
+		int a = i;
+	}
 }
 
 void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
@@ -44,18 +48,33 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	if (myov->flag == MyOV::MODE_SEND)
 	{
 
+
 	}
 	Recv();
 	
 }
 
-User::User()
+User::User() 
+	:m_UserSock()
+	, m_UserAddr()
+	, m_bConnected(true)
+	, m_lPacketList()
+	, m_buffer()
+	, m_wsaRecvBuffer()
+	, m_wsaSendBuffer()
 {
-	m_bConnected = true;
+	 
 }
 
 User::User(SOCKET sock, SOCKADDR_IN Addr)
-	:m_UserSock(sock), m_UserAddr(Addr)
+	:m_UserSock(sock)
+	,m_UserAddr(Addr)
+	,m_bConnected(true)
+	,m_lPacketList()
+	,m_buffer()
+	,m_wsaRecvBuffer()
+	,m_wsaSendBuffer()
+
 {
-	m_bConnected = true;
+
 }

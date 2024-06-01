@@ -6,14 +6,13 @@
 struct UserPacket;
 struct MyOV : public ObjectPool<MyOV>
 {
-	enum {MODE_RECV = 0 , MODE_SEND =1};
+	enum { MODE_RECV = 0, MODE_SEND = 1, };
 	OVERLAPPED ov;
 	int flag;
 
-	MyOV(int value) :flag(value)
+	MyOV(int value) : flag(value)
 	{
 		ZeroMemory(&ov, sizeof(OVERLAPPED));
-
 	}
 	MyOV()
 	{
@@ -32,7 +31,7 @@ private:
 	SOCKET				  m_UserSock;
 	SOCKADDR_IN			  m_UserAddr;
 	list<UserPacket>      m_lPacketList;
-	char				  m_buffer[4096];
+	char				  m_buffer[2048];
 	WSABUF				  m_wsaRecvBuffer;
 	WSABUF				  m_wsaSendBuffer;
 public:
