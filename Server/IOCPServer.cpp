@@ -35,6 +35,12 @@ bool AcceptIocp::ThreadRun()
 
 void IOCPServer::AddPacket(UserPacket& packet)
 {
+	FunctionIterator iter = m_fnExecutePacket.find(packet.packet.PacketHeader.type);
+	if (iter != m_fnExecutePacket.end())
+	{
+		CallFunction call = iter->second;
+		call(packet);
+	}
 
 
 }
@@ -143,6 +149,7 @@ bool IOCPServer::Init()
 	MyThread::Create();
 
 
+	m_fnExecutePacket[PACKET_CHAT_MSG] = std::bind(&IOCPServer::ChatMsg, this, std::placeholders::_1);
 
 
 
@@ -177,14 +184,15 @@ bool IOCPServer::ThreadRun()
 
 
 
-	for (auto iter = m_NetworkBase.GetSessionMgr().GetUserList().begin(); iter != m_NetworkBase.GetSessionMgr().GetUserList().end();)
+	for (auto iter = m_NetworkBase.GetSessionMgr().GetUserList().begin();
+		iter != m_NetworkBase.GetSessionMgr().GetUserList().end();)
 	{
 		auto user = *iter;
 		if (!user->IsConnected())
 		{
 			printf("Client Disconnect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
 			user->Close();
-			m_NetworkBase.GetSessionMgr().GetUserList().erase(iter);
+			iter = m_NetworkBase.GetSessionMgr().GetUserList().erase(iter);
 		}
 		else
 		{

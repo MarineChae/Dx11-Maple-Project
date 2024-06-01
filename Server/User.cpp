@@ -1,5 +1,6 @@
 #include "Netstd.h"
 #include "User.h"
+#include "IOCPServer.h"
 
 void User::Close()
 {
@@ -43,6 +44,8 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 			return;
 		}
 
+		m_sPacket.Put(m_buffer, dwTransfer);
+		m_sPacket.GetPacket(std::ref(*this));
 
 	}
 	if (myov->flag == MyOV::MODE_SEND)

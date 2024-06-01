@@ -1,11 +1,12 @@
 #pragma once
+#include"Netstd.h"
 #include "User.h"
 
-
+class User;
 struct UserPacket
 {
 	UPACKET packet;
-	
+	User* m_pUser;
 
 };
 

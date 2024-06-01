@@ -1,7 +1,7 @@
 #pragma once
 #include "ObjectPool.h"
 #include"PacketPool.h"
-
+#include "StreamPacket.h"
 
 struct UserPacket;
 struct MyOV : public ObjectPool<MyOV>
@@ -34,6 +34,8 @@ private:
 	char				  m_buffer[2048];
 	WSABUF				  m_wsaRecvBuffer;
 	WSABUF				  m_wsaSendBuffer;
+	StreamPacket		  m_sPacket;
+
 public:
 	bool			  IsConnected() const { return m_bConnected; };
 	void			  SetConnect(bool connect) { m_bConnected = connect; };

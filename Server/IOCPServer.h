@@ -34,7 +34,9 @@ private:
 	AcceptIocp	 m_AcceptIocp;
 	PacketPool   m_PacketPool;
 	PacketPool   m_BroadcastPacketPool;
-
+	typedef std::function<void(UserPacket& t)> CallFunction;
+	typedef std::map<int, CallFunction>::iterator FunctionIterator;
+	std::map<int, CallFunction> m_fnExecutePacket;
 public:
 	Network&	 GetNetWork()	{ return m_NetworkBase; };
 	IocpModel&   GetIocpModel() { return m_iocpModel; };

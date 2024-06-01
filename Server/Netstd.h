@@ -7,7 +7,9 @@
 #include <WinSock2.h>
 #include <process.h>
 #include <list>
-#include<shared_mutex>
+#include <functional>
+#include <map>
+#include <shared_mutex>
 
 #include "Protocol.h"
 

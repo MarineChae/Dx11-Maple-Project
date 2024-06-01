@@ -1,0 +1,40 @@
+#pragma once
+#include"MyWindow.h"
+
+
+class Device : public MyWindow
+{
+public:
+	static ComPtr<ID3D11Device>		   m_pDevice;
+	static ComPtr<ID3D11DeviceContext> m_pImmediateContext;
+
+private:
+	ComPtr<IDXGISwapChain>			   m_pSwapChain;
+	DXGI_SWAP_CHAIN_DESC			   m_SwapChainDesc;
+	D3D_FEATURE_LEVEL				   m_pFeatureLevels = D3D_FEATURE_LEVEL_11_0;
+	D3D_DRIVER_TYPE					   m_DriverType = D3D_DRIVER_TYPE_HARDWARE;
+	ComPtr <IDXGIFactory>			   m_pFactory = nullptr;
+	ComPtr<ID3D11RenderTargetView>     m_pRenderTargetView;
+	ComPtr<ID3D11DepthStencilView>	   m_pDepthStencilView;
+	D3D11_VIEWPORT					   m_ViewPort;
+public:
+	bool CreateDevice();
+	bool CreateDepthStencilView();
+	bool CreateFactory();
+	bool CreateSwapChain();
+	bool SetRenderTarGetView();
+	bool SetViewPort();
+
+public:
+	bool Init();
+	bool Frame();
+	bool PreRender();
+	bool PostRender();
+	bool Render();
+	bool Release();
+
+
+
+
+};
+
