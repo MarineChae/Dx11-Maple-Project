@@ -130,25 +130,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Client\ClientMain.h" />
-    <ClInclude Include="..\Client\Core.h" />
-    <ClInclude Include="..\Client\Device.h" />
-    <ClInclude Include="..\Client\DxRenderer.h" />
-    <ClInclude Include="..\Client\MyWindow.h" />
-    <ClInclude Include="..\Client\pch.h" />
-    <ClInclude Include="..\Client\Shader.h" />
-    <ClInclude Include="..\Client\TMath.h" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ClientMain.cpp" />
+    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="DxRenderer.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyWindow.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TMath.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Client\ClientMain.cpp" />
-    <ClCompile Include="..\Client\Core.cpp" />
-    <ClCompile Include="..\Client\Device.cpp" />
-    <ClCompile Include="..\Client\DxRenderer.cpp" />
-    <ClCompile Include="..\Client\Main.cpp" />
-    <ClCompile Include="..\Client\MyWindow.cpp" />
-    <ClCompile Include="..\Client\pch.cpp" />
-    <ClCompile Include="..\Client\Shader.cpp" />
-    <ClCompile Include="..\Client\TMath.cpp" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ClientMain.h" />
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="DxRenderer.h" />
+    <ClInclude Include="MyWindow.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="TMath.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Defalutshader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

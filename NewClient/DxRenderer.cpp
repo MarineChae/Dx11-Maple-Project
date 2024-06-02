@@ -96,7 +96,7 @@ bool DxRenderer::PreRender()
     Device::GetContext()->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &Stride, &offset);//p 159ÂüÁ¶
 
     return true;
-	return false;
+
 }
 
 bool DxRenderer::Render()

@@ -15,58 +15,75 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Client\ClientMain.h">
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TMath.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DxRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MyWindow.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TMath.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\Core.h">
+    <ClInclude Include="Shader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\Device.h">
+    <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\DxRenderer.h">
+    <ClInclude Include="Object.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\MyWindow.h">
+    <ClInclude Include="Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\pch.h">
+    <ClInclude Include="DxRenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\Shader.h">
+    <ClInclude Include="MyWindow.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\TMath.h">
+    <ClInclude Include="Core.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientMain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Client\DxRenderer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\Main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\MyWindow.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\Shader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\TMath.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\ClientMain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\Core.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Client\Device.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+    <FxCompile Include="Defalutshader.hlsl">
+      <Filter>리소스 파일</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

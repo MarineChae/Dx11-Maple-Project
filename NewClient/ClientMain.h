@@ -1,13 +1,13 @@
 #pragma once
 #include"Core.h"
-#include"DxRenderer.h"
+#include"Object.h"
 
 class ClientMain : public Core
 {
 
 public:
 
-	DxRenderer test;
+	Object test;
 
 
 public:

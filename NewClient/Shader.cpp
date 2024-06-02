@@ -131,6 +131,10 @@ bool ShaderMgr::Release()
     return true;
 }
 
+ShaderMgr::ShaderMgr()
+{
+}
+
 ShaderMgr::~ShaderMgr()
 {
     Release();
