@@ -6,6 +6,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case dfNETWORK_UM:
+    {
+        OutputDebugString(L"asdsadsadadasdasd");
+        break;
+    }
     case WM_COMMAND:
     {
     

@@ -29,9 +29,16 @@ typedef struct
 
 }CHAT_MSG;
 
+typedef struct
+{
+	char szName[13];
+	int iID;
+	char szMsg[1024];
+
+}CHAT_MSG;
 
 //https://zelon.tistory.com/424 
-//주의하자 제발
+//주의하자
 //bad pointer 오류 상황에서는 pragma pack 도 연관될 수 있다는 걸 깊이 새겨야겠다. 
 #pragma pack (pop)
 

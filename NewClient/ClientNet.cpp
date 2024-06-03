@@ -7,16 +7,13 @@ int ClientNet::ConnentNetWork()
 
 
    m_SOCK = socket(AF_INET, SOCK_STREAM, 0);
-   WSAAsyncSelect(m_SOCK, MyWindow::GetHWND(), WM_NETWORKMSG, FD_READ | FD_WRITE | FD_CLOSE | FD_CONNECT);
+   WSAAsyncSelect(m_SOCK, MyWindow::GetHWND(), dfNETWORK_UM, FD_READ | FD_WRITE | FD_CLOSE | FD_CONNECT);
 
    SOCKADDR_IN sa;
 
    sa.sin_family = AF_INET;
    sa.sin_addr.s_addr = inet_addr("127.0.0.1");
    sa.sin_port = htons(m_PortNum);
-
-
-
 
    int ret = connect(m_SOCK, (SOCKADDR*)&sa, sizeof(sa));
     if (ret == 0)

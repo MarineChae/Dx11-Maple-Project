@@ -40,7 +40,7 @@ using namespace Microsoft::WRL;
 
 #define WM_NETWORKMSG (WM_USER+1)
 
-
+#define	dfNETWORK_UM	 WM_USER + 89
 
 
 #define GAME_INIT int APIENTRY wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPWSTR lpCmdLine,int nCmdShow){ ClientMain window;
