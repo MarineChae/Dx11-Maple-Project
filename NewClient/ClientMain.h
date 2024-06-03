@@ -8,7 +8,7 @@ class ClientMain : public Core
 public:
 
 	Object test;
-
+	std::list<Object> playerlist;
 
 public:
 	bool Init();

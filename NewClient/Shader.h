@@ -31,8 +31,9 @@ public:
 };
 
 
-class ShaderMgr
+class ShaderMgr : public Singleton<ShaderMgr>
 {
+	friend class  Singleton<ShaderMgr>;
 private:
 	std::map <std::wstring, Shader*> m_List;
 
@@ -40,19 +41,14 @@ public:
 
 	const Shader* Load(std::wstring FileName);
 	const Shader* GetPtr(std::wstring FileName);
-	bool		  Get(std::wstring FileName, Shader& texture);
+	bool		  Get(std::wstring FileName, Shader& shader);
 	bool		  Release();
-	static ShaderMgr& GetInstance()
-	{
-		static ShaderMgr Shader;
-		return Shader;
 
-	}
 
 private:
 	ShaderMgr();
 public:
 
-	~ShaderMgr();
+	virtual ~ShaderMgr();
 
 };

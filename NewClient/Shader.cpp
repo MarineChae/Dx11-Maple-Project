@@ -107,14 +107,14 @@ const Shader* ShaderMgr::GetPtr(std::wstring FileName)
     return iter->second;
 }
 
-bool ShaderMgr::Get(std::wstring FileName, Shader& texture)
+bool ShaderMgr::Get(std::wstring FileName, Shader& shader)
 {
     auto iter = m_List.find(FileName);
     if (m_List.end() == iter)
     {
         return false;
     }
-    texture = *(iter->second);
+    shader = *(iter->second);
 
     return true;
 }

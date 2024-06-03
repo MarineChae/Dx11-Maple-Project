@@ -1,7 +1,7 @@
 #include "MyWindow.h"
 
 WindowStyle MyWindow::m_WindowStyle;
-
+HWND MyWindow::m_hWnd;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -67,8 +67,6 @@ bool MyWindow::SetWindow(const WCHAR* sztitle, DWORD dwWindowwidth, DWORD dwWind
 
 MyWindow::MyWindow()
 	:m_hInstance(0)
-	,m_hWnd(0)
-
 {
 
 

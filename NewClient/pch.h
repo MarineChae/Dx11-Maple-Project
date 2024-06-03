@@ -1,27 +1,33 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include <iostream>
-#include<WinSock2.h>
-#include <thread>
-#include "DirectXTex.h"
-#include<d3dcompiler.h>
+#include <WinSock2.h>
+#include <windows.h>
+#include <chrono>
+#include <d3dcompiler.h>
 #include <wincodec.h>
 #include <crtdbg.h>
-#include<wrl.h>
-#include<memory>
+#include <wrl.h>
+#include <memory>
 #include <d3d11.h>
 #include <dxgi.h>
 #include <vector>
-#include"TMath.h"
-#include <windows.h>
-#include<map>
-#include<string>
-#include<tchar.h>
+#include <map>
+#include <string>
+#include <tchar.h>
+#include <iostream>
+#include <thread>
 
 
-#pragma comment (lib,"d3d11.lib")
-#pragma comment (lib,"dxgi.lib")
-#pragma comment (lib,"D3DCompiler.lib")
+#include"Singleton.h"
+#include "DirectXTex.h"
+#include "TMath.h"
+
+
+#pragma comment (lib , "winmm.lib")
+#pragma comment (lib , "d3d11.lib")
+#pragma comment (lib , "dxgi.lib")
+#pragma comment (lib , "D3DCompiler.lib")
+#pragma comment (lib , "ws2_32.lib")
 
 #ifdef _DEBUG
 #pragma comment (lib, "DirectXTex_debug.lib")
@@ -30,6 +36,10 @@
 #endif
 
 using namespace Microsoft::WRL;
+
+
+#define WM_NETWORKMSG (WM_USER+1)
+
 
 
 

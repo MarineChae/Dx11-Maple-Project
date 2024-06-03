@@ -132,26 +132,34 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ClientMain.cpp" />
+    <ClCompile Include="ClientNet.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DxRenderer.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ClientMain.h" />
+    <ClInclude Include="ClientNet.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DxRenderer.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="MyWindow.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TMath.h" />
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@ private:
 
 public:
 	TVector3 GetTransform() const { return m_vTransform; };
-
+	void SetTransform(TVector3 transform) { m_vTransform = transform; };
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

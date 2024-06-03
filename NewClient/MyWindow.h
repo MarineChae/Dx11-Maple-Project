@@ -15,13 +15,13 @@ struct WindowStyle
 class MyWindow
 {
 private:
-	HINSTANCE	m_hInstance; //컴퓨터 저장공간에서 할당된 실체를 의미한다.
-	HWND		m_hWnd;
+	HINSTANCE	       m_hInstance; //컴퓨터 저장공간에서 할당된 실체를 의미한다.
+	static HWND		   m_hWnd;
 	static WindowStyle m_WindowStyle;
 
 public:
 	HINSTANCE	GetHInstance() const { return m_hInstance; } //컴퓨터 저장공간에서 할당된 실체를 의미한다.
-	HWND		GetHWND() const { return m_hWnd; }
+	static HWND		GetHWND()  { return m_hWnd; }
 	static WindowStyle GetWindowStyle() { return m_WindowStyle; }
 
 public:

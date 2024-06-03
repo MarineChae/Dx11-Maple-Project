@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Core.h"
-#include "Windows.h"
+#include "Input.h"
+#include "Timer.h"
+
 bool Core::Init()
 {
     return false;
@@ -26,6 +28,9 @@ bool Core::EngineInit()
     Device::Init();
     m_MainCamera.CreateCamera(TVector3(0,0,0), TVector2(1388,766));
     m_MainCamera.Init();
+    Input::GetInstance().Init();
+    Timer::GetInstance().Init();
+    m_NetWork.ConnentNetWork();
 
     Init();
     return false;
@@ -35,6 +40,14 @@ bool Core::EngineFrame()
 {
     Device::Frame();
     m_MainCamera.Frame();
+    Input::GetInstance().Frame();
+    Timer::GetInstance().Frame();
+
+
+
+    SetWindowText(MyWindow::GetHWND(), std::to_wstring(Timer::GetInstance().GetFPS()).c_str());
+
+
     Frame();
     return false;
 }
@@ -43,6 +56,8 @@ bool Core::EngineRender()
 {
     Device::PreRender();
     m_MainCamera.Render();
+    Input::GetInstance().Render();
+    Timer::GetInstance().Render();
     Render();
     Device::PostRender();
     return false;

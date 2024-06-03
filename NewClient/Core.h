@@ -1,11 +1,14 @@
 #pragma once
 #include"Device.h"
 #include"Camera.h"
+#include"ClientNet.h"
+class ClientNet;
+
 class Core :public Device
 {
 private:
-	Camera	 m_MainCamera;
-
+	Camera	   m_MainCamera;
+	ClientNet  m_NetWork;
 
 public:
 	Camera& GetCamera() { return m_MainCamera; }
