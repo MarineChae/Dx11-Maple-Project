@@ -22,8 +22,8 @@ bool Object::CreateVertexData()
     v[5].Tex = { 1.0f,1.0f };
 
     SetVertexList(v);
-
-    return false;
+   
+    return true;
 }
 
 bool Object::CreateIndexData()
@@ -42,10 +42,12 @@ bool Object::Create(std::wstring FileName, std::wstring ShaderFileName)
     CreateVertexBuffer();
     CreateIndexBuffer();
     SetShader(ShaderMgr::GetInstance().Load(ShaderFileName));
+
     CreateInputLayout();
+
     //m_pTexture = CTextureMgr::GetInstance().Load(FileName);
 
-    return false;
+    return true;
 }
 
 void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix)
@@ -66,7 +68,6 @@ void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjM
     GetConstantData().WolrdMatrix = m_WolrdMatrix.Transpose();
     GetConstantData().ViewMatrix = m_ViewMatrix.Transpose();
     GetConstantData().ProjMatrix = m_ProjMatrix.Transpose();
-
 
     Device::GetContext()->UpdateSubresource(GetConstantBuffer(), 0, nullptr, &GetConstantData(), 0, 0);
 }

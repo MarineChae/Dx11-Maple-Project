@@ -2,38 +2,44 @@
 #include "Core.h"
 #include "Input.h"
 #include "Timer.h"
-
+#include "ClientNet.h"
 bool Core::Init()
 {
-    return false;
+   
+    return true;
 }
 
 bool Core::Frame()
 {
-    return false;
+    return true;
 }
 
 bool Core::Render()
 {
-    return false;
+    return true;
 }
 
 bool Core::Release()
 {
-    return false;
+    return true;
 }
 
 bool Core::EngineInit()
 {
+    
     Device::Init();
     m_MainCamera.CreateCamera(TVector3(0,0,0), TVector2(1388,766));
     m_MainCamera.Init();
     Input::GetInstance().Init();
     Timer::GetInstance().Init();
-    m_NetWork.ConnentNetWork();
-
+    if (!connentNetWork())
+    {
+        return false;
+    }
+   
     Init();
-    return false;
+  
+    return true;
 }
 
 bool Core::EngineFrame()
@@ -49,7 +55,7 @@ bool Core::EngineFrame()
 
 
     Frame();
-    return false;
+    return true;
 }
 
 bool Core::EngineRender()
@@ -58,9 +64,11 @@ bool Core::EngineRender()
     m_MainCamera.Render();
     Input::GetInstance().Render();
     Timer::GetInstance().Render();
+
+  
     Render();
     Device::PostRender();
-    return false;
+    return true;
 }
 
 bool Core::EngineRelease()
@@ -68,26 +76,32 @@ bool Core::EngineRelease()
     Device::Release();
     m_MainCamera.Release();
     Release();
-    return false;
+    return true;
 }
 
 
 bool Core::Run()
 {
-    EngineInit();
+   
+    if (!EngineInit())
+    {
+        EngineRelease();
+        return false;
+    }
 
     MSG msg = { 0, };
-
     while (msg.message != WM_QUIT)
     {
+       
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
+
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
         else
         {
-
+           
             EngineFrame();
             EngineRender();
             //게임로직 처리

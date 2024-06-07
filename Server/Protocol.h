@@ -29,13 +29,6 @@ typedef struct
 
 }CHAT_MSG;
 
-typedef struct
-{
-	char szName[13];
-	int iID;
-	char szMsg[1024];
-
-}CHAT_MSG;
 
 //https://zelon.tistory.com/424 
 //주의하자

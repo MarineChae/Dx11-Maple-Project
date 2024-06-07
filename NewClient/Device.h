@@ -30,12 +30,12 @@ public:
 	bool SetViewPort();
 
 public:
-	bool Init();
-	bool Frame();
-	bool PreRender();
-	bool PostRender();
-	bool Render();
-	bool Release();
+	virtual bool Init();
+	virtual bool Frame();
+	virtual bool PreRender();
+	virtual bool PostRender();
+	virtual bool Render();
+	virtual bool Release();
 
 
 

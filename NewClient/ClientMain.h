@@ -7,14 +7,14 @@ class ClientMain : public Core
 
 public:
 
-	Object test;
+	std::shared_ptr<Object> test;
 	std::list<Object> playerlist;
 
 public:
-	bool Init();
-	bool Frame();
-	bool Render();
-	bool Release();
+	virtual bool Init();
+	virtual bool Frame();
+	virtual bool Render();
+	virtual bool Release();
 
 public:
 	ClientMain();

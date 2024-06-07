@@ -2,6 +2,7 @@
 
 bool Shader::Load(ID3D11Device* pDevice, std::wstring FileName)
 {
+ 
     CreateVertexShader(pDevice, FileName);
     CreatePixelShader(pDevice, FileName);
     return true;
@@ -9,6 +10,7 @@ bool Shader::Load(ID3D11Device* pDevice, std::wstring FileName)
 
 bool Shader::CreatePixelShader(ID3D11Device* pDevice, std::wstring FileName)
 {
+
     ID3DBlob* ErrpBb;
     UINT flags = 0;
 #ifdef _DEBUG
@@ -17,7 +19,7 @@ bool Shader::CreatePixelShader(ID3D11Device* pDevice, std::wstring FileName)
 #endif
     HRESULT ht = D3DCompileFromFile(FileName.c_str(), NULL, NULL, "PS", "ps_5_0",
         flags, 0, &m_pBb, &ErrpBb);
-
+    
     if (ErrpBb != nullptr)
     {
         LPCSTR errorText = "nullptr";
@@ -38,6 +40,7 @@ bool Shader::CreatePixelShader(ID3D11Device* pDevice, std::wstring FileName)
 
 bool Shader::CreateVertexShader(ID3D11Device* pDevice, std::wstring FileName)
 {
+   
     UINT flags = 0;
 #ifdef _DEBUG
     flags = D3DCOMPILE_DEBUG;
@@ -75,24 +78,28 @@ bool Shader::Release()
 
 const Shader* ShaderMgr::Load(std::wstring FileName)
 {
+    MessageBox(MyWindow::GetHWND(), L"Load", L"Load", MB_OK);
     std::size_t found = FileName.find_last_of(L"/");
     std::wstring path = FileName.substr(0, found + 1);
     std::wstring Key = FileName.substr(found + 1);
     const Shader* data = GetPtr(Key);
-
+ 
     if (data != nullptr)
     {
+
         return data;
 
     }
+    
     Shader* NewData = new Shader;
     if (NewData->Load(Device::GetDevice(), FileName))
     {
+        
         m_List.insert(std::make_pair(Key, NewData));
         return NewData;
     }
     delete NewData;
-
+ 
     return nullptr;
 }
 

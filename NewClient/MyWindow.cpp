@@ -1,5 +1,5 @@
 #include "MyWindow.h"
-
+#include "ClientNet.h"
 WindowStyle MyWindow::m_WindowStyle;
 HWND MyWindow::m_hWnd;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -8,7 +8,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case dfNETWORK_UM:
     {
-        OutputDebugString(L"asdsadsadadasdasd");
+        if (!NetworkProc(wParam, lParam))
+        {
+            MessageBox(hWnd, L"Disconnect", L"Disconnect", MB_OK);
+            PostQuitMessage(0);
+        }
         break;
     }
     case WM_COMMAND:
@@ -16,6 +20,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     }
     case WM_DESTROY:
+
+        networkClean();
+
         PostQuitMessage(0);
 
         break;

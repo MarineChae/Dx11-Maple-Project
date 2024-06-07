@@ -118,8 +118,8 @@ bool Device::SetViewPort()
 {
    m_ViewPort.TopLeftX = 0.0f;
    m_ViewPort.TopLeftY = 0.0f;
-   m_ViewPort.Width = m_SwapChainDesc.BufferDesc.Width;
-   m_ViewPort.Height = m_SwapChainDesc.BufferDesc.Height;
+   m_ViewPort.Width = static_cast<float>(m_SwapChainDesc.BufferDesc.Width);
+   m_ViewPort.Height = static_cast<float>(m_SwapChainDesc.BufferDesc.Height);
    m_ViewPort.MinDepth = 0.0f;
    m_ViewPort.MaxDepth = 1.0f;
 
@@ -139,7 +139,7 @@ bool Device::Init()
 
 bool Device::Frame()
 {
-    return false;
+    return true;
 }
 
 bool Device::PreRender()

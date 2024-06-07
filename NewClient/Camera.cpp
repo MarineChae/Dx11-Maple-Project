@@ -4,12 +4,12 @@ bool Camera::CreateCamera(TVector3 pos, TVector2 size)
 {
     m_vCameraPos = pos;
 
-    return false;
+    return true;
 }
 
 bool Camera::Init()
 {
-    return false;
+    return true;
 }
 
 bool Camera::Frame()
@@ -21,15 +21,15 @@ bool Camera::Frame()
     m_ViewMatrix._43 = -m_vCameraPos.z;
     m_ProjectionMatrix._11 = 1.0f / ((float)MyWindow::GetWindowStyle().m_dwWindowWidth);// *Zoom;
     m_ProjectionMatrix._22 = 1.0f / ((float)MyWindow::GetWindowStyle().m_dwWindowHeight);// *Zoom;
-    return false;
+    return true;
 }
 
 bool Camera::Render()
 {
-    return false;
+    return true;
 }
 
 bool Camera::Release()
 {
-    return false;
+    return true;
 }

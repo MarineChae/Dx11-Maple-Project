@@ -4,7 +4,7 @@
 bool DxRenderer::CreateVertexBuffer()
 {
     D3D11_BUFFER_DESC Desc;
-    Desc.ByteWidth = sizeof(PNCT_VERTEX) * m_vVertexList.size();
+    Desc.ByteWidth = static_cast<UINT>(sizeof(PNCT_VERTEX) * m_vVertexList.size());
     Desc.Usage = D3D11_USAGE_DEFAULT;
     Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     Desc.CPUAccessFlags = 0;
@@ -22,7 +22,7 @@ bool DxRenderer::CreateIndexBuffer()
 
     if (m_vIndexList.size() == 0)return false;
     D3D11_BUFFER_DESC Desc;
-    Desc.ByteWidth = sizeof(DWORD) * m_vIndexList.size();//버퍼의 크기
+    Desc.ByteWidth = static_cast<UINT>(sizeof(DWORD) * m_vIndexList.size());//버퍼의 크기
     Desc.Usage = D3D11_USAGE_DEFAULT;//버퍼를 어디에서 읽을것인지
     Desc.BindFlags = D3D11_BIND_INDEX_BUFFER;//버퍼의 사용용도
     Desc.CPUAccessFlags = 0;//cpu의 엑세스유형 필요없으면 null
@@ -46,7 +46,7 @@ bool DxRenderer::CreateConstantBuffer()
     Desc.MiscFlags = 0;
     Desc.StructureByteStride = 0;
 
-
+  
     Device::GetDevice()->CreateBuffer(&Desc, nullptr, m_pConstantBuffer.GetAddressOf());
 	return true;
 }
@@ -67,15 +67,14 @@ bool DxRenderer::CreateInputLayout()
         m_pShader->GetBlob()->GetBufferPointer(),
         m_pShader->GetBlob()->GetBufferSize(),
         m_pInputLayout.GetAddressOf());
-    if ((hr))
+    if (hr != NULL)
     {
-        LPCSTR errorText = "nullptr";
-        errorText = (LPCSTR)hr;
 
-        MessageBoxA(NULL, errorText, "Error", MB_OK | MB_ICONERROR);
+        std::string message = std::system_category().message(hr);
+        MessageBoxA(NULL, message.c_str(), "Error", MB_OK | MB_ICONERROR);
     }
 
-	return false;
+	return true;
 }
 
 bool DxRenderer::PreRender()

@@ -14,10 +14,10 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			break;
 		}
 		BOOL bRet = GetQueuedCompletionStatus(iocp->GetIocpHandle(), &dwTransfer, &KeyValue, &overlap,0);
-
+		User* pUser = (User*)KeyValue;
 		if (bRet == TRUE)
 		{
-			User* pUser = (User*)KeyValue;
+			
 			if (pUser != nullptr)
 			{
 				pUser->Dispatch(dwTransfer,overlap);
@@ -35,6 +35,11 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			{
 				ERRORMSG(L"ERROR_HANDLE_EOF");
 				SetEvent(iocp->GetKillEvent());
+			}
+			if (Errmsg == ERROR_NETNAME_DELETED)
+			{
+				ERRORMSG(L"ClientHardClosd");
+				continue;
 			}
 			ERRORMSG(L"ERROR ETC...");
 			SetEvent(iocp->GetKillEvent());
