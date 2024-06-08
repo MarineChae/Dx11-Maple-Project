@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>Netstd.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -143,6 +143,7 @@
     </ClCompile>
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="ObjectPool.cpp" />
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketPool.cpp" />
     <ClCompile Include="SessionMgr.cpp" />
     <ClCompile Include="StreamPacket.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Netstd.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="ObjectPool.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketPool.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="SessionMgr.h" />

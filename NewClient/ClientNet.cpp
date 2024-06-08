@@ -1,7 +1,15 @@
 #include "ClientNet.h"
 #include"MyWindow.h"
-SOCKET m_SOCK;
-short m_PortNum = 12345;
+#include"Packet.h"
+#include"StreamPacket.h"
+#include"Protocol.h"
+
+SOCKET       m_SOCK;
+short        m_PortNum = 12345;
+StreamPacket NetSendQ;
+char		 NetRecvWSABuff[NETWORK_WSABUFF_SIZE];
+char		 NetSendWSABuff[NETWORK_WSABUFF_SIZE];
+
 
 BOOL connentNetWork()
 {
@@ -82,6 +90,10 @@ BOOL NetworkProc(WPARAM wParam, LPARAM lParam)
     }
     case FD_WRITE:
     {
+
+
+
+
         return TRUE;
     }
 
@@ -95,5 +107,80 @@ BOOL networkClean()
 {
     closesocket(m_SOCK);
     WSACleanup();
-    return 0;
+    return TRUE;
+}
+
+BOOL NetSendEvent()
+{
+    DWORD Res;
+    DWORD SendSize;
+    DWORD Flag = 0;
+
+    WSABUF WsaBuff;
+
+    if (0 >= NetSendQ.GetUseSize())
+        return TRUE;
+
+
+    SendSize = NetSendQ.GetUseSize();
+    SendSize = min(NETWORK_WSABUFF_SIZE, SendSize);
+
+    NetSendQ.Peek(NetSendWSABuff, SendSize);
+
+    WsaBuff.buf = NetSendWSABuff;
+    WsaBuff.len = SendSize;
+
+
+    Res = WSASend(m_SOCK, &WsaBuff, 1, &SendSize, Flag, NULL, NULL);
+
+    if (SOCKET_ERROR == Res)
+    {
+
+        if (WSAEWOULDBLOCK == GetLastError())
+        {
+
+            return TRUE;
+        }
+        return FALSE;
+
+    }
+    else
+    {
+        if (WsaBuff.len < SendSize)
+        {
+            return FALSE;
+        }
+        else
+        {
+            NetSendQ.RemoveData(SendSize);
+        }
+    }
+
+    return TRUE;
+}
+
+BOOL NetSendPacket(Packet* packet)
+{
+    BOOL Flag = FALSE;
+
+    NetSendQ.Put(packet->GetBufferPointer(), packet->GetBufferSize());
+
+
+
+    if (!NetSendEvent())
+    {
+        closesocket(m_SOCK);
+    }
+
+    return TRUE;
+}
+
+
+
+static int RecvWork()
+{
+    
+
+
+    return -1;
 }

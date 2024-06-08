@@ -7,11 +7,16 @@
 #define NETWORK_PACKET_CODE	((BYTE)0x89)
 
 #define NETWORK_PACKET_END	((BYTE)0x79)
+
+#define	PACKET_CS_MOVE_START 10
+
+
+#define NETWORK_WSABUFF_SIZE 512
+
+
 #pragma pack(push,1)
 
 //패킷 헤더로 어떤 패킷인지 확인
-
-
 //패킷 헤더 -> 데이터
 //패킷 헤더로 어떤 패킷인지 확인
 

@@ -5,7 +5,6 @@
 #include "ClientNet.h"
 bool Core::Init()
 {
-   
     return true;
 }
 

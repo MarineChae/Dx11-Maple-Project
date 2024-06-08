@@ -35,7 +35,7 @@ bool AcceptIocp::ThreadRun()
 
 void IOCPServer::AddPacket(UserPacket& packet)
 {
-	FunctionIterator iter = m_fnExecutePacket.find(packet.packet.PacketHeader.type);
+	FunctionIterator iter = m_fnExecutePacket.find(packet.packet.PacketHeader.PacketType);
 	if (iter != m_fnExecutePacket.end())
 	{
 		CallFunction call = iter->second;
@@ -54,7 +54,7 @@ int IOCPServer::SendPacket(User* pUser, UserPacket& packet)
 {
 	char* SendBuffer = (char*)&packet;
 	pUser->GetSendBuffer().buf = SendBuffer;
-	pUser->GetSendBuffer().len = packet.packet.PacketHeader.len;
+	pUser->GetSendBuffer().len = packet.packet.PacketHeader.PacketSize;
 
 	MyOV* ov = new MyOV(MyOV::MODE_SEND);
 
@@ -74,7 +74,7 @@ int IOCPServer::SendPacket(User* pUser, UserPacket& packet)
 	}
 
 
-	return packet.packet.PacketHeader.len;
+	return packet.packet.PacketHeader.PacketSize;
 }
 
 bool IOCPServer::Broadcasting(UserPacket packet)

@@ -45,7 +45,8 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 		}
 
 		m_sPacket.Put(m_buffer, dwTransfer);
-		m_sPacket.GetPacket(std::ref(*this));
+		//m_sPacket.GetPacket(std::ref(*this));
+
 
 	}
 	if (myov->flag == MyOV::MODE_SEND)

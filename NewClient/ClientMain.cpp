@@ -2,6 +2,9 @@
 #include "ClientMain.h"
 #include "Input.h"
 #include "Timer.h"
+#include "Packet.h"
+#include "MakePacket.h"
+#include "ClientNet.h"
 bool ClientMain::Init()
 {
 	test = std::make_shared<Object>();
@@ -17,12 +20,14 @@ bool ClientMain::Frame()
 {
 	
 	test->Frame();
-	
+	Packet SendPacket;
 	if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH )
 	{
 		TVector3 pos = test->GetTransform();
 		pos.y += 1000.0f * Timer::GetInstance().GetSecPerFrame();
 		test->SetTransform(pos);
+		MoveStartPacket(&SendPacket,(BYTE)1, pos.x,pos.y);
+		NetSendPacket(&SendPacket);
 	}
 	if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
 	{
@@ -43,6 +48,7 @@ bool ClientMain::Frame()
 		test->SetTransform(pos);
 	}
 
+	
 
 
 	return true;

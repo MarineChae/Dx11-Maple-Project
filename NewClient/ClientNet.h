@@ -3,12 +3,17 @@
 #include <winsock2.h>
 #include <windows.h>
 
+class Packet;
+class StreamPacket;
+
 extern SOCKET m_SOCK;
 extern short m_PortNum;
-
+extern StreamPacket NetSendQ;
 
 
 
 BOOL connentNetWork();
 BOOL NetworkProc(WPARAM wParam, LPARAM lParam);
 BOOL networkClean();
+BOOL NetSendPacket(Packet* packet);
+BOOL NetSendEvent();
