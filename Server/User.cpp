@@ -35,7 +35,7 @@ void User::Recv()
  }
 
 void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
-{
+{  
 	MyOV* myov = (MyOV*)ov;
 
 	if (myov->flag == MyOV::MODE_RECV)
@@ -46,7 +46,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 			return;
 		}
 
-		m_StreamPacket.Put(m_buffer, dwTransfer);
+		m_StreamPacket.Put(m_wsaRecvBuffer.buf, dwTransfer);
 
 		Packet pack;
 
@@ -54,7 +54,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 		BYTE end;
 		m_StreamPacket.Peek((char*)&hd,PACKET_HEADER_SIZE);
 		m_StreamPacket.RemoveData(PACKET_HEADER_SIZE);
-
+		OutputDebugString(L"send\n");
 		m_StreamPacket.Get(pack.GetBufferPointer(), hd.PacketSize);
 
 		m_StreamPacket.Get((char*)&end , 1);

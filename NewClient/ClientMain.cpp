@@ -21,13 +21,26 @@ bool ClientMain::Frame()
 	
 	test->Frame();
 	Packet SendPacket;
-	if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH )
+	static bool chk = false;
+	if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH && !chk)
 	{
 		TVector3 pos = test->GetTransform();
 		pos.y += 1000.0f * Timer::GetInstance().GetSecPerFrame();
 		test->SetTransform(pos);
-		MoveStartPacket(&SendPacket,(BYTE)1,33,22);
+		chk = true;
+		MoveStartPacket(&SendPacket, (BYTE)1, (short)pos.x, (short)pos.y);
 		NetSendPacket(&SendPacket);
+
+	}
+	if (Input::GetInstance().GetKeyState('W') == KEY_UP)
+	{
+		TVector3 pos = test->GetTransform();
+		pos.y += 1000.0f * Timer::GetInstance().GetSecPerFrame();
+		test->SetTransform(pos);
+		MoveStartPacket(&SendPacket, (BYTE)1, (short)pos.x, (short)pos.y);
+		NetSendPacket(&SendPacket);
+		chk = false;
+
 	}
 	if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
 	{
@@ -48,8 +61,15 @@ bool ClientMain::Frame()
 		test->SetTransform(pos);
 	}
 
-	
+	static double packettime;
+	packettime += Timer::GetInstance().GetSecPerFrame();
 
+	if (packettime >= 5)
+	{
+		TVector3 pos = test->GetTransform();
+		
+		packettime -= 5.0;
+	}
 
 	return true;
 }

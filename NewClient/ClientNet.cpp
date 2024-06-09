@@ -165,9 +165,8 @@ BOOL NetSendEvent()
 
 BOOL NetSendPacket(Packet* packet)
 {
-    BOOL Flag = FALSE;
 
-    NetSendQ.Put(packet->GetBufferPointer(), packet->GetBufferSize());
+    NetSendQ.Put(packet->GetBufferPointer(), packet->GetDataSize());
 
 
 
