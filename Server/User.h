@@ -30,11 +30,10 @@ private:
 	bool				  m_bConnected;
 	SOCKET				  m_UserSock;
 	SOCKADDR_IN			  m_UserAddr;
-	list<UserPacket>      m_lPacketList;
 	char				  m_buffer[2048];
 	WSABUF				  m_wsaRecvBuffer;
 	WSABUF				  m_wsaSendBuffer;
-	StreamPacket		  m_sPacket;
+	StreamPacket		  m_StreamPacket;
 
 public:
 	bool			  IsConnected() const { return m_bConnected; };
@@ -43,7 +42,6 @@ public:
 	SOCKADDR_IN		  GetUserAddr() const { return m_UserAddr; };
 	WSABUF&			  GetSendBuffer() { return m_wsaSendBuffer; };
 	WSABUF&			  GetRecvBuffer() { return m_wsaRecvBuffer; };
-	list<UserPacket>& GetPacketList() { return m_lPacketList; };
 
 public:
 	void Close();

@@ -66,7 +66,40 @@ int StreamPacket::Put(char* pData, int iSize)
 
 int StreamPacket::Get(char* pData, int iSize)
 {
-    return 0;
+    int iRead;
+
+    if (GetUseSize() < iSize)
+        iSize = GetUseSize();
+    if (0 >= iSize)
+        return 0;
+    if (m_iReadPos <= m_iWritePos)
+    {
+
+        memcpy(pData, m_pBuffer + m_iReadPos, iSize);
+        m_iReadPos += iSize;
+
+    }
+    else
+    {
+
+        iRead = m_iBufferSize - m_iReadPos;
+
+        if (iRead >= iSize)
+        {
+            memcpy(pData, m_pBuffer + m_iReadPos, iSize);
+            m_iReadPos += iSize;
+        }
+        else
+        {
+            memcpy(pData, m_pBuffer + m_iReadPos, iRead);
+            memcpy(pData + iRead, m_pBuffer, iSize - iRead);
+            m_iReadPos = iSize - iRead;
+
+        }
+
+    }
+
+    return iSize;
 }
 
 int StreamPacket::Peek(char* pData, int iSize)

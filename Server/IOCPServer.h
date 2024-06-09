@@ -5,7 +5,7 @@
 #include "PacketPool.h"
 #include "User.h"
 #include "Network.h"
-
+#include"Singleton.h"
 
 class IOCPServer;
 class AcceptIocp : public MyThread

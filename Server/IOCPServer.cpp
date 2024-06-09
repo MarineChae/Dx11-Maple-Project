@@ -23,7 +23,7 @@ bool AcceptIocp::ThreadRun()
 	{
 
 		User* user = new User(clientsock, clientaddr);
-		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
+ 		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
 		user->Recv();
 		m_pServer->GetNetWork().GetSessionMgr().GetUserList().push_back(user);
 		printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
@@ -149,56 +149,15 @@ bool IOCPServer::Init()
 	MyThread::Create();
 
 
-	m_fnExecutePacket[PACKET_CHAT_MSG] = std::bind(&IOCPServer::ChatMsg, this, std::placeholders::_1);
-
-
 
 	return true;
 }
 
 bool IOCPServer::ThreadRun()
 {
-	for (auto& data : m_BroadcastPacketPool.GetPacketList())
-	{
-		if (!Broadcasting(*data))
-		{
-
-		}
-
-	}
-	m_BroadcastPacketPool.GetPacketList().clear();
-	for (auto& iterSend : m_NetworkBase.GetSessionMgr().GetUserList())
-	{
-		if (iterSend->IsConnected() == false) continue;
-
-		for (auto& data : iterSend->GetPacketList())
-		{
-			if (!SendPacket(iterSend, data))
-			{
-				iterSend->SetConnect(false);
-			}
-		}
-		iterSend->GetPacketList().clear();
-
-	}
 
 
 
-	for (auto iter = m_NetworkBase.GetSessionMgr().GetUserList().begin();
-		iter != m_NetworkBase.GetSessionMgr().GetUserList().end();)
-	{
-		auto user = *iter;
-		if (!user->IsConnected())
-		{
-			printf("Client Disconnect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
-			user->Close();
-			iter = m_NetworkBase.GetSessionMgr().GetUserList().erase(iter);
-		}
-		else
-		{
-			iter++;
-		}
-	}
 
 	return true;
 }

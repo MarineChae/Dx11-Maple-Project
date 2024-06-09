@@ -81,3 +81,19 @@ struct PNCT_VERTEX
 
 };
 
+struct MyOV 
+{
+    enum { MODE_RECV = 0, MODE_SEND = 1, };
+    OVERLAPPED ov;
+    int flag;
+
+    MyOV(int value) : flag(value)
+    {
+        ZeroMemory(&ov, sizeof(OVERLAPPED));
+    }
+    MyOV()
+    {
+        ZeroMemory(&ov, sizeof(OVERLAPPED));
+        flag = MyOV::MODE_RECV;
+    }
+};

@@ -123,6 +123,7 @@ BOOL NetSendEvent()
 
 
     SendSize = NetSendQ.GetUseSize();
+    //최대 NETWORK_WSABUFF_SIZE만큼만 전송가능
     SendSize = min(NETWORK_WSABUFF_SIZE, SendSize);
 
     NetSendQ.Peek(NetSendWSABuff, SendSize);
@@ -130,8 +131,11 @@ BOOL NetSendEvent()
     WsaBuff.buf = NetSendWSABuff;
     WsaBuff.len = SendSize;
 
+    MyOV* ov = new MyOV(MyOV::MODE_SEND);
+
 
     Res = WSASend(m_SOCK, &WsaBuff, 1, &SendSize, Flag, NULL, NULL);
+   
 
     if (SOCKET_ERROR == Res)
     {

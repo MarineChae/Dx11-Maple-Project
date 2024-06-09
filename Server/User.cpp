@@ -1,7 +1,7 @@
 #include "Netstd.h"
 #include "User.h"
 #include "IOCPServer.h"
-
+#include "Packet.h"
 void User::Close()
 {
 	m_bConnected = false;
@@ -30,7 +30,9 @@ void User::Recv()
 		int i = WSAGetLastError();
 		int a = i;
 	}
-}
+
+
+ }
 
 void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 {
@@ -44,9 +46,30 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 			return;
 		}
 
-		m_sPacket.Put(m_buffer, dwTransfer);
-		//m_sPacket.GetPacket(std::ref(*this));
+		m_StreamPacket.Put(m_buffer, dwTransfer);
 
+		Packet pack;
+
+		PACKET_HEADER hd;
+		BYTE end;
+		m_StreamPacket.Peek((char*)&hd,PACKET_HEADER_SIZE);
+		m_StreamPacket.RemoveData(PACKET_HEADER_SIZE);
+
+		m_StreamPacket.Get(pack.GetBufferPointer(), hd.PacketSize);
+
+		m_StreamPacket.Get((char*)&end , 1);
+
+		pack.MoveWritePos(hd.PacketSize);
+
+
+		BYTE dir=0;
+		short sx=0;
+		short sy=0;
+
+		pack >> dir;
+		pack >> sx;
+		pack >> sy;
+		std::cout << (int)dir << " " << sx << " " << sy << " " << "\n";
 
 	}
 	if (myov->flag == MyOV::MODE_SEND)
@@ -62,7 +85,6 @@ User::User()
 	:m_UserSock()
 	, m_UserAddr()
 	, m_bConnected(true)
-	, m_lPacketList()
 	, m_buffer()
 	, m_wsaRecvBuffer()
 	, m_wsaSendBuffer()
@@ -74,7 +96,6 @@ User::User(SOCKET sock, SOCKADDR_IN Addr)
 	:m_UserSock(sock)
 	,m_UserAddr(Addr)
 	,m_bConnected(true)
-	,m_lPacketList()
 	,m_buffer()
 	,m_wsaRecvBuffer()
 	,m_wsaSendBuffer()

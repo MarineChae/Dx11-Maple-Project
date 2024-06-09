@@ -26,7 +26,7 @@ bool ClientMain::Frame()
 		TVector3 pos = test->GetTransform();
 		pos.y += 1000.0f * Timer::GetInstance().GetSecPerFrame();
 		test->SetTransform(pos);
-		MoveStartPacket(&SendPacket,(BYTE)1, pos.x,pos.y);
+		MoveStartPacket(&SendPacket,(BYTE)1,33,22);
 		NetSendPacket(&SendPacket);
 	}
 	if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
