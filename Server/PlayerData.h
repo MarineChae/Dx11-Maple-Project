@@ -1,6 +1,7 @@
 #pragma once
 #include"Singleton.h"
-
+#include"Protocol.h"
+#include<vector>
 class PlayerData
 {
 private:
@@ -33,17 +34,17 @@ class PlayerDataMgr : public Singleton< PlayerDataMgr>
 	friend class Singleton< PlayerDataMgr>;
 
 private:
-	PlayerData m_PlayerList[63];
+	std::vector<PlayerData*> m_PlayerList;
 
 
 public:
-	PlayerData* GetPlayerList() { return m_PlayerList; };
-	PlayerData  GetPlayerData(int SessionNum) const { return m_PlayerList[SessionNum]; };
+	std::vector<PlayerData*> GetPlayerList() { return m_PlayerList; };
+	PlayerData*  GetPlayerData(int SessionNum) { return m_PlayerList[SessionNum]; };
 
 public:
 	PlayerDataMgr()
 	{
-		memset(m_PlayerList, 0, sizeof(PlayerData) * 63);
+		m_PlayerList.resize(MAX_USER_SIZE);
 	}
 	~PlayerDataMgr()
 	{

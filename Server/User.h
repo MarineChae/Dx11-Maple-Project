@@ -2,6 +2,9 @@
 #include "ObjectPool.h"
 #include"PacketPool.h"
 #include "StreamPacket.h"
+#include"Singleton.h"
+
+
 
 struct UserPacket;
 struct MyOV : public ObjectPool<MyOV>
@@ -27,6 +30,7 @@ class User
 {
 
 private:
+	DWORD				  m_dwSessionID;
 	bool				  m_bConnected;
 	SOCKET				  m_UserSock;
 	SOCKADDR_IN			  m_UserAddr;
@@ -36,6 +40,8 @@ private:
 	StreamPacket		  m_StreamPacket;
 
 public:
+	DWORD			  GetSessionId()const { return m_dwSessionID; };
+	void			  SetSessionId(DWORD iD) { m_dwSessionID = iD; };
 	bool			  IsConnected() const { return m_bConnected; };
 	void			  SetConnect(bool connect) { m_bConnected = connect; };
 	SOCKET			  GetUserSock() const { return m_UserSock; };
@@ -54,5 +60,30 @@ public:
 	User();
 	User(SOCKET sock, SOCKADDR_IN Addr);
 
+};
+
+
+class SessionMgr :public Singleton<SessionMgr>
+{
+
+private:
+	std::vector<std::shared_ptr<User>> m_vUserList;
+
+public:
+	std::vector<std::shared_ptr<User>> GetUserList() { return m_vUserList; }
+	std::shared_ptr<User>  GetUser(DWORD SessionID) { return m_vUserList[SessionID]; }
+
+	bool  ConnectUser(std::shared_ptr<User> user);
+
+public:
+	SessionMgr()
+		:m_vUserList()
+	{
+		m_vUserList.reserve(MAX_USER_SIZE);
+	}
+	~SessionMgr()
+	{
+		m_vUserList.clear();
+	}
 };
 

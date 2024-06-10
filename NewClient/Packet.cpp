@@ -1,4 +1,5 @@
-
+#include<Windows.h>
+#include<assert.h>
 #include "Packet.h"
 
 Packet Packet::operator=(Packet& Packet)
@@ -65,55 +66,55 @@ Packet& Packet::operator<<(double wordvalue)
 	return *this;
 }
 
-Packet& Packet::operator>>(BYTE bytevalue)
+Packet& Packet::operator>>(BYTE& bytevalue)
 {
 	GetData(reinterpret_cast<char*>(&bytevalue), sizeof(BYTE));
 	return *this;
 }
 
-Packet& Packet::operator>>(char charvalue)
+Packet& Packet::operator>>(char& charvalue)
 {
 	GetData(&charvalue, sizeof(char));
 	return *this;
 }
 
-Packet& Packet::operator>>(short shortvalue)
+Packet& Packet::operator>>(short& shortvalue)
 {
 	GetData(reinterpret_cast<char*>(&shortvalue), sizeof(short));
 	return *this;
 }
 
-Packet& Packet::operator>>(WORD wordvalue)
+Packet& Packet::operator>>(WORD& wordvalue)
 {
 	GetData(reinterpret_cast<char*>(&wordvalue), sizeof(WORD));
 	return *this;
 }
 
-Packet& Packet::operator>>(int intvalue)
+Packet& Packet::operator>>(int& intvalue)
 {
 	GetData(reinterpret_cast<char*>(&intvalue), sizeof(int));
 	return *this;
 }
 
-Packet& Packet::operator>>(float floatvalue)
+Packet& Packet::operator>>(float& floatvalue)
 {
 	GetData(reinterpret_cast<char*>(&floatvalue), sizeof(float));
 	return *this;
 }
 
-Packet& Packet::operator>>(DWORD wordvalue)
+Packet& Packet::operator>>(DWORD& wordvalue)
 {
 	GetData(reinterpret_cast<char*>(&wordvalue), sizeof(DWORD));
 	return *this;
 }
 
-Packet& Packet::operator>>(__int64 wordvalue)
+Packet& Packet::operator>>(__int64& wordvalue)
 {
 	GetData(reinterpret_cast<char*>(&wordvalue), sizeof(__int64));
 	return *this;
 }
 
-Packet& Packet::operator>>(double wordvalue)
+Packet& Packet::operator>>(double& wordvalue)
 {
 	GetData(reinterpret_cast<char*>(&wordvalue), sizeof(double));
 	return *this;
@@ -168,6 +169,19 @@ void Packet::Init(int iBuffSize)
 	m_pEndPos = m_pBuffer + m_iBufferSize;
 	m_pReadPos = m_pWritePos = m_pStartPos;
 	m_iDataSize = 0;
+}
+
+int Packet::MoveWritePos(int iSize)
+{
+	if (0 > iSize) return 0;
+
+	if (m_pWritePos + iSize > m_pEndPos)
+		return 0;
+
+	m_pWritePos += iSize;
+	m_iDataSize += iSize;
+
+	return iSize;
 }
 
 Packet::Packet()

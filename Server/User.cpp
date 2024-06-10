@@ -46,7 +46,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 			return;
 		}
 
-		m_StreamPacket.Put(m_wsaRecvBuffer.buf, dwTransfer);
+		m_StreamPacket.Put(m_buffer, dwTransfer);
 
 		Packet pack;
 
@@ -63,14 +63,18 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 
 		BYTE dir=0;
+		DWORD id = 0;
 		short sx=0;
 		short sy=0;
 
 		pack >> dir;
+		pack >> id;
 		pack >> sx;
 		pack >> sy;
-		std::cout << (int)dir << " " << sx << " " << sy << " " << "\n";
+		
+		std::cout <<(int)hd.PacketType << " " << (int)dir << " "  << id << "  " << sx << " " << sy << " " << "\n";
 
+		IOCPServer::GetInstance().Broadcasting(&pack);
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
@@ -82,9 +86,10 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 }
 
 User::User() 
-	:m_UserSock()
+	:m_dwSessionID(0)
+	,m_UserSock()
 	, m_UserAddr()
-	, m_bConnected(true)
+	, m_bConnected(false)
 	, m_buffer()
 	, m_wsaRecvBuffer()
 	, m_wsaSendBuffer()
@@ -93,13 +98,38 @@ User::User()
 }
 
 User::User(SOCKET sock, SOCKADDR_IN Addr)
-	:m_UserSock(sock)
+	:m_dwSessionID(0)
+	,m_UserSock(sock)
 	,m_UserAddr(Addr)
-	,m_bConnected(true)
+	,m_bConnected(false)
 	,m_buffer()
 	,m_wsaRecvBuffer()
 	,m_wsaSendBuffer()
 
 {
 
+}
+
+bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
+{
+
+	if (m_vUserList.size() <= MAX_USER_SIZE)
+	{
+		m_vUserList.push_back(user);
+		user->SetSessionId(m_vUserList.size());
+		return true;
+	}
+	else
+	{
+		for (auto& useriter : m_vUserList)
+		{
+			if (!useriter->IsConnected())
+			{
+				useriter = user;
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

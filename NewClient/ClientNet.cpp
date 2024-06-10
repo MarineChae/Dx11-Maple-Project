@@ -3,10 +3,12 @@
 #include"Packet.h"
 #include"StreamPacket.h"
 #include"Protocol.h"
+#include"PacketProc.h"
 
 SOCKET       m_SOCK;
 short        m_PortNum = 12345;
 StreamPacket NetSendQ;
+StreamPacket NetRecvQ;
 char		 NetRecvWSABuff[NETWORK_WSABUFF_SIZE];
 char		 NetSendWSABuff[NETWORK_WSABUFF_SIZE];
 
@@ -86,13 +88,14 @@ BOOL NetworkProc(WPARAM wParam, LPARAM lParam)
     }
     case FD_READ:
     {
+        
         return TRUE;
     }
     case FD_WRITE:
     {
 
 
-
+        NetSendEvent();
 
         return TRUE;
     }
@@ -163,12 +166,124 @@ BOOL NetSendEvent()
     return TRUE;
 }
 
+DWORD NetCompleteRecvPacket()
+{
+    PACKET_HEADER ph;
+
+    int iRecvsize;
+    BYTE byEndCode = 0;
+
+    iRecvsize = NetRecvQ.GetUseSize();
+
+
+    if (PACKET_HEADER_SIZE > iRecvsize)
+        return 1;
+
+
+    NetRecvQ.Peek((char*)&ph, PACKET_HEADER_SIZE);
+
+    if (NETWORK_PACKET_CODE != ph.PacketCode)
+        return 0xff;
+
+    //큐에 저장된 데이터가 패킷의 크기만큼 들어있는지 확인
+    //end코드까지 포함한 사이즈  
+    //사이즈가 작다면 패킷전송이 완료되지 않음 다시처리
+    if (ph.PacketSize + PACKET_HEADER_SIZE + 1 > iRecvsize)
+        return 1;
+
+    //헤더 정보를 빼왔으므로 헤더크기만큼 데이터 지워줌
+    NetRecvQ.RemoveData(PACKET_HEADER_SIZE);
+
+    Packet pack;
+    //큐에서 패킷 크기만큼 데이터를 빼온다
+    if(!NetRecvQ.Get(pack.GetBufferPointer(),ph.PacketSize))
+        return 0xff;
+
+
+    if(!NetRecvQ.Get((char*)byEndCode,1))
+        return 0xff;
+    if (NETWORK_PACKET_END != byEndCode)
+        return 0xff;
+
+    //패킷에 데이터를 넣어주었으므로 읽기 위치를 이동
+    pack.MoveWritePos(ph.PacketSize);
+
+    if (!PacketProc(ph.PacketType, &pack))
+        return 0xff;
+
+
+    return 0;
+}
+
+BOOL NetRecvEvent()
+{
+    DWORD dwResult;
+    DWORD dwRecvSize;
+    DWORD dwFlag = 0;
+
+    WSABUF WsaBuff;
+    
+    WsaBuff.buf = NetRecvWSABuff;
+    WsaBuff.len = NETWORK_WSABUFF_SIZE;
+
+    dwResult = WSARecv(m_SOCK, &WsaBuff, 1, &dwRecvSize, &dwFlag, NULL, NULL);
+
+    if (SOCKET_ERROR == dwResult)
+    {
+        int err = WSAGetLastError();
+
+        if (err != WSAEWOULDBLOCK)
+            return FALSE;
+        else
+            return TRUE;
+    }
+
+    if (0 < dwRecvSize)
+    {
+        NetRecvQ.Put(NetRecvWSABuff, dwRecvSize);
+
+        while (1)
+        {
+            dwResult = NetCompleteRecvPacket();
+
+
+
+        }
+
+
+
+    }
+
+
+    return 0;
+}
+
+BOOL PacketProc(BYTE byPacketType, Packet* pack)
+{
+    switch (byPacketType)
+    {
+    case PACKET_CS_MOVE_START :
+        PacketProc_MoveStart(pack);
+        break;
+
+    case PACKET_CS_MOVE_END :
+
+        PacketProc_MoveEnd(pack);
+        break;
+
+
+    }
+
+
+
+
+    return 0;
+}
+
 BOOL NetSendPacket(Packet* packet)
 {
 
     NetSendQ.Put(packet->GetBufferPointer(), packet->GetDataSize());
-
-
 
     if (!NetSendEvent())
     {
@@ -177,6 +292,7 @@ BOOL NetSendPacket(Packet* packet)
 
     return TRUE;
 }
+
 
 
 

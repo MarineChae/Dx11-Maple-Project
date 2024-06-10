@@ -1,6 +1,5 @@
 #pragma once
-#include <windows.h>
-#include <assert.h>
+
 
 class Packet
 {
@@ -26,7 +25,7 @@ private:
 
 public:
 
-	Packet operator = (Packet &Packet);
+	Packet operator = (Packet& Packet);
 
 
 	Packet& operator << (BYTE bytevalue);
@@ -43,18 +42,18 @@ public:
 	Packet& operator << (double wordvalue);
 
 
-	Packet& operator >> (BYTE bytevalue);
-	Packet& operator >> (char charvalue);
-					 
-	Packet& operator >> (short shortvalue);
-	Packet& operator >> (WORD wordvalue);
-					 
-	Packet& operator >> (int intvalue);
-	Packet& operator >> (float floatvalue);
-	Packet& operator >> (DWORD wordvalue);
-					 
-	Packet& operator >> (__int64 wordvalue);
-	Packet& operator >> (double wordvalue);
+	Packet& operator >> (BYTE& bytevalue);
+	Packet& operator >> (char& charvalue);
+
+	Packet& operator >> (short& shortvalue);
+	Packet& operator >> (WORD& wordvalue);
+
+	Packet& operator >> (int& intvalue);
+	Packet& operator >> (float& floatvalue);
+	Packet& operator >> (DWORD& wordvalue);
+
+	Packet& operator >> (__int64& wordvalue);
+	Packet& operator >> (double& wordvalue);
 
 public:
 
@@ -64,6 +63,7 @@ public:
 	int PutData(char* pSrc, int iSrcSize);
 	int GetData(char* pScr, int iSrcSize);
 	void Init(int iBuffSize = 512);
+	int MoveWritePos(int iSize);
 
 public:
 

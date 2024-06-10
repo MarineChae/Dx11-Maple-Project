@@ -10,7 +10,9 @@
 #include <functional>
 #include <map>
 #include <shared_mutex>
-
+#include <vector>
+#include<memory>
+#include<array>
 #include "Protocol.h"
 
 using std::list;

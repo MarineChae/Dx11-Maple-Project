@@ -1,7 +1,8 @@
 #include "Netstd.h"
 #include "PacketPool.h"
+#include "Packet.h"
 
-void PacketPool::Add(UserPacket& packet)
+void PacketPool::Add(Packet& packet)
 {
 	{
 		std::lock_guard<std::shared_mutex>lock(m_pShardMutex);
@@ -9,6 +10,6 @@ void PacketPool::Add(UserPacket& packet)
 	}
 }
 
-void PacketPool::Process(UserPacket& packet)
+void PacketPool::Process(Packet& packet)
 {
 }

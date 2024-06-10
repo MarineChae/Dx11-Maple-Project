@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MakePacket.cpp" />
     <ClCompile Include="PlayerData.cpp" />
     <ClCompile Include="IocpModel.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
@@ -146,12 +147,12 @@
     <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketPool.cpp" />
-    <ClCompile Include="SessionMgr.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="StreamPacket.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MakePacket.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="IocpModel.h" />
     <ClInclude Include="IOCPServer.h" />
@@ -162,7 +163,6 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketPool.h" />
     <ClInclude Include="Protocol.h" />
-    <ClInclude Include="SessionMgr.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="StreamPacket.h" />
     <ClInclude Include="User.h" />

@@ -1,12 +1,13 @@
 #include "Netstd.h"
 #include "IocpModel.h"
-
+std::mutex m;
 DWORD WINAPI WorkerThread(LPVOID param)
 {
 	DWORD dwTransfer;
 	ULONG_PTR KeyValue;
 	OVERLAPPED* overlap;
 	IocpModel* iocp = (IocpModel*)param;
+
 	while (1)
 	{
 		if (WaitForSingleObject(iocp->GetKillEvent(), 0) == WAIT_OBJECT_0)
@@ -20,7 +21,9 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			
 			if (pUser != nullptr)
 			{
+				m.lock();
 				pUser->Dispatch(dwTransfer,overlap);
+				m.unlock();
 			}
 		}
 		else

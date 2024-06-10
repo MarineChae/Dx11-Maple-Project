@@ -1,7 +1,7 @@
 #include "Netstd.h"
 
 #include "IOCPServer.h"
-
+#include "Packet.h"
 
 bool AcceptIocp::ThreadRun()
 {
@@ -22,10 +22,19 @@ bool AcceptIocp::ThreadRun()
 	else
 	{
 
-		User* user = new User(clientsock, clientaddr);
+		std::shared_ptr<User> user = std::make_shared<User>(clientsock, clientaddr);
  		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
 		user->Recv();
-		m_pServer->GetNetWork().GetSessionMgr().GetUserList().push_back(user);
+		for (int iSize = 0; iSize < MAX_USER_SIZE; ++iSize)
+		{
+			if (SessionMgr::GetInstance().ConnectUser(user))
+			{
+				break;
+			}
+			else
+				printf("Client Connect Failed IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
+
+		}
 		printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
 
 	}
@@ -33,28 +42,22 @@ bool AcceptIocp::ThreadRun()
 	return true;
 }
 
-void IOCPServer::AddPacket(UserPacket& packet)
+void IOCPServer::AddPacket(Packet& packet)
 {
-	FunctionIterator iter = m_fnExecutePacket.find(packet.packet.PacketHeader.PacketType);
-	if (iter != m_fnExecutePacket.end())
-	{
-		CallFunction call = iter->second;
-		call(packet);
-	}
 
 
 }
 
-void IOCPServer::ChatMsg(UserPacket& packet)
+void IOCPServer::ChatMsg(Packet& packet)
 {
 	m_BroadcastPacketPool.Add(packet);
 }
 
-int IOCPServer::SendPacket(User* pUser, UserPacket& packet)
+int IOCPServer::SendPacket(User* pUser, Packet* packet)
 {
 	char* SendBuffer = (char*)&packet;
 	pUser->GetSendBuffer().buf = SendBuffer;
-	pUser->GetSendBuffer().len = packet.packet.PacketHeader.PacketSize;
+	pUser->GetSendBuffer().len = packet->GetDataSize();
 
 	MyOV* ov = new MyOV(MyOV::MODE_SEND);
 
@@ -74,16 +77,17 @@ int IOCPServer::SendPacket(User* pUser, UserPacket& packet)
 	}
 
 
-	return packet.packet.PacketHeader.PacketSize;
+	return packet->GetDataSize();
 }
 
-bool IOCPServer::Broadcasting(UserPacket packet)
+bool IOCPServer::Broadcasting(Packet* packet)
 {
-	for (auto& iterSend : m_NetworkBase.GetSessionMgr().GetUserList())
+
+	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
 		if (iterSend->IsConnected() == false) continue;
-
-		int iSendByte = SendPacket(iterSend, packet);
+	
+		int iSendByte = SendPacket(iterSend.get(), packet);
 		if (iSendByte == SOCKET_ERROR)
 		{
 			ERRORMSG(L"BroadCasting");

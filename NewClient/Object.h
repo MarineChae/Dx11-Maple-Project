@@ -15,8 +15,12 @@ private:
 	TVector3 m_vRotate;
 	TVector3 m_vTransform;
 
+public:
+	DWORD m_dwObjectID;
+
 
 public:
+	DWORD GetObejctID() const  {return m_dwObjectID;}
 	TVector3 GetTransform() const { return m_vTransform; };
 	void SetTransform(TVector3 transform) { m_vTransform = transform; };
 public:
@@ -26,6 +30,7 @@ public:
 	virtual bool Create(std::wstring FileName, std::wstring ShaderFileName);
 	virtual void SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix);
 	virtual void SetScale(TVector3 scale);
+	virtual void SetMatrix();
 public:
 
 
@@ -37,6 +42,7 @@ public:
 public:
 	Object()
 	{
+		m_dwObjectID = 1;
 		m_vTransform = TVector3(0, 0, 0);
 		m_vScale = TVector3(1, 1, 1);
 		m_vRotate = TVector3(0, 0, 0);
@@ -44,3 +50,21 @@ public:
 
 };
 
+
+
+class ObejctMgr : public Singleton<ObejctMgr>
+{
+	friend class Singleton<ObejctMgr>;
+
+private:
+	std::list<std::shared_ptr<Object>> m_lObjectList;
+
+public:
+	std::list<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
+	void                               PushObject(std::shared_ptr<Object> obj) { m_lObjectList.push_back(obj); };
+	std::shared_ptr<Object>			   GetPlayerObject(DWORD SessionID);
+
+
+
+
+};

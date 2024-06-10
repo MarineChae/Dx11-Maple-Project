@@ -3,6 +3,7 @@
 #include "User.h"
 
 class User;
+class Packet;
 struct UserPacket
 {
 	UPACKET packet;
@@ -15,13 +16,13 @@ class PacketPool
 {
 private:
 	std::shared_mutex m_pShardMutex;
-	list<UserPacket*> m_lPackList;
+	list<Packet*> m_lPackList;
 
 public:
-	list<UserPacket*>& GetPacketList() { return m_lPackList; };
+	list<Packet*>& GetPacketList() { return m_lPackList; };
 
 public:
-	void Add(UserPacket& packet);
-	void Process(UserPacket& packet);
+	void Add(Packet& packet);
+	void Process(Packet& packet);
 };
 

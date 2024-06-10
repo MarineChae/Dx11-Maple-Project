@@ -77,12 +77,7 @@ void Object::SetScale(TVector3 scale)
     m_vScale = scale;
 }
 
-bool Object::Init()
-{
-    return false;
-}
-
-bool Object::Frame()
+void Object::SetMatrix()
 {
     TMatrix matrixtrans;
     matrixtrans.Translation(m_vTransform);
@@ -93,7 +88,18 @@ bool Object::Frame()
 
     m_WolrdMatrix = matrixSCale * matrixRotate * matrixtrans;
 
-   
+}
+
+bool Object::Init()
+{
+    return false;
+}
+
+bool Object::Frame()
+{
+    SetMatrix();
+
+
     return true;
 }
 
@@ -107,4 +113,14 @@ bool Object::Render()
 bool Object::Release()
 {
     return false;
+}
+
+std::shared_ptr<Object> ObejctMgr::GetPlayerObject(DWORD SessionID)
+{
+    for (auto& iter : m_lObjectList)
+    {
+        if (iter->GetObejctID() == SessionID)
+            return iter;
+    }
+    return nullptr;
 }

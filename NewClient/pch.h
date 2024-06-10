@@ -17,7 +17,7 @@
 #include <iostream>
 #include <thread>
 #include <system_error>
-
+#include<list>
 
 #include"Singleton.h"
 #include "DirectXTex.h"

@@ -1,17 +1,39 @@
-#pragma once
 #include <Windows.h>
 
 #define PACKET_HEADER_SIZE 4
 #define PACKET_MSG_BUFFER_SIZE 2048
 #define PACKET_MAX_SIZE (PACKET_HEADER_SIZE+PACKET_MSG_BUFFER_SIZE)
 #define NETWORK_PACKET_CODE	((BYTE)0x89)
-
 #define NETWORK_PACKET_END	((BYTE)0x79)
+#define MAX_USER_SIZE 63
+#define NETWORK_WSABUFF_SIZE 512
+
+////////////클라이언트 서버 전송 패킷/////////
+#define	PACKET_CS_CREATE_MY_CHARACTER 1
+#define	PACKET_CS_CREATE_OTHER_CHARACTER 2
+
 
 #define	PACKET_CS_MOVE_START 10
+#define	PACKET_CS_MOVE_END 11
+
+//////////////////////////////////////////
 
 
-#define NETWORK_WSABUFF_SIZE 512
+
+///////////////캐릭터 액션값//////////////////
+
+
+
+#define ACTION_MOVELEFT		0
+#define ACTION_MOVERIGHT	1
+#define ACTION_MOVEUP		2
+#define ACTION_MOVEDOWN		3
+
+
+
+#define ACTION_STAND	255
+
+////////////////////////////////////////////
 
 
 #pragma pack(push,1)

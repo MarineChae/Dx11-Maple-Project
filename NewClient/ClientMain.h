@@ -1,6 +1,6 @@
 #pragma once
 #include"Core.h"
-#include"Object.h"
+#include"PlayerObject.h"
 
 class ClientMain : public Core
 {
@@ -8,7 +8,7 @@ class ClientMain : public Core
 public:
 
 	std::shared_ptr<Object> test;
-	std::list<Object> playerlist;
+
 
 public:
 	virtual bool Init();

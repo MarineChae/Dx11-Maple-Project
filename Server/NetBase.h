@@ -1,14 +1,11 @@
 #pragma once
 #include "Netstd.h"
-#include "SessionMgr.h"
+#include "User.h"
 
 class NetBase
 {
 private:
 	CRITICAL_SECTION m_Cs;
-	SessionMgr		 m_SessionMgr;
-public:
-	SessionMgr& GetSessionMgr() { return m_SessionMgr; };
 
 public:
 	virtual int  SendPacket(User* user, UPACKET& packet);

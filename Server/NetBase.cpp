@@ -20,7 +20,6 @@ bool NetBase::Broadcasting(UPACKET packet, int index)
 
 NetBase::NetBase()
     : m_Cs()
-    , m_SessionMgr()
 {
 
 }

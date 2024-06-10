@@ -8,6 +8,7 @@
 #include"Singleton.h"
 
 class IOCPServer;
+class Packet;
 class AcceptIocp : public MyThread
 {
 	IOCPServer* m_pServer;
@@ -44,10 +45,10 @@ public:
 
 public:
 
-	virtual void AddPacket(UserPacket& packet);
-	virtual void ChatMsg(UserPacket& packet);
-	virtual int  SendPacket(User* pUser, UserPacket& packet);
-	bool		 Broadcasting(UserPacket packet);
+	virtual void AddPacket(Packet& packet);
+	virtual void ChatMsg(Packet& packet);
+	virtual int  SendPacket(User* pUser, Packet* packet);
+	bool		 Broadcasting(Packet* packet);
 
 public:
 	bool		 Init();
