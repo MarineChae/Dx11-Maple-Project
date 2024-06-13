@@ -4,12 +4,6 @@
 
 class User;
 class Packet;
-struct UserPacket
-{
-	UPACKET packet;
-	User* m_pUser;
-
-};
 
 
 class PacketPool
