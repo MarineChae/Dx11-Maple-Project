@@ -1,36 +1,37 @@
 #include "MakePacket.h"
 #include "PlayerData.h"
 
-
-void MoveStartPacket(Packet* pack, BYTE direction, short X, short Y)
+void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 5;
+	PacketHeader.PacketSize = 9;
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 	PacketHeader.PacketTemp = 0;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
 
 	*pack << direction;
+	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, short X, short Y)
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 5;
+	PacketHeader.PacketSize = 9;
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
 
 	*pack << direction;
+	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
 	*pack << (BYTE)NETWORK_PACKET_END;

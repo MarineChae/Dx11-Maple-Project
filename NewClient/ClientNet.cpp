@@ -88,7 +88,7 @@ BOOL NetworkProc(WPARAM wParam, LPARAM lParam)
     }
     case FD_READ:
     {
-        
+        NetRecvEvent();
         return TRUE;
     }
     case FD_WRITE:
@@ -171,7 +171,7 @@ DWORD NetCompleteRecvPacket()
     PACKET_HEADER ph;
 
     int iRecvsize;
-    BYTE byEndCode = 0;
+    BYTE byEndCode;
 
     iRecvsize = NetRecvQ.GetUseSize();
 
@@ -200,7 +200,7 @@ DWORD NetCompleteRecvPacket()
         return 0xff;
 
 
-    if(!NetRecvQ.Get((char*)byEndCode,1))
+    if(!NetRecvQ.Get((char*)&byEndCode,1))
         return 0xff;
     if (NETWORK_PACKET_END != byEndCode)
         return 0xff;
@@ -246,7 +246,11 @@ BOOL NetRecvEvent()
         {
             dwResult = NetCompleteRecvPacket();
 
+            if (1 == dwResult)
+                break;
 
+            if (0xff == dwResult)
+                return FALSE;
 
         }
 

@@ -1,7 +1,8 @@
 #include "Pch.h"
 #include "User.h"
 #include"StreamPacket.h"
-
+#include"IocpServer.h"
+#include"Packet.h"
 void User::Close()
 {
 	m_bConnected = false;
@@ -31,31 +32,66 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	MyOV* myov = (MyOV*)ov;
 	if (myov->flag == MyOV::MODE_RECV)
 	{
+		Recv();
 		if (dwTransfer == 0)
 		{
 			m_bConnected = false;
 			return;
 		}
-		m_sPacket->Put(m_buffer, dwTransfer);
-		m_sPacket->GetPacket(std::ref(*this));
+		m_pStreamPacket->Put(m_buffer, dwTransfer);
+		
+		Packet pack;
+		PACKET_HEADER hd;
+		ParseStreamPacket(pack, hd);
+		IocpServer::GetInstance().AddPacket(pack,hd.PacketType);
 
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
 		int a = 0;
 	}
-	Recv();
+	
 	return;
 }
 
-User::User()
+bool User::ParseStreamPacket(Packet& pack, PACKET_HEADER& hd)
 {
-	m_bConnected = false;
+
+	BYTE end;
+	m_pStreamPacket->Peek((char*)&hd, PACKET_HEADER_SIZE);
+	m_pStreamPacket->RemoveData(PACKET_HEADER_SIZE);
+	OutputDebugString(L"send\n");
+	m_pStreamPacket->Get(pack.GetBufferPointer(), hd.PacketSize);
+	m_pStreamPacket->Get((char*)&end, 1);
+
+	pack.MoveWritePos(hd.PacketSize);
+	pack.SetPacketType(hd.PacketType);
+	return true;
 }
-User::User(SOCKET sock, SOCKADDR_IN addr)
-	:m_Sock(sock)
-	, m_Addr(addr)
+
+
+User::User()
+	: m_Sock()
+	, m_Addr()
+	, m_pStreamPacket()
+	, m_bConnected(false)
+	, m_buffer()
+	, m_wsaRecvBuffer()
+	, m_wsaSendBuffer()
 {
-	m_bConnected = false;
+	m_pStreamPacket = std::make_shared<StreamPacket>();
+}
+
+User::User(SOCKET sock, SOCKADDR_IN Addr)
+	: m_Sock(sock)
+	, m_Addr(Addr)
+	, m_pStreamPacket()
+	, m_bConnected(false)
+	, m_buffer()
+	, m_wsaRecvBuffer()
+	, m_wsaSendBuffer()
+
+{
+	m_pStreamPacket = std::make_shared<StreamPacket>();
 }
 

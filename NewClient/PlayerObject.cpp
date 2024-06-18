@@ -106,7 +106,7 @@ void PlayerObject::InputAction()
 
 
 
-   // if (m_dwBeforeAction == m_dwCurrentAction || !m_bIsPlayable)
+   // if (m_dwBeforeAction == m_dwCurrentAction)
    //     return;
 
     Packet SendPacket;
@@ -126,14 +126,13 @@ void PlayerObject::InputAction()
         break;
     }
 
-
     static double sendtime = 0;
     sendtime += Timer::GetInstance().GetSecPerFrame();
     
-    if (sendtime >= 0.06)
+    if (sendtime >= 0.2)
     {
         NetSendPacket(&SendPacket);
-        sendtime -= 0.06;
+        sendtime -= 0.2;
     }
 
     

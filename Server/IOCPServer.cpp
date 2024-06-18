@@ -44,7 +44,7 @@ bool AcceptIocp::ThreadRun()
 
 void IOCPServer::AddPacket(Packet& packet)
 {
-
+	m_BroadcastPacketPool.Add(packet);
 
 }
 
@@ -55,7 +55,7 @@ void IOCPServer::ChatMsg(Packet& packet)
 
 int IOCPServer::SendPacket(User* pUser, Packet* packet)
 {
-	char* SendBuffer = (char*)&packet;
+	char* SendBuffer = packet->GetBufferPointer();
 	pUser->GetSendBuffer().buf = SendBuffer;
 	pUser->GetSendBuffer().len = packet->GetDataSize();
 
@@ -159,8 +159,31 @@ bool IOCPServer::Init()
 
 bool IOCPServer::ThreadRun()
 {
+	for (auto& data : m_BroadcastPacketPool.GetPacketList())
+	{
+		if (!Broadcasting(data))
+		{
 
+		}
+	}
+	m_BroadcastPacketPool.GetPacketList().clear();
 
+	for (std::list<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
+		iterSend != SessionMgr::GetInstance().GetUserList().end();)
+	{
+
+		std::shared_ptr<User> pUser = *iterSend;
+		if (pUser->IsConnected() == false)
+		{
+			pUser->Close();
+			iterSend = SessionMgr::GetInstance().GetUserList().erase(iterSend);
+		}
+		else
+		{
+			iterSend++;
+		}
+
+	}
 
 
 	return true;

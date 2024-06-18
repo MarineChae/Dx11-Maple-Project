@@ -2,6 +2,8 @@
 #include "User.h"
 #include "IOCPServer.h"
 #include "Packet.h"
+#include "MakePacket.h"
+
 void User::Close()
 {
 	m_bConnected = false;
@@ -40,6 +42,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 	if (myov->flag == MyOV::MODE_RECV)
 	{
+		Recv();
 		if (dwTransfer == 0)
 		{
 			m_bConnected = false;
@@ -52,36 +55,35 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 		PACKET_HEADER hd;
 		BYTE end;
-		m_StreamPacket.Peek((char*)&hd,PACKET_HEADER_SIZE);
+		m_StreamPacket.Peek((char*)&hd, PACKET_HEADER_SIZE);
 		m_StreamPacket.RemoveData(PACKET_HEADER_SIZE);
 		OutputDebugString(L"send\n");
 		m_StreamPacket.Get(pack.GetBufferPointer(), hd.PacketSize);
 
-		m_StreamPacket.Get((char*)&end , 1);
+		m_StreamPacket.Get((char*)&end, 1);
 
 		pack.MoveWritePos(hd.PacketSize);
 
+	
 
-		BYTE dir=0;
-		DWORD id = 0;
-		short sx=0;
-		short sy=0;
 
-		pack >> dir;
-		pack >> id;
-		pack >> sx;
-		pack >> sy;
-		
-		std::cout <<(int)hd.PacketType << " " << (int)dir << " "  << id << "  " << sx << " " << sy << " " << "\n";
+	
 
-		IOCPServer::GetInstance().Broadcasting(&pack);
+
+
+		Packet spack;
+
+
+		MoveStopPacket(&spack, 1,1, 444, 444);
+
+		IOCPServer::GetInstance().AddPacket(spack);
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
-
+		
 
 	}
-	Recv();
+	
 	
 }
 

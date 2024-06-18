@@ -23,6 +23,7 @@ private:
 
 	int m_iDataSize;
 
+
 public:
 
 	Packet operator = (Packet& Packet);

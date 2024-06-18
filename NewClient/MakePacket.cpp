@@ -9,6 +9,7 @@ void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, shor
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	//pack->SetPacketType(PacketHeader.PacketType);
 
 	*pack << direction;
 	*pack << SessionID;

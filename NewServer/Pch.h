@@ -12,3 +12,7 @@
 #include<shared_mutex>
 #include<functional>
 #include<map>
+#include<memory>
+
+#define ERRORMSG(LPCWSTR) MessageBox(NULL, LPCWSTR, L"ERROR", MB_OK);
+

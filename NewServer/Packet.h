@@ -23,6 +23,7 @@ private:
 
 	int m_iDataSize;
 
+	BYTE m_PacketType;
 public:
 
 	Packet operator = (Packet& Packet);
@@ -64,7 +65,7 @@ public:
 	int GetData(char* pScr, int iSrcSize);
 	void Init(int iBuffSize = 512);
 	int MoveWritePos(int iSize);
-
+	void SetPacketType(BYTE type) { m_PacketType = type; }
 public:
 
 	Packet();

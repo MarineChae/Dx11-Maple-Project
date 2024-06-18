@@ -22,7 +22,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
 
         networkClean();
-
+        MessageBox(hWnd, L"Disconnect", L"Disconnect", MB_OK);
         PostQuitMessage(0);
 
         break;

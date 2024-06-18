@@ -25,20 +25,23 @@ struct MyOV : public ObjectPool<MyOV>
 class User
 {
 public:
-	bool				  m_bConnected;
-	SOCKET				  m_Sock;
-	SOCKADDR_IN			  m_Addr;
-	StreamPacket*		  m_sPacket;
-	std::list<Packet*>	  m_lPacketList;
-	WSABUF				  m_wsaRecvBuffer;
-	WSABUF				  m_wsaSendBuffer;
-	char				  m_buffer[4096];
+	bool							 m_bConnected;
+	SOCKET							 m_Sock;
+	SOCKADDR_IN						 m_Addr;
+	std::shared_ptr<StreamPacket>	 m_pStreamPacket;
+	std::list<Packet*>				 m_lPacketList;
+	WSABUF							 m_wsaRecvBuffer;
+	WSABUF							 m_wsaSendBuffer;
+	char							 m_buffer[4096];
 
 public:
 	void Close();
 	void bind(HANDLE iocp);
 	void Recv();
 	void Dispatch(DWORD dwTransfer, OVERLAPPED* ov);
+	bool ParseStreamPacket(Packet& pack, PACKET_HEADER& hd);
+
+
 
 public:
 	User();

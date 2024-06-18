@@ -38,6 +38,7 @@ bool ClientMain::Render()
 
 bool ClientMain::Release()
 {
+	//networkClean();
 	return true;
 }
 

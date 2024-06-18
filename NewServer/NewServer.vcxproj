@@ -139,9 +139,12 @@
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketPool.h" />
+    <ClInclude Include="PacketProc.h" />
     <ClInclude Include="Pch.h" />
+    <ClInclude Include="PlayerData.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ServerMain.h" />
+    <ClInclude Include="SessionMgr.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="StreamPacket.h" />
     <ClInclude Include="User.h" />
@@ -153,11 +156,14 @@
     <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketPool.cpp" />
+    <ClCompile Include="PacketProc.cpp" />
     <ClCompile Include="Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="PlayerData.cpp" />
     <ClCompile Include="ServerMain.cpp" />
+    <ClCompile Include="SessionMgr.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="StreamPacket.cpp" />
     <ClCompile Include="User.cpp" />

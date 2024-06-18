@@ -51,6 +51,15 @@
     <ClInclude Include="Singleton.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SessionMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketProc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp">
@@ -84,6 +93,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Singleton.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketProc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -20,7 +20,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
             User* pUser = (User*)KeyValue;
             if (pUser != nullptr)
             {
-               // pUser->Dispatch(dwTransfer, overlap);
+               pUser->Dispatch(dwTransfer, overlap);
             }
         }
         else
@@ -33,11 +33,16 @@ DWORD WINAPI WorkerThread(LPVOID param)
             }
             if (dwErr == ERROR_HANDLE_EOF)
             {
-                //MessageBox(,"GetLastError");
+                ERRORMSG(L"ERROR_HANDLE_EOF");
                 SetEvent(iocp->m_hKillEvent);
                 break;
             }
-           // LogErrorA("GetLastError");
+            if (dwErr == ERROR_NETNAME_DELETED)
+            {
+                ERRORMSG(L"Client Hard Close");
+                continue;
+            }
+            ERRORMSG(L"ERROR_HANDLE_EOF");
             SetEvent(iocp->m_hKillEvent);
             break;
         }

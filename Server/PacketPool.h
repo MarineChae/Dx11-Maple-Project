@@ -14,7 +14,7 @@ private:
 
 public:
 	list<Packet*>& GetPacketList() { return m_lPackList; };
-
+	void AddPacket(Packet* packet) { m_lPackList.push_back(packet); };
 public:
 	void Add(Packet& packet);
 	void Process(Packet& packet);

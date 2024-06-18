@@ -61,6 +61,7 @@ public:
 	char* GetBufferPointer() { return m_pBuffer; };
 	int GetBufferSize() const { return m_iBufferSize; };
 	int GetDataSize() const { return m_iDataSize; };
+	void SetDataSize(int size) { m_iDataSize = size; };
 	int PutData(char* pSrc, int iSrcSize);
 	int GetData(char* pScr, int iSrcSize);
 	void Init(int iBuffSize = 512);
