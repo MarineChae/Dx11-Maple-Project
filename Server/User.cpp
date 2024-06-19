@@ -3,6 +3,10 @@
 #include "IOCPServer.h"
 #include "Packet.h"
 #include "MakePacket.h"
+#include "PlayerData.h"
+std::mutex m;
+
+int SessionMgr::m_iSessionCount = 0;
 
 void User::Close()
 {
@@ -51,7 +55,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 		m_StreamPacket.Put(m_buffer, dwTransfer);
 
-		Packet pack;
+	/*	Packet pack;
 
 		PACKET_HEADER hd;
 		BYTE end;
@@ -66,17 +70,12 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 	
 
-
-	
-
-
-
 		Packet spack;
 
 
 		MoveStopPacket(&spack, 1,1, 444, 444);
 
-		IOCPServer::GetInstance().AddPacket(spack);
+		IOCPServer::GetInstance().AddPacket(spack);*/
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
@@ -114,11 +113,48 @@ User::User(SOCKET sock, SOCKADDR_IN Addr)
 
 bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 {
-
+	m.lock();
 	if (m_vUserList.size() <= MAX_USER_SIZE)
 	{
 		m_vUserList.push_back(user);
-		user->SetSessionId(m_vUserList.size());
+		user->SetSessionId(m_iSessionCount++);
+
+		short x = rand() % 102;
+		short y = rand() % 102;
+
+		Packet pack;
+		CreateMyCharacter(&pack, user->GetSessionId(),0,x,y,100);
+		IOCPServer::GetInstance().SendPacket(user.get(), &pack);
+
+
+		Packet pack2;
+ 		CreateOtherCharacter(&pack2, user->GetSessionId(), 0, x, y, 100);
+		IOCPServer::GetInstance().Broadcasting(&pack2,user);
+
+		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
+		data->Init(true, user->GetSessionId(),0,0,x,y,100);
+ 		PlayerDataMgr::GetInstance().GetPlayerList().push_back(data);
+
+
+ 		for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
+		{
+			if (otherplayer->GetSessionID() != user->GetSessionId())
+			{
+				Packet playerpack;
+				CreateOtherCharacter(&playerpack,
+					otherplayer->GetSessionID(),
+					otherplayer->GetDirection(),
+					otherplayer->GetXPos(),
+					otherplayer->GetYPos(),
+					otherplayer->GetHP());
+
+				IOCPServer::GetInstance().SendPacket(user.get(), &playerpack);
+			}
+
+		}
+
+
+		m.unlock();
 		return true;
 	}
 	else
@@ -128,10 +164,11 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 			if (!useriter->IsConnected())
 			{
 				useriter = user;
+				m.unlock();
 				return true;
 			}
 		}
 	}
-
+	m.unlock();
 	return false;
 }

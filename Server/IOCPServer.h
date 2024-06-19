@@ -49,6 +49,7 @@ public:
 	virtual void ChatMsg(Packet& packet);
 	virtual int  SendPacket(User* pUser, Packet* packet);
 	bool		 Broadcasting(Packet* packet);
+	bool		 Broadcasting(Packet* packet, std::shared_ptr<User> pUser);
 
 public:
 	bool		 Init();

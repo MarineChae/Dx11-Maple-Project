@@ -275,6 +275,12 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
         PacketProc_MoveEnd(pack);
         break;
 
+    case PACKET_CS_CREATE_MY_CHARACTER:
+        PacketProc_CreateMyCharacter(pack);
+        break;
+    case PACKET_CS_CREATE_OTHER_CHARACTER:
+        PacketProc_CreateOtherCharacter(pack);
+        break;
 
     }
 

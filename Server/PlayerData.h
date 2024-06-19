@@ -2,6 +2,7 @@
 #include"Singleton.h"
 #include"Protocol.h"
 #include<vector>
+#include"memory"
 class PlayerData
 {
 private:
@@ -17,6 +18,9 @@ private:
 	int 	iHP;
 
 public:
+
+	void Init(BOOL	Flag, DWORD SessionID, DWORD Action, BYTE Direction, short X, short Y, int HP);
+
 	DWORD GetSessionID() const { return dwSessionID; };
 	DWORD GetAction() const { return dwAction; };
 	BYTE  GetDirection()const { return byDirection; };
@@ -34,17 +38,17 @@ class PlayerDataMgr : public Singleton< PlayerDataMgr>
 	friend class Singleton< PlayerDataMgr>;
 
 private:
-	std::vector<PlayerData*> m_PlayerList;
+	std::vector<std::shared_ptr<PlayerData>> m_PlayerList;
 
 
 public:
-	std::vector<PlayerData*> GetPlayerList() { return m_PlayerList; };
-	PlayerData*  GetPlayerData(int SessionNum) { return m_PlayerList[SessionNum]; };
+	std::vector<std::shared_ptr<PlayerData>>& GetPlayerList() { return m_PlayerList; };
+	std::shared_ptr<PlayerData>  GetPlayerData(int SessionNum) { return m_PlayerList[SessionNum]; };
 
 public:
 	PlayerDataMgr()
 	{
-		m_PlayerList.resize(MAX_USER_SIZE);
+		m_PlayerList.reserve(MAX_USER_SIZE);
 	}
 	~PlayerDataMgr()
 	{

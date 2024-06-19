@@ -65,7 +65,8 @@ public:
 
 class SessionMgr :public Singleton<SessionMgr>
 {
-
+public:
+	static int m_iSessionCount;
 private:
 	std::list<std::shared_ptr<User>> m_vUserList;
 

@@ -7,13 +7,13 @@
 #include "ClientNet.h"
 bool ClientMain::Init()
 {
-	test = std::make_shared<PlayerObject>();
-
-	test->SetScale(TVector3(100.0f, 100.0f, 1.0f));
-	test->Create(L"", L"../Shader/Defalutshader.hlsl");
-	
-	
-	ObejctMgr::GetInstance().PushObject(test);
+	//test = std::make_shared<PlayerObject>();
+	//
+	//test->SetScale(TVector3(100.0f, 100.0f, 1.0f));
+	//test->Create(L"", L"../Shader/Defalutshader.hlsl");
+	//
+	//
+	//ObejctMgr::GetInstance().PushObject(test);
 
 
 	return true;
@@ -21,18 +21,23 @@ bool ClientMain::Init()
 
 bool ClientMain::Frame()
 {
-	
-	test->Frame();
+	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
+	{
+		obj->Frame();
+	}
+	//test->Frame();
 
 	return true;
 }
 
 bool ClientMain::Render()
 {
-	//GetCamera().SetCameraPos(test->GetTransform());
-	
-	test->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
-	test->Render();
+	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
+	{
+		obj->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
+		obj->Render();
+	}
+
   	return true;
 }
 

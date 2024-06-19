@@ -58,13 +58,13 @@ class ObejctMgr : public Singleton<ObejctMgr>
 
 private:
 	std::list<std::shared_ptr<Object>> m_lObjectList;
-
+	std::shared_ptr<Object>			   m_pPlayerObject;
 public:
 	std::list<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
 	void                               PushObject(std::shared_ptr<Object> obj) { m_lObjectList.push_back(obj); };
 	std::shared_ptr<Object>			   GetPlayerObject(DWORD SessionID);
-
-
+	std::shared_ptr<Object>			   GetPlayerObject() { return m_pPlayerObject; };
+	void SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
 
 
 };

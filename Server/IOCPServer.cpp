@@ -3,6 +3,9 @@
 #include "IOCPServer.h"
 #include "Packet.h"
 
+std::mutex m1;
+
+
 bool AcceptIocp::ThreadRun()
 {
 	if (m_pServer == nullptr)return false;
@@ -25,6 +28,7 @@ bool AcceptIocp::ThreadRun()
 		std::shared_ptr<User> user = std::make_shared<User>(clientsock, clientaddr);
  		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
 		user->Recv();
+
 		for (int iSize = 0; iSize < MAX_USER_SIZE; ++iSize)
 		{
 			if (SessionMgr::GetInstance().ConnectUser(user))
@@ -82,14 +86,16 @@ int IOCPServer::SendPacket(User* pUser, Packet* packet)
 
 bool IOCPServer::Broadcasting(Packet* packet)
 {
-
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
 		if (iterSend->IsConnected() == false) continue;
-	
+		m1.lock();
 		int iSendByte = SendPacket(iterSend.get(), packet);
+		m1.unlock();
 		if (iSendByte == SOCKET_ERROR)
 		{
+
+			int err = GetLastError();
 			ERRORMSG(L"BroadCasting");
 			iterSend->SetConnect(false);
 			continue;
@@ -97,6 +103,30 @@ bool IOCPServer::Broadcasting(Packet* packet)
 	}
 	return true;
 }
+
+bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
+{
+
+	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
+	{
+		if (iterSend->IsConnected() == false || iterSend == pUser) continue;
+		m1.lock();
+		int iSendByte = SendPacket(iterSend.get(), packet);
+		m1.unlock();
+		if (iSendByte == SOCKET_ERROR)
+		{
+
+			int err = GetLastError();
+			ERRORMSG(L"BroadCasting");
+			iterSend->SetConnect(false);
+			continue;
+		}
+	}
+
+	return true;
+}
+
+
 
 bool IOCPServer::Init()
 {
@@ -167,7 +197,7 @@ bool IOCPServer::ThreadRun()
 		}
 	}
 	m_BroadcastPacketPool.GetPacketList().clear();
-
+	m1.lock();
 	for (std::list<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
 		iterSend != SessionMgr::GetInstance().GetUserList().end();)
 	{
@@ -184,7 +214,7 @@ bool IOCPServer::ThreadRun()
 		}
 
 	}
-
+	m1.unlock();
 
 	return true;
 }

@@ -1,6 +1,6 @@
 #include "Netstd.h"
 #include "IocpModel.h"
-std::mutex m;
+std::mutex m2;
 DWORD WINAPI WorkerThread(LPVOID param)
 {
 	DWORD dwTransfer;
@@ -21,9 +21,9 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			
 			if (pUser != nullptr)
 			{
-				m.lock();
+				m2.lock();
 				pUser->Dispatch(dwTransfer,overlap);
-				m.unlock();
+				m2.unlock();
 			}
 		}
 		else

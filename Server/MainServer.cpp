@@ -8,17 +8,7 @@ int main()
 	
 	IOCPServer::GetInstance().Init();
 
-	while (1)
-	{
-
-
-		
-
-		if (WaitForSingleObject(IOCPServer::GetInstance().GetKillEvent(), 0) != WAIT_TIMEOUT)
-		{
-			break;
-		}
-	}
+	WaitForSingleObject(IOCPServer::GetInstance().GetKillEvent(), INFINITE);
 
     closesocket(IOCPServer::GetInstance().GetNetWork().GetSocket());
     //2)윈속 해제

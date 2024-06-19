@@ -10,3 +10,4 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 
 
 void CreateMyCharacter(Packet* Pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);
+void CreateOtherCharacter(Packet* Pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);

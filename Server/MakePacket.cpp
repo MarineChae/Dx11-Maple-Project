@@ -57,3 +57,21 @@ void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X,
 
 }
 
+void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP)
+{
+	PACKET_HEADER PacketHeader;
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 13;
+	PacketHeader.PacketType = PACKET_CS_CREATE_OTHER_CHARACTER;
+
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << SessionID;
+	*pack << Direction;
+	*pack << X;
+	*pack << Y;
+	*pack << HP;
+	*pack << (BYTE)NETWORK_PACKET_END;
+
+}
+
