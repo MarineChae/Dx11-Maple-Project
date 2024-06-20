@@ -10,6 +10,24 @@ int SessionMgr::m_iSessionCount = 0;
 
 void User::Close()
 {
+	Packet pack;
+	DisConnectCharacter(&pack, m_dwSessionID);
+	
+	for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
+	{
+		if (otherplayer == nullptr)
+		{
+			continue;
+		}
+		else if (otherplayer->GetSessionID() == m_dwSessionID)
+		{
+			PlayerDataMgr::GetInstance().DeletePlayerData(m_dwSessionID);
+			break;
+		}
+
+	}
+
+	IOCPServer::GetInstance().Broadcasting(&pack);
 	m_bConnected = false;
 	closesocket(m_UserSock);
 

@@ -115,12 +115,8 @@ bool Object::Release()
     return false;
 }
 
-std::shared_ptr<Object> ObejctMgr::GetPlayerObject(DWORD SessionID)
+
+void ObejctMgr::DisconnectCharacter(DWORD SessionID)
 {
-    for (auto& iter : m_lObjectList)
-    {
-        if (iter->GetObejctID() == SessionID)
-            return iter;
-    }
-    return nullptr;
+    m_lObjectList[SessionID].reset();
 }

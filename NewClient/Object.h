@@ -19,7 +19,7 @@ private:
 
 public:
 	DWORD m_dwObjectID;
-
+	bool  m_bRender;
 
 public:
 	DWORD GetObejctID() const  {return m_dwObjectID;}
@@ -33,6 +33,7 @@ public:
 	virtual void SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix);
 	virtual void SetScale(TVector3 scale);
 	virtual void SetMatrix();
+	virtual void SetRenderState(bool state) {m_bRender = state;}
 public:
 
 
@@ -43,11 +44,16 @@ public:
 
 public:
 	Object()
+		:m_WolrdMatrix()
+		, m_ViewMatrix()
+		, m_ProjMatrix()
+		, m_vScale(1, 1, 1)
+		, m_vRotate(0, 0, 0)
+		, m_vTransform(0, 0, 0)
+		, m_dwObjectID(1)
+		, m_bRender(false)
 	{
-		m_dwObjectID = 1;
-		m_vTransform = TVector3(0, 0, 0);
-		m_vScale = TVector3(1, 1, 1);
-		m_vRotate = TVector3(0, 0, 0);
+
 	}
 
 };
@@ -64,7 +70,8 @@ private:
 public:
 	std::vector<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
 	void                    PushObject(std::shared_ptr<Object> obj,DWORD sessionId) { m_lObjectList[sessionId] = obj; };
-	std::shared_ptr<Object> GetPlayerObject(DWORD SessionID);
+	std::shared_ptr<Object> GetOtherObject(DWORD SessionID) { return m_lObjectList[SessionID];};
+	void DisconnectCharacter(DWORD SessionID);
 	std::shared_ptr<Object> GetPlayerObject() { return m_pPlayerObject; };
 	void SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
 

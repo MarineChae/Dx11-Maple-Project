@@ -16,6 +16,8 @@
 #define	PACKET_CS_MOVE_START 10
 #define	PACKET_CS_MOVE_END 11
 
+
+#define	PACKET_CS_DISCONNECT_CHARACTER 255
 //////////////////////////////////////////
 
 

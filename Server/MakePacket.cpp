@@ -75,3 +75,17 @@ void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X
 
 }
 
+void DisConnectCharacter(Packet* pack, DWORD SessionID)
+{
+	PACKET_HEADER PacketHeader;
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 4;
+	PacketHeader.PacketType = PACKET_CS_DISCONNECT_CHARACTER;
+
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << SessionID;
+	*pack << (BYTE)NETWORK_PACKET_END;
+
+}
+

@@ -45,7 +45,7 @@ public:
 	void PushPlayerData(int SessionNum, std::shared_ptr<PlayerData>data) { m_PlayerList[SessionNum] = data; };
 	std::vector<std::shared_ptr<PlayerData>>& GetPlayerList() { return m_PlayerList; };
 	std::shared_ptr<PlayerData>  GetPlayerData(int SessionNum) { return m_PlayerList[SessionNum]; };
-
+	void DeletePlayerData(int SessionNum) { m_PlayerList[SessionNum].reset(); };
 public:
 	PlayerDataMgr()
 	{

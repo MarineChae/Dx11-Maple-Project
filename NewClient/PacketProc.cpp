@@ -17,7 +17,7 @@ BOOL PacketProc_MoveStart(Packet* pack)
     *pack >> shX;
     *pack >> shY;
 
-    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetPlayerObject(dwSessionID);
+    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetPlayerObject();
 
     if (obj == nullptr)
         return FALSE;
@@ -39,7 +39,7 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     *pack >> shX;
     *pack >> shY;
 
-    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetPlayerObject(dwSessionID);
+    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetPlayerObject();
 
     if (obj == nullptr)
         return FALSE;
@@ -70,9 +70,12 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     player->SetScale(TVector3(100.0f, 100.0f, 1.0f));
     player->Create(L"", L"../Shader/Defalutshader.hlsl");
     player->SetTransform(TVector3(shX,shY,1));
-  
+    player->SetRenderState(true);
+
     ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
+   
+
     return 0;
 }
 
@@ -94,12 +97,23 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
 
     std::shared_ptr<Object> other = std::make_shared<PlayerObject>();
 
-   other->SetScale(TVector3(55, 55, 1.0f));
-   other->Create(L"", L"../Shader/Defalutshader.hlsl");
-   other->SetTransform(TVector3(shX, shY, 1));
+    other->SetScale(TVector3(55, 55, 1.0f));
+    other->Create(L"", L"../Shader/Defalutshader.hlsl");
+    other->SetTransform(TVector3(shX, shY, 1));
+    other->SetRenderState(true);
 
     ObejctMgr::GetInstance().PushObject(other, dwSessionID);
 
+
+    return 0;
+}
+
+BOOL PacketProc_DisconnectOtherCharacter(Packet* pack)
+{
+    DWORD dwSessionID;
+    *pack >> dwSessionID;
+
+    ObejctMgr::GetInstance().DisconnectCharacter(dwSessionID);
 
     return 0;
 }

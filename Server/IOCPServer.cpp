@@ -88,6 +88,7 @@ bool IOCPServer::Broadcasting(Packet* packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
+		if (iterSend == nullptr) continue;
 		if (iterSend->IsConnected() == false) continue;
 
 		int iSendByte = SendPacket(iterSend.get(), packet);
@@ -191,6 +192,7 @@ bool IOCPServer::Init()
 
 bool IOCPServer::ThreadRun()
 {
+
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{
 		if (!Broadcasting(data))
@@ -203,7 +205,11 @@ bool IOCPServer::ThreadRun()
 	for (std::vector<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
 		iterSend != SessionMgr::GetInstance().GetUserList().end();)
 	{
-		if (*iterSend == nullptr) continue;
+		if (*iterSend == nullptr)
+		{
+			iterSend++;
+			continue;
+		}
 		std::shared_ptr<User> pUser = *iterSend;
 		if (pUser->IsConnected() == false)
 		{
