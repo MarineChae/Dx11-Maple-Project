@@ -116,11 +116,11 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 	m.lock();
 	if (m_vUserList.size() <= MAX_USER_SIZE)
 	{
-		m_vUserList.push_back(user);
+		m_vUserList[m_iSessionCount] = user;
 		user->SetSessionId(m_iSessionCount++);
 
-		short x = rand() % 102;
-		short y = rand() % 102;
+		short x = rand() % 500;
+		short y = rand() % 500;
 
 		Packet pack;
 		CreateMyCharacter(&pack, user->GetSessionId(),0,x,y,100);
@@ -133,12 +133,16 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),0,0,x,y,100);
- 		PlayerDataMgr::GetInstance().GetPlayerList().push_back(data);
+ 		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(),data);
 
-
+		
  		for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
 		{
-			if (otherplayer->GetSessionID() != user->GetSessionId())
+			if (otherplayer == nullptr)
+			{
+				continue;
+			}
+			else if (otherplayer->GetSessionID() != user->GetSessionId())
 			{
 				Packet playerpack;
 				CreateOtherCharacter(&playerpack,
@@ -148,6 +152,8 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 					otherplayer->GetYPos(),
 					otherplayer->GetHP());
 
+				OutputDebugString(L"other character");
+				Sleep(50);
 				IOCPServer::GetInstance().SendPacket(user.get(), &playerpack);
 			}
 

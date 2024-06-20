@@ -1,7 +1,7 @@
 #include "Object.h"
 #include"Shader.h"
 #include"Device.h"
-
+#include"Protocol.h"
 bool Object::CreateVertexData()
 {
     std::vector<PNCT_VERTEX> v;

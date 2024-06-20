@@ -89,9 +89,9 @@ bool IOCPServer::Broadcasting(Packet* packet)
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
 		if (iterSend->IsConnected() == false) continue;
-		m1.lock();
+
 		int iSendByte = SendPacket(iterSend.get(), packet);
-		m1.unlock();
+
 		if (iSendByte == SOCKET_ERROR)
 		{
 
@@ -109,10 +109,12 @@ bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
+		if (iterSend == nullptr) continue;
+
 		if (iterSend->IsConnected() == false || iterSend == pUser) continue;
-		m1.lock();
+
 		int iSendByte = SendPacket(iterSend.get(), packet);
-		m1.unlock();
+
 		if (iSendByte == SOCKET_ERROR)
 		{
 
@@ -197,11 +199,11 @@ bool IOCPServer::ThreadRun()
 		}
 	}
 	m_BroadcastPacketPool.GetPacketList().clear();
-	m1.lock();
-	for (std::list<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
+
+	for (std::vector<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
 		iterSend != SessionMgr::GetInstance().GetUserList().end();)
 	{
-
+		if (*iterSend == nullptr) continue;
 		std::shared_ptr<User> pUser = *iterSend;
 		if (pUser->IsConnected() == false)
 		{
@@ -214,7 +216,7 @@ bool IOCPServer::ThreadRun()
 		}
 
 	}
-	m1.unlock();
+
 
 	return true;
 }

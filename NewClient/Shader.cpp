@@ -78,7 +78,7 @@ bool Shader::Release()
 
 const Shader* ShaderMgr::Load(std::wstring FileName)
 {
-    MessageBox(MyWindow::GetHWND(), L"Load", L"Load", MB_OK);
+    //MessageBox(MyWindow::GetHWND(), L"Load", L"Load", MB_OK);
     std::size_t found = FileName.find_last_of(L"/");
     std::wstring path = FileName.substr(0, found + 1);
     std::wstring Key = FileName.substr(found + 1);

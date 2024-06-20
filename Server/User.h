@@ -68,10 +68,10 @@ class SessionMgr :public Singleton<SessionMgr>
 public:
 	static int m_iSessionCount;
 private:
-	std::list<std::shared_ptr<User>> m_vUserList;
+	std::vector<std::shared_ptr<User>> m_vUserList;
 
 public:
-	std::list<std::shared_ptr<User>>& GetUserList() { return m_vUserList; }
+	std::vector<std::shared_ptr<User>>& GetUserList() { return m_vUserList; }
 	//std::shared_ptr<User>  GetUser(DWORD SessionID) { return m_vUserList[SessionID]; }
 
 	bool  ConnectUser(std::shared_ptr<User> user);
@@ -80,7 +80,7 @@ public:
 	SessionMgr()
 		:m_vUserList()
 	{
-		
+		m_vUserList.resize(MAX_USER_SIZE);
 	}
 	~SessionMgr()
 	{

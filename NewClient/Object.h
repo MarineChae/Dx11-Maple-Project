@@ -1,6 +1,8 @@
 #pragma once
 #include"DxRenderer.h"
 
+#define MAX_USER_SIZE 63
+
 class Object : public DxRenderer
 {
 
@@ -57,14 +59,20 @@ class ObejctMgr : public Singleton<ObejctMgr>
 	friend class Singleton<ObejctMgr>;
 
 private:
-	std::list<std::shared_ptr<Object>> m_lObjectList;
+	std::vector<std::shared_ptr<Object>> m_lObjectList;
 	std::shared_ptr<Object>			   m_pPlayerObject;
 public:
-	std::list<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
-	void                               PushObject(std::shared_ptr<Object> obj) { m_lObjectList.push_back(obj); };
-	std::shared_ptr<Object>			   GetPlayerObject(DWORD SessionID);
-	std::shared_ptr<Object>			   GetPlayerObject() { return m_pPlayerObject; };
+	std::vector<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
+	void                    PushObject(std::shared_ptr<Object> obj,DWORD sessionId) { m_lObjectList[sessionId] = obj; };
+	std::shared_ptr<Object> GetPlayerObject(DWORD SessionID);
+	std::shared_ptr<Object> GetPlayerObject() { return m_pPlayerObject; };
 	void SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
 
-
+public:
+	ObejctMgr()
+		:m_lObjectList()
+		, m_pPlayerObject()
+	{
+		m_lObjectList.resize(MAX_USER_SIZE);
+	}
 };

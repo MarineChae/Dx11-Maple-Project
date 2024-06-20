@@ -71,7 +71,7 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     player->Create(L"", L"../Shader/Defalutshader.hlsl");
     player->SetTransform(TVector3(shX,shY,1));
   
-    ObejctMgr::GetInstance().PushObject(player);
+    ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
     return 0;
 }
@@ -98,7 +98,7 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
    other->Create(L"", L"../Shader/Defalutshader.hlsl");
    other->SetTransform(TVector3(shX, shY, 1));
 
-    ObejctMgr::GetInstance().PushObject(other);
+    ObejctMgr::GetInstance().PushObject(other, dwSessionID);
 
 
     return 0;

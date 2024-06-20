@@ -23,6 +23,7 @@ bool ClientMain::Frame()
 {
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
+		if(obj != nullptr)
 		obj->Frame();
 	}
 	//test->Frame();
@@ -34,8 +35,11 @@ bool ClientMain::Render()
 {
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
-		obj->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
-		obj->Render();
+		if (obj != nullptr)
+		{
+			obj->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
+			obj->Render();
+		}
 	}
 
   	return true;

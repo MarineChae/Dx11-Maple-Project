@@ -42,13 +42,14 @@ private:
 
 
 public:
+	void PushPlayerData(int SessionNum, std::shared_ptr<PlayerData>data) { m_PlayerList[SessionNum] = data; };
 	std::vector<std::shared_ptr<PlayerData>>& GetPlayerList() { return m_PlayerList; };
 	std::shared_ptr<PlayerData>  GetPlayerData(int SessionNum) { return m_PlayerList[SessionNum]; };
 
 public:
 	PlayerDataMgr()
 	{
-		m_PlayerList.reserve(MAX_USER_SIZE);
+		m_PlayerList.resize(MAX_USER_SIZE);
 	}
 	~PlayerDataMgr()
 	{
