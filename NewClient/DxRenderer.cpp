@@ -1,6 +1,7 @@
 #include "DxRenderer.h"
 #include "Device.h"
 #include "Shader.h"
+#include "Texture.h"
 bool DxRenderer::CreateVertexBuffer()
 {
     D3D11_BUFFER_DESC Desc;
@@ -83,7 +84,10 @@ bool DxRenderer::PreRender()
     Device::GetContext()->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
 
     Device::GetContext()->IASetInputLayout(m_pInputLayout.Get());      //
-
+    if (m_pTexture)
+    {
+        m_pTexture->Apply(Device::GetContext(), 0);
+    }
     if (m_pShader)
     {
         m_pShader->Apply(Device::GetContext(), 0);

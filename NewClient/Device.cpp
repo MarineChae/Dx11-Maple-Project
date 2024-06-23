@@ -75,7 +75,7 @@ bool Device::CreateSwapChain()
     m_SwapChainDesc.BufferDesc.Height = GetWindowStyle().m_dwWindowHeight;
     m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;//주사율 60/1 형식 
     m_SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-    m_SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//컬러 출력형식 
+    m_SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//컬러 출력형식 
     m_SwapChainDesc.SampleDesc.Count = 1; //안티엘리어싱 카운트와 퀄리티가 높을수록 그래픽은 좋아지지만 메모리를 많이 사용
     m_SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;//버퍼의 사용용도
     m_SwapChainDesc.BufferCount = 1;
@@ -126,6 +126,29 @@ bool Device::SetViewPort()
     return true;
 }
 
+bool Device::CreateBlendState()
+{
+
+   D3D11_BLEND_DESC BlendStateDesc;
+   ZeroMemory(&BlendStateDesc, sizeof(BlendStateDesc));
+   BlendStateDesc.RenderTarget[0].BlendEnable = true;
+   
+   BlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+   BlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+   BlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+   
+   BlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+   BlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+   BlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+   
+   BlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+   m_pDevice->CreateBlendState(&BlendStateDesc, m_pBlendState.GetAddressOf());
+   
+   
+   return true;
+   
+}
+
 bool Device::Init()
 {
     CreateDevice();
@@ -134,6 +157,8 @@ bool Device::Init()
     SetRenderTarGetView();
     SetViewPort();
     CreateDepthStencilView();
+    CreateBlendState();
+
     return true;
 }
 

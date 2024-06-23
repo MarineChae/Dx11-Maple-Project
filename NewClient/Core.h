@@ -8,7 +8,6 @@ class Core :public Device
 private:
 	Camera	   m_MainCamera;
 
-
 public:
 	Camera& GetCamera() { return m_MainCamera; }
 

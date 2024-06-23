@@ -16,11 +16,12 @@ private:
 	D3D11_VIEWPORT					   m_ViewPort;
 	static ComPtr<ID3D11Device>		   m_pDevice;
 	static ComPtr<ID3D11DeviceContext> m_pImmediateContext;
+	ComPtr<ID3D11BlendState> m_pBlendState;
 
 public:
 	static ID3D11Device* GetDevice() { return m_pDevice.Get(); };
 	static ID3D11DeviceContext* GetContext() { return m_pImmediateContext.Get(); };
-
+	ComPtr<ID3D11BlendState> GetBlendState() { return m_pBlendState; }
 public:
 	bool CreateDevice();
 	bool CreateDepthStencilView();
@@ -28,7 +29,7 @@ public:
 	bool CreateSwapChain();
 	bool SetRenderTarGetView();
 	bool SetViewPort();
-
+	bool CreateBlendState();
 public:
 	virtual bool Init();
 	virtual bool Frame();

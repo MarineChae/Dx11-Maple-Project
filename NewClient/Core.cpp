@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Timer.h"
 #include "ClientNet.h"
+
 bool Core::Init()
 {
     return true;
@@ -60,6 +61,7 @@ bool Core::EngineFrame()
 bool Core::EngineRender()
 {
     Device::PreRender();
+    GetContext()->OMSetBlendState(GetBlendState().Get(), 0, -1);
     m_MainCamera.Render();
     Input::GetInstance().Render();
     Timer::GetInstance().Render();

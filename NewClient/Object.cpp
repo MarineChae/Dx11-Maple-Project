@@ -2,6 +2,7 @@
 #include"Shader.h"
 #include"Device.h"
 #include"Protocol.h"
+#include"Texture.h"
 bool Object::CreateVertexData()
 {
     std::vector<PNCT_VERTEX> v;
@@ -42,11 +43,11 @@ bool Object::Create(std::wstring FileName, std::wstring ShaderFileName)
     CreateVertexBuffer();
     CreateIndexBuffer();
     SetShader(ShaderMgr::GetInstance().Load(ShaderFileName));
+    SetTexture(TextureMgr::GetInstance().Load(FileName));
 
     CreateInputLayout();
 
-    //m_pTexture = CTextureMgr::GetInstance().Load(FileName);
-
+ 
     return true;
 }
 

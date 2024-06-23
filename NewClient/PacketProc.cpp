@@ -72,8 +72,16 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
 
     std::shared_ptr<Object> player = std::make_shared<PlayerObject>();
     
-    player->SetScale(TVector3(100.0f, 100.0f, 1.0f));
-    player->Create(L"", L"../Shader/Defalutshader.hlsl");
+    SpriteData data;
+    data.iCol = 3;
+    data.iRow = 1;
+    data.iMaxImageCount = 3;
+    data.m_fDelay = 0.5f;
+    data.m_vScale = { 46,68,1 };
+
+   
+    player->SetSpriteData(data);
+    player->Create(L"../resource/PStand.png", L"../Shader/Defalutshader.hlsl");
     player->SetTransform(TVector3(shX,shY,1));
     player->SetDestination(TVector3(shX, shY, 1));
     player->SetRenderState(true);
@@ -106,8 +114,17 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
 
     std::shared_ptr<Object> other = std::make_shared<PlayerObject>();
 
-    other->SetScale(TVector3(55, 55, 1.0f));
-    other->Create(L"", L"../Shader/Defalutshader.hlsl");
+
+    SpriteData data;
+    data.iCol = 3;
+    data.iRow = 1;
+    data.iMaxImageCount = 3;
+    data.m_fDelay = 0.5f;
+    data.m_vScale = { 46,68,1 };
+
+
+    other->SetSpriteData(data);
+    other->Create(L"../resource/PStand.png", L"../Shader/Defalutshader.hlsl");
     other->SetTransform(TVector3(shX, shY, 1));
     other->SetDestination(TVector3(shX, shY, 1));
     other->SetRenderState(true);

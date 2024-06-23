@@ -15,7 +15,8 @@ private:
 private:
 	TVector3 m_vScale;
 	TVector3 m_vRotate;
-
+	TVector3 m_vTransform;
+	TVector3 m_vDestination;
 private:
 	DWORD m_dwObjectID;
 	bool  m_bRender;
@@ -23,11 +24,10 @@ private:
 public:
 	DWORD GetObejctID() const  {return m_dwObjectID;}
 	void SetObejctID(DWORD id) { m_dwObjectID = id; }
-	TVector3 GetTransform() const { return m_vTransform; };
 	void SetTransform(TVector3 transform) { m_vTransform = transform; };
 	void SetDestination(TVector3 Destination) { m_vDestination = Destination; };
-	TVector3 m_vTransform;
-	TVector3 m_vDestination;
+	TVector3 GetTransform() const { return m_vTransform; };
+	TVector3 GetDestination() const { return m_vDestination; };
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();
@@ -74,9 +74,9 @@ public:
 	std::vector<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
 	void                    PushObject(std::shared_ptr<Object> obj,DWORD sessionId) { m_lObjectList[sessionId] = obj; };
 	std::shared_ptr<Object> GetOtherObject(DWORD SessionID) { return m_lObjectList[SessionID];};
-	void DisconnectCharacter(DWORD SessionID);
+	void					DisconnectCharacter(DWORD SessionID);
 	std::shared_ptr<Object> GetPlayerObject() { return m_pPlayerObject; };
-	void SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
+	void					SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
 
 public:
 	ObejctMgr()

@@ -84,6 +84,12 @@
     <ClCompile Include="PacketProc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Core\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TMath.h">
@@ -146,9 +152,15 @@
     <ClInclude Include="PacketProc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Core\header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Defalutshader.hlsl">
+    <FxCompile Include="..\Shader\Defalutshader.hlsl">
       <Filter>Core\header\리소스 파일</Filter>
     </FxCompile>
   </ItemGroup>

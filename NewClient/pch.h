@@ -81,6 +81,11 @@ struct PNCT_VERTEX
 
 };
 
+struct UVRect
+{
+    TVector2 m_vMin;
+    TVector2 m_vMax;
+};
 struct MyOV 
 {
     enum { MODE_RECV = 0, MODE_SEND = 1, };

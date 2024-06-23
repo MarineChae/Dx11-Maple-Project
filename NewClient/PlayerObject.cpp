@@ -5,7 +5,7 @@
 #include "MakePacket.h"
 bool PlayerObject::Init()
 {
-    Object::Init();
+    SpriteObject::Init();
 
 
     return true;
@@ -13,7 +13,7 @@ bool PlayerObject::Init()
 
 bool PlayerObject::Frame()
 {
-    Object::Frame();
+    SpriteObject::Frame();
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
     {
         InputKey();
@@ -21,12 +21,10 @@ bool PlayerObject::Frame()
 
     }
 
-    if (m_vDestination != m_vTransform && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+    if (GetDestination() != GetTransform() && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
     {
-        
-        m_vTransform = m_vTransform.Lerp(m_vTransform, m_vDestination, Timer::GetInstance().GetSecPerFrame());
-        m_vTransform = m_vTransform.SmoothStep(m_vTransform, m_vDestination, 0.05f);
-
+        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
+        SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
     }
   
 
@@ -35,14 +33,14 @@ bool PlayerObject::Frame()
 
 bool PlayerObject::Render()
 {
-    Object::Render();
+    SpriteObject::Render();
 
     return true;
 }
 
 bool PlayerObject::Release()
 {
-    Object::Release();
+    SpriteObject::Release();
 
     return true;
 }
@@ -149,7 +147,7 @@ void PlayerObject::InputAction()
 
 
 PlayerObject::PlayerObject()
-    : Object()
+    : SpriteObject()
     , m_dwCurrentAction(ACTION_STAND)
     , m_dwBeforeAction(ACTION_STAND)
     , m_iHP(0)

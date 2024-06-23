@@ -1,6 +1,7 @@
 #pragma once
-#include"Object.h"
-class PlayerObject :public Object
+#include"SpriteObject.h"
+
+class PlayerObject :public SpriteObject
 {
 
 private:
