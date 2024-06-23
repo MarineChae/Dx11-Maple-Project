@@ -1,6 +1,6 @@
 #include "Netstd.h"
 #include "NetBase.h"
-
+#include "User.h"
 //추후 이용시 구현
 int NetBase::SendPacket(User* user, UPACKET& packet)
 {

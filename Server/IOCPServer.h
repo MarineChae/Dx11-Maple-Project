@@ -38,6 +38,7 @@ private:
 	typedef std::function<void(UserPacket& t)> CallFunction;
 	typedef std::map<int, CallFunction>::iterator FunctionIterator;
 	std::map<int, CallFunction> m_fnExecutePacket;
+	HANDLE       m_BroadCastEvent;
 public:
 	Network&	 GetNetWork()	{ return m_NetworkBase; };
 	IocpModel&   GetIocpModel() { return m_iocpModel; };
@@ -45,11 +46,11 @@ public:
 
 public:
 
-	virtual void AddPacket(Packet& packet);
+	void AddPacket(std::shared_ptr<Packet> packet);
 	virtual void ChatMsg(Packet& packet);
-	virtual int  SendPacket(User* pUser, Packet* packet);
-	bool		 Broadcasting(Packet* packet);
-	bool		 Broadcasting(Packet* packet, std::shared_ptr<User> pUser);
+	virtual int  SendPacket(User* pUser, std::shared_ptr<Packet> packet);
+	bool		 Broadcasting(std::shared_ptr<Packet> packet);
+	bool		 Broadcasting(std::shared_ptr<Packet> packet, std::shared_ptr<User> pUser);
 
 public:
 	bool		 Init();

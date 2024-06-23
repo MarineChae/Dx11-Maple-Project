@@ -17,6 +17,7 @@ public:
 	int GetFPS();
 	double GetSecPerFrame() const { return m_dSecondPerFrame; };
 	double GetFramePerSecond() const { return m_dFramePerSecond; };
+
 public:
 	bool Init();
 	bool Frame();

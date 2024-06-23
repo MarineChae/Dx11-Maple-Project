@@ -23,11 +23,12 @@ private:
 	POINT m_MousePos;
 	POINT m_BeforeMousePos;
 	DWORD m_dwKeyState[256] = { 0, };
-
+	bool  m_bActiveInput = false;
 
 public:
-	DWORD GetKeyState(int value) const { return  value < 256 ?  m_dwKeyState[value] : 0 ; };
-	
+	DWORD GetKeyState(int value) const { return  value < 256 ? m_dwKeyState[value] : 0; };
+	bool  IsActive() const { return m_bActiveInput; };
+	void  SetActive(bool active) { m_bActiveInput = active; };
 public:
 	bool Init();
 	bool Frame();

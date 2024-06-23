@@ -1,36 +1,36 @@
 #pragma once
 #include"Singleton.h"
-#include"Protocol.h"
-#include<vector>
-#include"memory"
+
 class PlayerData
 {
 private:
-	BOOL	bFlag;
-	DWORD	dwSessionID;
+	BOOL	m_bFlag;
+	DWORD	m_dwSessionID;
+			
+	DWORD	m_dwAction;
+	BYTE	m_byDirection;
 
-	DWORD	dwAction;
-	BYTE	byDirection;
-
-	short	shX;
-	short	shY;
-
-	int 	iHP;
+	short	m_shX;
+	short	m_shY;
+			
+	int 	m_iHP;
 
 public:
 
 	void Init(BOOL	Flag, DWORD SessionID, DWORD Action, BYTE Direction, short X, short Y, int HP);
 
-	DWORD GetSessionID() const { return dwSessionID; };
-	DWORD GetAction() const { return dwAction; };
-	BYTE  GetDirection()const { return byDirection; };
+	DWORD GetSessionID() const { return m_dwSessionID; };
+	DWORD GetAction() const { return m_dwAction; };
+	BYTE  GetDirection()const { return m_byDirection; };
 
 
-	short GetXPos() const { return shX; };
-	short GetYPos() const { return shY; };
-	int   GetHP() const { return iHP; };
+	short GetXPos() const { return m_shX; };
+	short GetYPos() const { return m_shY; };
+	int   GetHP() const { return m_iHP; };
 
-
+	void SetXPos(short shX) { m_shX = shX; };
+	void SetYPos(short shY) { m_shY = shY; };
+	void SetHP(int HP) { m_iHP = HP; };
 };
 
 class PlayerDataMgr : public Singleton< PlayerDataMgr>

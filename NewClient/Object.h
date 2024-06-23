@@ -15,16 +15,19 @@ private:
 private:
 	TVector3 m_vScale;
 	TVector3 m_vRotate;
-	TVector3 m_vTransform;
 
-public:
+private:
 	DWORD m_dwObjectID;
 	bool  m_bRender;
 
 public:
 	DWORD GetObejctID() const  {return m_dwObjectID;}
+	void SetObejctID(DWORD id) { m_dwObjectID = id; }
 	TVector3 GetTransform() const { return m_vTransform; };
 	void SetTransform(TVector3 transform) { m_vTransform = transform; };
+	void SetDestination(TVector3 Destination) { m_vDestination = Destination; };
+	TVector3 m_vTransform;
+	TVector3 m_vDestination;
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

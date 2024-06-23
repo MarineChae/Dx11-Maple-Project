@@ -1,11 +1,10 @@
 #pragma once
 #include "ObjectPool.h"
-#include"PacketPool.h"
-#include "StreamPacket.h"
 #include"Singleton.h"
 
 
-
+class Packet;
+class StreamPacket;
 struct UserPacket;
 struct MyOV : public ObjectPool<MyOV>
 {
@@ -30,32 +29,32 @@ class User
 {
 
 private:
-	DWORD				  m_dwSessionID;
-	bool				  m_bConnected;
-	SOCKET				  m_UserSock;
-	SOCKADDR_IN			  m_UserAddr;
-	char				  m_buffer[2048];
-	WSABUF				  m_wsaRecvBuffer;
-	WSABUF				  m_wsaSendBuffer;
-	StreamPacket		  m_StreamPacket;
+	DWORD							m_dwSessionID;
+	bool							m_bConnected;
+	SOCKET							m_UserSock;
+	SOCKADDR_IN						m_UserAddr;
+	char							m_buffer[2048];
+	WSABUF							m_wsaRecvBuffer;
+	WSABUF							m_wsaSendBuffer;
+	std::shared_ptr<StreamPacket>   m_pStreamPacket;
 
 public:
-	DWORD			  GetSessionId()const { return m_dwSessionID; };
-	void			  SetSessionId(DWORD iD) { m_dwSessionID = iD; };
-	bool			  IsConnected() const { return m_bConnected; };
-	void			  SetConnect(bool connect) { m_bConnected = connect; };
-	SOCKET			  GetUserSock() const { return m_UserSock; };
-	SOCKADDR_IN		  GetUserAddr() const { return m_UserAddr; };
-	WSABUF&			  GetSendBuffer() { return m_wsaSendBuffer; };
-	WSABUF&			  GetRecvBuffer() { return m_wsaRecvBuffer; };
-	StreamPacket	  GetStreamPacket()const  { return m_StreamPacket; }
+	DWORD						  GetSessionId()const { return m_dwSessionID; };
+	void						  SetSessionId(DWORD iD) { m_dwSessionID = iD; };
+	bool						  IsConnected() const { return m_bConnected; };
+	void						  SetConnect(bool connect) { m_bConnected = connect; };
+	SOCKET						  GetUserSock() const { return m_UserSock; };
+	SOCKADDR_IN					  GetUserAddr() const { return m_UserAddr; };
+	WSABUF&						  GetSendBuffer() { return m_wsaSendBuffer; };
+	WSABUF&						  GetRecvBuffer() { return m_wsaRecvBuffer; };
+	std::shared_ptr<StreamPacket> GetStreamPacket()const  { return m_pStreamPacket; }
 public:
 	void Close();
 	void bind(HANDLE iocp);
 	void Recv();
 	void Dispatch(DWORD dwTransfer, OVERLAPPED* ov);
-
-
+	void ParsePacket(Packet& pack);
+	BOOL PacketProc(DWORD SessionId, BYTE PacketType, Packet* pack);
 public:
 	User();
 	User(SOCKET sock, SOCKADDR_IN Addr);

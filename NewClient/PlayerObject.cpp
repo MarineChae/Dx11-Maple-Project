@@ -14,8 +14,21 @@ bool PlayerObject::Init()
 bool PlayerObject::Frame()
 {
     Object::Frame();
-    InputKey();
-    InputAction();
+    if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
+    {
+        InputKey();
+        InputAction();
+
+    }
+
+    if (m_vDestination != m_vTransform && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+    {
+        
+        m_vTransform = m_vTransform.Lerp(m_vTransform, m_vDestination, Timer::GetInstance().GetSecPerFrame());
+        m_vTransform = m_vTransform.SmoothStep(m_vTransform, m_vDestination, 0.05f);
+
+    }
+  
 
     return true;
 }
@@ -71,7 +84,7 @@ void PlayerObject::InputAction()
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x -= 1000.0f * Timer::GetInstance().GetSecPerFrame();
+        pos.x -= 1000 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
       
@@ -79,21 +92,21 @@ void PlayerObject::InputAction()
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x += 1000.0f * Timer::GetInstance().GetSecPerFrame();
+        pos.x += 1000 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_MOVEUP == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y += 1000.0f * Timer::GetInstance().GetSecPerFrame();
+        pos.y += 1000 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_MOVEDOWN == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y -= 1000.0f * Timer::GetInstance().GetSecPerFrame();
+        pos.y -= 1000 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
@@ -103,36 +116,32 @@ void PlayerObject::InputAction()
         m_dwCurrentAction = m_dwActionInput;
     }
 
-
-
-
-   // if (m_dwBeforeAction == m_dwCurrentAction)
-   //     return;
-
     Packet SendPacket;
 
     switch (m_dwCurrentAction)
     {
     case ACTION_STAND:
-        MoveStopPacket(&SendPacket, (BYTE)1,1, (short)GetTransform().x, (short)GetTransform().y);
+        MoveStopPacket(&SendPacket, (BYTE)99, GetObejctID(), (short)GetTransform().x, (short)GetTransform().y);
+        OutputDebugString(L"stop\n");
         break;
 
 
     case ACTION_MOVELEFT:
-    case ACTION_MOVERIGHT:
+    case ACTION_MOVERIGHT: 
     case ACTION_MOVEUP:
     case ACTION_MOVEDOWN:
-        MoveStartPacket(&SendPacket, (BYTE)1, 1,(short)GetTransform().x, (short)GetTransform().y);
+        MoveStartPacket(&SendPacket, (BYTE)99, GetObejctID(),(short)GetTransform().x, (short)GetTransform().y);
+        OutputDebugString(L"start\n");
         break;
     }
 
     static double sendtime = 0;
     sendtime += Timer::GetInstance().GetSecPerFrame();
-    
-    if (sendtime >= 0.2)
+ 
+    if (sendtime >= 0.0625)
     {
         NetSendPacket(&SendPacket);
-        sendtime -= 0.2;
+        sendtime -= 0.0625;
     }
 
     

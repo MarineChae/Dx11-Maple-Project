@@ -1,5 +1,6 @@
 #include "Netstd.h"
 #include "IocpModel.h"
+#include"Timer.h"
 std::mutex m2;
 DWORD WINAPI WorkerThread(LPVOID param)
 {
@@ -7,7 +8,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
 	ULONG_PTR KeyValue;
 	OVERLAPPED* overlap;
 	IocpModel* iocp = (IocpModel*)param;
-
+	
 	while (1)
 	{
 		if (WaitForSingleObject(iocp->GetKillEvent(), 0) == WAIT_OBJECT_0)
@@ -21,9 +22,9 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			
 			if (pUser != nullptr)
 			{
-				m2.lock();
+				//m2.lock();
 				pUser->Dispatch(dwTransfer,overlap);
-				m2.unlock();
+				//m2.unlock();
 			}
 		}
 		else
@@ -41,11 +42,13 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			}
 			if (Errmsg == ERROR_NETNAME_DELETED)
 			{
+				pUser->Close();
 				ERRORMSG(L"ClientHardClosd");
 				continue;
 			}
 			ERRORMSG(L"ERROR ETC...");
 			SetEvent(iocp->GetKillEvent());
+			
 			break;
 		}
 	}

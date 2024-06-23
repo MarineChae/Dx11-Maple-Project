@@ -1,12 +1,14 @@
 #include "Netstd.h"
 #include "IOCPServer.h"
-
+#include"Timer.h"
 
 
 int main()
 {
 	
 	IOCPServer::GetInstance().Init();
+	Timer::GetInstance().Init();
+
 
 	WaitForSingleObject(IOCPServer::GetInstance().GetKillEvent(), INFINITE);
 

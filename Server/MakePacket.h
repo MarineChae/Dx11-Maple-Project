@@ -4,11 +4,11 @@
 
 
 
-void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y);
+void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y);
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y);
+void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y);
 
 
-void CreateMyCharacter(Packet* Pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);
-void CreateOtherCharacter(Packet* Pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);
-void DisConnectCharacter(Packet* Pack, DWORD SessionID);
+void CreateMyCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);
+void CreateOtherCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP);
+void DisConnectCharacter(std::shared_ptr<Packet> pack, DWORD SessionID);

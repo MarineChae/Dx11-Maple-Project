@@ -36,3 +36,4 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
+

@@ -1,7 +1,7 @@
 #pragma once
 #include "Netstd.h"
-#include "User.h"
 
+class User;
 class NetBase
 {
 private:

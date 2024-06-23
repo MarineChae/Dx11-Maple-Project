@@ -1,6 +1,6 @@
 #pragma once
 #include"Netstd.h"
-#include "User.h"
+
 
 class User;
 class Packet;
@@ -10,13 +10,13 @@ class PacketPool
 {
 private:
 	std::shared_mutex m_pShardMutex;
-	list<Packet*> m_lPackList;
+	list<std::shared_ptr<Packet>> m_lPackList;
 
 public:
-	list<Packet*>& GetPacketList() { return m_lPackList; };
-	void AddPacket(Packet* packet) { m_lPackList.push_back(packet); };
+	list<std::shared_ptr<Packet>>& GetPacketList() { return m_lPackList; };
+	
 public:
-	void Add(Packet& packet);
-	void Process(Packet& packet);
+	void Add(std::shared_ptr<Packet> packet);
+	void Process(std::shared_ptr<Packet> packet);
 };
 

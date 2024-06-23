@@ -1,7 +1,8 @@
+#include"Netstd.h"
 #include "MakePacket.h"
 #include "PlayerData.h"
 
-void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y)
+void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y)
 {
 	PACKET_HEADER PacketHeader;
 
@@ -20,7 +21,7 @@ void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, sho
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y)
+void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -38,7 +39,7 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 
 }
 
-void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X, short Y, int HP)
+void CreateMyCharacter(std::shared_ptr<Packet> pack, DWORD dwSessionID, BYTE Direction, short X, short Y, int HP)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -57,7 +58,7 @@ void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X,
 
 }
 
-void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP)
+void CreateOtherCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -75,7 +76,7 @@ void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X
 
 }
 
-void DisConnectCharacter(Packet* pack, DWORD SessionID)
+void DisConnectCharacter(std::shared_ptr<Packet> pack, DWORD SessionID)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;

@@ -1,5 +1,6 @@
 #include "MyWindow.h"
 #include "ClientNet.h"
+#include"Input.h"
 WindowStyle MyWindow::m_WindowStyle;
 HWND MyWindow::m_hWnd;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -15,6 +16,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     }
+    case WM_ACTIVATEAPP:
+        Input::GetInstance().SetActive((bool)wParam);
+        break;
     case WM_COMMAND:
     {
     

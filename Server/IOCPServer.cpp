@@ -1,10 +1,9 @@
 #include "Netstd.h"
-
 #include "IOCPServer.h"
 #include "Packet.h"
-
+#include "Timer.h"
 std::mutex m1;
-
+std::mutex broadMutex;
 
 bool AcceptIocp::ThreadRun()
 {
@@ -46,19 +45,23 @@ bool AcceptIocp::ThreadRun()
 	return true;
 }
 
-void IOCPServer::AddPacket(Packet& packet)
+
+
+void IOCPServer::AddPacket(std::shared_ptr<Packet> packet)
 {
+	
 	m_BroadcastPacketPool.Add(packet);
 
 }
 
 void IOCPServer::ChatMsg(Packet& packet)
 {
-	m_BroadcastPacketPool.Add(packet);
+	
 }
 
-int IOCPServer::SendPacket(User* pUser, Packet* packet)
+int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 {
+
 	char* SendBuffer = packet->GetBufferPointer();
 	pUser->GetSendBuffer().buf = SendBuffer;
 	pUser->GetSendBuffer().len = packet->GetDataSize();
@@ -76,6 +79,7 @@ int IOCPServer::SendPacket(User* pUser, Packet* packet)
 		int err = WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
+	
 			return -1;
 		}
 	}
@@ -84,14 +88,14 @@ int IOCPServer::SendPacket(User* pUser, Packet* packet)
 	return packet->GetDataSize();
 }
 
-bool IOCPServer::Broadcasting(Packet* packet)
+bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
 		if (iterSend == nullptr) continue;
 		if (iterSend->IsConnected() == false) continue;
 
-		int iSendByte = SendPacket(iterSend.get(), packet);
+ 		int iSendByte = SendPacket(iterSend.get(), packet);
 
 		if (iSendByte == SOCKET_ERROR)
 		{
@@ -105,7 +109,7 @@ bool IOCPServer::Broadcasting(Packet* packet)
 	return true;
 }
 
-bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet, std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
@@ -182,7 +186,7 @@ bool IOCPServer::Init()
 
 	m_iocpModel.Init();
 	m_AcceptIocp.SetServer(this);
-
+	m_BroadCastEvent = CreateEvent(0, TRUE, FALSE, 0);
 	MyThread::Create();
 
 
@@ -193,12 +197,14 @@ bool IOCPServer::Init()
 bool IOCPServer::ThreadRun()
 {
 
+
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{
 		if (!Broadcasting(data))
 		{
-
+			
 		}
+		OutputDebugString(L"send\n");
 	}
 	m_BroadcastPacketPool.GetPacketList().clear();
 
