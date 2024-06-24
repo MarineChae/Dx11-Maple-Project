@@ -1,20 +1,27 @@
 #include "SpriteObject.h"
 #include "Timer.h"
 #include "Device.h"
+#include"Texture.h"
 bool SpriteObject::Create(std::wstring FileName, std::wstring ShaderFileName)
 {
     Object::Create(FileName,ShaderFileName);
-    SetScale(SpriteInfo.m_vScale);
-    SetUVData(SpriteInfo.iRow, SpriteInfo.iCol);
+    SetScale(m_pSpriteInfo->m_vScale);
+    SetUVData(m_pSpriteInfo->m_UVList, m_pSpriteInfo->iRow, m_pSpriteInfo->iCol);
+    m_pSpriteInfo->m_pTexture = TextureMgr::GetInstance().Load(FileName);
+    m_vSpriteList.push_back(m_pSpriteInfo);
     return false;
 }
 
-void SpriteObject::SetSpriteData(SpriteData data)
+void SpriteObject::SetPlayerSprite()
 {
-    SpriteInfo = data;
+
+
+
+
+
 }
 
-bool SpriteObject::SetUVData(int iRow, int iCol)
+bool SpriteObject::SetUVData(std::vector<UVRect>& rectlist, int iRow, int iCol)
 {
 
     UVRect rect;
@@ -33,7 +40,7 @@ bool SpriteObject::SetUVData(int iRow, int iCol)
             rect.m_vMin = uv;
             rect.m_vMax.x = uv.x + fOffsetX;
             rect.m_vMax.y = uv.y + fOffsetY;
-            m_UVList.push_back(rect);
+            rectlist.push_back(rect);
         }
     }
 
@@ -41,6 +48,8 @@ bool SpriteObject::SetUVData(int iRow, int iCol)
 
     return true;
 }
+
+
 
 bool SpriteObject::Init()
 {
@@ -54,15 +63,15 @@ bool SpriteObject::Frame()
 
     m_AccumulatedTime += Timer::GetInstance().GetSecPerFrame();
 
-    if (m_AccumulatedTime >= SpriteInfo.m_fDelay)
+    if (m_AccumulatedTime >= m_pSpriteInfo->m_fDelay)
     {
         m_iTexIndex++;
-        if (m_iTexIndex >= m_UVList.size())
+        if (m_iTexIndex >= m_pSpriteInfo->m_UVList.size())
         {
 
             m_iTexIndex = 0;
         }
-        m_AccumulatedTime -= SpriteInfo.m_fDelay;
+        m_AccumulatedTime -= m_pSpriteInfo->m_fDelay;
     }
 
 
@@ -75,8 +84,8 @@ bool SpriteObject::Render()
 {
     Object::PreRender();
 
-    UVRect uv = m_UVList[m_iTexIndex];
-    if (1)
+    UVRect uv = m_pSpriteInfo->m_UVList[m_iTexIndex];
+    if (m_byDirection)
     {
         GetVertex(0).Tex.x = uv.m_vMax.x;
         GetVertex(0).Tex.y = uv.m_vMin.y;
@@ -98,7 +107,7 @@ bool SpriteObject::Render()
         GetVertex(4).Tex = GetVertex(1).Tex;
         GetVertex(5).Tex = uv.m_vMax;
     }
-    //CoreInterface::g_pImmediateContext->UpdateSubresource(m_pVertexBuffer.Get(), 0, nullptr, &m_vVertexList.at(0), 0, 0);
+   
     Device::GetContext()->UpdateSubresource(GetVertexBuffer().Get(), 0, nullptr, &GetVertexList().at(0), 0, 0);
 
     Object::PostRender();
@@ -109,4 +118,20 @@ bool SpriteObject::Release()
 {
     Object::Release();
     return true;
+}
+
+SpriteObject::SpriteObject()
+    :Object()
+    , m_iTexIndex(0)
+    , m_AccumulatedTime(0)
+    , m_byDirection(0)
+    , m_pSpriteInfo()
+    , m_vSpriteList()
+{
+
+}
+
+SpriteObject::~SpriteObject()
+{
+    m_vSpriteList.clear();
 }

@@ -1,12 +1,16 @@
+
 #include "PlayerObject.h"
 #include "Input.h"
 #include "Timer.h"
 #include "ClientNet.h"
+#include"Texture.h"
 #include "MakePacket.h"
+#include"Collider.h"
+
 bool PlayerObject::Init()
 {
     SpriteObject::Init();
-
+    GetCollider()->Init();
 
     return true;
 }
@@ -26,7 +30,33 @@ bool PlayerObject::Frame()
         SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
         SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
     }
-  
+    GetCollider()->SetTransform(GetTransform());
+    GetCollider()->Frame();
+
+
+
+    for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
+    {
+        if (obj != nullptr && (obj.get() != this))
+        {
+            std::vector<TVector3> axis = { obj->GetCollider()->GetAxis(0),
+                                           obj->GetCollider()->GetAxis(1),
+                                           GetCollider()->GetAxis(0),
+                                           GetCollider()->GetAxis(1)};
+            for (int i = 0 ; i < 4 ;++i)
+            {
+                axis[i].Normalize();
+                if (!obj->GetCollider()->OBBCollision(GetCollider(), axis[i]))
+                {
+                    OutputDebugString(L"NOcollision\n");
+                    break;
+                }
+            }
+        }
+        
+
+
+    }
 
     return true;
 }
@@ -35,6 +65,10 @@ bool PlayerObject::Render()
 {
     SpriteObject::Render();
 
+    GetCollider()->SetMatrix(nullptr, &GetViewMat(), &GetProjectionMat());
+    GetCollider()->Render();
+
+  
     return true;
 }
 
@@ -74,6 +108,51 @@ void PlayerObject::InputKey()
 
 }
 
+void PlayerObject::SetPlayerSprite()
+{
+    std::shared_ptr<SpriteData> stand = std::make_shared<SpriteData>();
+    stand->iCol = 3;
+    stand->iRow = 1;
+    stand->iMaxImageCount = 3;
+    stand->m_fDelay = 0.5f;
+    stand->m_vScale = { 46,68,1 };
+    SetSpriteInfo(stand);
+    Create(L"../resource/Player/PStand.png", L"../Shader/Defalutshader.hlsl");
+
+    std::shared_ptr<SpriteData> walk = std::make_shared<SpriteData>();
+    walk->iCol = 4;
+    walk->iRow = 1;
+    walk->iMaxImageCount = 4;
+    walk->m_fDelay = 0.18f;
+    walk->m_vScale = { 46,68,1 };
+    SetSpriteInfo(walk);
+    Create(L"../resource/Player/PWalk.png", L"../Shader/Defalutshader.hlsl");
+
+
+  
+    GetCollider()->SetTransform(GetTransform());
+    GetCollider()->SetScale(TVector3(46, 68, 1));
+ 
+    GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+}
+
+void PlayerObject::ChangeState(PLAYER_STATE state)
+{
+    if (m_PlayerState == state)
+        return;
+
+    m_PlayerState = state;
+    InitTexIndex();
+    SetSpriteInfo(GetSpriteData(state));
+    SetScale(GetCurrentSpriteInfo()->m_vScale);
+    SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+}
+
+void PlayerObject::SetState(PLAYER_STATE state)
+{
+    m_PlayerState = state;
+}
+
 void PlayerObject::InputAction()
 {
     m_dwBeforeAction = m_dwCurrentAction;
@@ -82,29 +161,30 @@ void PlayerObject::InputAction()
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x -= 1000 * Timer::GetInstance().GetSecPerFrame();
+        pos.x -= 500 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
-      
+        SetDirection(0);
     }
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x += 1000 * Timer::GetInstance().GetSecPerFrame();
+        pos.x += 500 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
+        SetDirection(1);
     }
     if (ACTION_MOVEUP == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y += 1000 * Timer::GetInstance().GetSecPerFrame();
+        pos.y += 500 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_MOVEDOWN == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y -= 1000 * Timer::GetInstance().GetSecPerFrame();
+        pos.y -= 500 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
@@ -119,7 +199,11 @@ void PlayerObject::InputAction()
     switch (m_dwCurrentAction)
     {
     case ACTION_STAND:
-        MoveStopPacket(&SendPacket, (BYTE)99, GetObejctID(), (short)GetTransform().x, (short)GetTransform().y);
+        MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
+                        (short)GetTransform().x,
+                        (short)GetTransform().y,
+                        GetPlayerState());
+        ChangeState(PLAYER_STATE::PS_STAND);
         OutputDebugString(L"stop\n");
         break;
 
@@ -128,7 +212,11 @@ void PlayerObject::InputAction()
     case ACTION_MOVERIGHT: 
     case ACTION_MOVEUP:
     case ACTION_MOVEDOWN:
-        MoveStartPacket(&SendPacket, (BYTE)99, GetObejctID(),(short)GetTransform().x, (short)GetTransform().y);
+        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
+                        (short)GetTransform().x,
+                        (short)GetTransform().y, 
+                        GetPlayerState());
+        ChangeState(PLAYER_STATE::PS_WALK);
         OutputDebugString(L"start\n");
         break;
     }
@@ -155,6 +243,8 @@ PlayerObject::PlayerObject()
     , m_BeforeDirection(0)
     , m_bIsPlayable(true)
     , m_dwActionInput(0)
+    , m_PlayerState(PS_DEFAULT)
+ 
 {
 
 

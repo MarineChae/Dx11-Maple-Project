@@ -1,7 +1,7 @@
 #include "Object.h"
 #include "PacketProc.h"
 #include"PlayerObject.h"
-
+#include"Collider.h"
 
 
 BOOL PacketProc_MoveStart(Packet* pack)
@@ -10,12 +10,13 @@ BOOL PacketProc_MoveStart(Packet* pack)
     BYTE byDirection;
     short shX;
     short shY;
-
+    PLAYER_STATE state;
 
     *pack >> byDirection;
     *pack >> dwSessionID;
     *pack >> shX;
     *pack >> shY;
+    *pack >> state;
 
     std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
 
@@ -23,8 +24,8 @@ BOOL PacketProc_MoveStart(Packet* pack)
         return FALSE;
 
     obj->SetDestination(TVector3(shX, shY, 1));
-
-
+    obj->SetDirection(byDirection);
+    obj->ChangeState(state);
     return TRUE;
 }
 
@@ -34,21 +35,22 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     BYTE byDirection;
     short shX;
     short shY;
-   
+    PLAYER_STATE state;
     *pack >> byDirection;
     *pack >> dwSessionID;
 
     *pack >> shX;
     *pack >> shY;
+    *pack >> state;
 
     std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
 
     if (obj == nullptr || obj == ObejctMgr::GetInstance().GetPlayerObject())
         return FALSE;
 
-    obj->SetDestination(TVector3(shX, shY, 1));
-
-
+    obj->SetDestination(TVector3(shX, shY, 0));
+    obj->SetDirection(byDirection);
+    obj->ChangeState(state);
 
 
     return TRUE;
@@ -71,19 +73,10 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
 
 
     std::shared_ptr<Object> player = std::make_shared<PlayerObject>();
-    
-    SpriteData data;
-    data.iCol = 3;
-    data.iRow = 1;
-    data.iMaxImageCount = 3;
-    data.m_fDelay = 0.5f;
-    data.m_vScale = { 46,68,1 };
-
-   
-    player->SetSpriteData(data);
-    player->Create(L"../resource/PStand.png", L"../Shader/Defalutshader.hlsl");
-    player->SetTransform(TVector3(shX,shY,1));
-    player->SetDestination(TVector3(shX, shY, 1));
+    player->Init();
+    player->SetPlayerSprite();
+    player->SetTransform(TVector3(shX,shY,0));
+    player->SetDestination(TVector3(shX, shY, 0));
     player->SetRenderState(true);
     player->SetObejctID(dwSessionID);
 
@@ -114,24 +107,13 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
 
     std::shared_ptr<Object> other = std::make_shared<PlayerObject>();
 
-
-    SpriteData data;
-    data.iCol = 3;
-    data.iRow = 1;
-    data.iMaxImageCount = 3;
-    data.m_fDelay = 0.5f;
-    data.m_vScale = { 46,68,1 };
-
-
-    other->SetSpriteData(data);
-    other->Create(L"../resource/PStand.png", L"../Shader/Defalutshader.hlsl");
-    other->SetTransform(TVector3(shX, shY, 1));
-    other->SetDestination(TVector3(shX, shY, 1));
+    other->Init();
+    other->SetPlayerSprite();
+    other->SetTransform(TVector3(shX, shY, 0));
+    other->SetDestination(TVector3(shX, shY, 0));
     other->SetRenderState(true);
     other->SetObejctID(dwSessionID);
     ObejctMgr::GetInstance().PushObject(other, dwSessionID);
-
-
     return 0;
 }
 

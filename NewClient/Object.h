@@ -1,6 +1,7 @@
 #pragma once
 #include"DxRenderer.h"
 
+class Collider;
 #define MAX_USER_SIZE 63
 
 class Object : public DxRenderer
@@ -14,20 +15,28 @@ private:
 
 private:
 	TVector3 m_vScale;
-	TVector3 m_vRotate;
+
 	TVector3 m_vTransform;
 	TVector3 m_vDestination;
 private:
 	DWORD m_dwObjectID;
 	bool  m_bRender;
-
+	std::shared_ptr<Collider> m_pCollider;
 public:
 	DWORD GetObejctID() const  {return m_dwObjectID;}
 	void SetObejctID(DWORD id) { m_dwObjectID = id; }
-	void SetTransform(TVector3 transform) { m_vTransform = transform; };
+	virtual void SetTransform(TVector3 transform) { m_vTransform = transform; };
 	void SetDestination(TVector3 Destination) { m_vDestination = Destination; };
 	TVector3 GetTransform() const { return m_vTransform; };
 	TVector3 GetDestination() const { return m_vDestination; };
+	TMatrix& GetWorldMat()  { return m_WolrdMatrix; }
+	TMatrix& GetViewMat()  { return m_ViewMatrix; }
+	TMatrix& GetProjectionMat()  { return m_ProjMatrix; }
+	TVector3 m_vRotate;
+	virtual void SetState(PLAYER_STATE state) {};
+	virtual void SetDirection(BYTE dir) { };
+	virtual void ChangeState(PLAYER_STATE state) {};
+	std::shared_ptr<Collider> GetCollider() const;
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();
@@ -46,18 +55,8 @@ public:
 	virtual bool Release();
 
 public:
-	Object()
-		:m_WolrdMatrix()
-		, m_ViewMatrix()
-		, m_ProjMatrix()
-		, m_vScale(1, 1, 1)
-		, m_vRotate(0, 0, 0)
-		, m_vTransform(0, 0, 0)
-		, m_dwObjectID(1)
-		, m_bRender(false)
-	{
-
-	}
+	Object();
+	virtual~Object() {};
 
 };
 

@@ -3,6 +3,11 @@
 #include"Device.h"
 #include"Protocol.h"
 #include"Texture.h"
+#include"Collider.h"
+std::shared_ptr<Collider> Object::GetCollider() const
+{
+    return m_pCollider;
+}
 bool Object::CreateVertexData()
 {
     std::vector<PNCT_VERTEX> v;
@@ -93,6 +98,7 @@ void Object::SetMatrix()
 
 bool Object::Init()
 {
+    m_pCollider = std::make_shared<Collider>();
     return false;
 }
 
@@ -115,6 +121,20 @@ bool Object::Release()
 {
     return false;
 }
+
+Object::Object()
+    :m_WolrdMatrix()
+    , m_ViewMatrix()
+    , m_ProjMatrix()
+    , m_vScale(1, 1, 1)
+    , m_vRotate(0, 0, 0)
+    , m_vTransform(0, 0, 0)
+    , m_dwObjectID(1)
+    , m_bRender(false)
+{
+   
+}
+
 
 
 void ObejctMgr::DisconnectCharacter(DWORD SessionID)

@@ -1,4 +1,4 @@
-
+#include"Netstd.h"
 #include "Packet.h"
 
 Packet Packet::operator=(Packet& Packet)
@@ -8,6 +8,18 @@ Packet Packet::operator=(Packet& Packet)
 
 	PutData(Packet.m_pReadPos, Packet.m_iDataSize);
 
+	return *this;
+}
+
+Packet& Packet::operator<<(PLAYER_STATE statevalue)
+{
+	PutData(reinterpret_cast<char*>(&statevalue), sizeof(PLAYER_STATE));
+	return *this;
+}
+
+Packet& Packet::operator>>(PLAYER_STATE& statevalue)
+{
+	GetData(reinterpret_cast<char*>(&statevalue), sizeof(PLAYER_STATE));
 	return *this;
 }
 

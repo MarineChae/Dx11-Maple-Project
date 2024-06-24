@@ -2,12 +2,12 @@
 #include "MakePacket.h"
 #include "PlayerData.h"
 
-void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y)
+void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 9;
+	PacketHeader.PacketSize = 9 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 	PacketHeader.PacketTemp = 0;
 
@@ -17,15 +17,16 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
 
-void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y)
+void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 9;
+	PacketHeader.PacketSize = 9 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 
@@ -35,6 +36,7 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }

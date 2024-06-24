@@ -76,7 +76,7 @@ bool Device::CreateSwapChain()
     m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;//주사율 60/1 형식 
     m_SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
     m_SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//컬러 출력형식 
-    m_SwapChainDesc.SampleDesc.Count = 1; //안티엘리어싱 카운트와 퀄리티가 높을수록 그래픽은 좋아지지만 메모리를 많이 사용
+    m_SwapChainDesc.SampleDesc.Count = 1;//안티엘리어싱 카운트와 퀄리티가 높을수록 그래픽은 좋아지지만 메모리를 많이 사용
     m_SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;//버퍼의 사용용도
     m_SwapChainDesc.BufferCount = 1;
     m_SwapChainDesc.OutputWindow = GetHWND();

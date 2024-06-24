@@ -5,8 +5,8 @@
 
 
 
-void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y);
+void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state);
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y);
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state);
 
 void CharacterStatePacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y);

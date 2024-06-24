@@ -86,6 +86,16 @@ struct UVRect
     TVector2 m_vMin;
     TVector2 m_vMax;
 };
+
+enum PLAYER_STATE
+{
+    PS_STAND,
+    PS_WALK,
+    PS_ATTACK,
+    PS_DEFAULT,
+
+
+};
 struct MyOV 
 {
     enum { MODE_RECV = 0, MODE_SEND = 1, };
