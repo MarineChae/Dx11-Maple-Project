@@ -5,19 +5,53 @@
 #include "ClientNet.h"
 #include"Texture.h"
 #include "MakePacket.h"
-#include"Collider.h"
-
+#include "Collider.h"
+#include "Collision.h"
 bool PlayerObject::Init()
 {
     SpriteObject::Init();
     GetCollider()->Init();
-
+    m_bIsFalling = true;
     return true;
 }
 
 bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
+    
+
+  // for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
+  // {
+  //     if (obj != nullptr && (obj.get() != this))
+  //     {
+  // 
+  //         if (Collider::CheckOBBCollision(GetCollider(), obj->GetCollider()))
+  //         {
+  //             if (COLLISION_TYPE::CT_FLOOR == obj->GetCollider()->GetCollisionType())
+  //             {
+  //                 m_bIsFalling = false;
+  //             }
+  //             OutputDebugString(L"collision\n");
+  //         }
+  // 
+  //     }
+  // 
+  // }
+
+
+
+
+
+
+    if (m_bIsFalling)
+    {
+      auto pos = GetTransform();
+      pos.y -= Timer::GetInstance().GetSecPerFrame() * 1000;
+      SetTransform(pos);
+    }
+    
+
+
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
     {
         InputKey();
@@ -29,34 +63,21 @@ bool PlayerObject::Frame()
     {
         SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
         SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
+       
     }
+    //for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
+    //{
+    //    if (obj != nullptr && ObejctMgr::GetInstance().GetPlayerObject() != obj)
+    //    {
+    //        obj->m_vRotate.z += Timer::GetInstance().GetSecPerFrame();
+    //        obj->GetCollider()->m_vRotate.z = obj->m_vRotate.z;
+    //    }
+    //       
+    //}
+    //구조정리
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
 
-
-
-    for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
-    {
-        if (obj != nullptr && (obj.get() != this))
-        {
-            std::vector<TVector3> axis = { obj->GetCollider()->GetAxis(0),
-                                           obj->GetCollider()->GetAxis(1),
-                                           GetCollider()->GetAxis(0),
-                                           GetCollider()->GetAxis(1)};
-            for (int i = 0 ; i < 4 ;++i)
-            {
-                axis[i].Normalize();
-                if (!obj->GetCollider()->OBBCollision(GetCollider(), axis[i]))
-                {
-                    OutputDebugString(L"NOcollision\n");
-                    break;
-                }
-            }
-        }
-        
-
-
-    }
 
     return true;
 }
@@ -65,8 +86,6 @@ bool PlayerObject::Render()
 {
     SpriteObject::Render();
 
-    GetCollider()->SetMatrix(nullptr, &GetViewMat(), &GetProjectionMat());
-    GetCollider()->Render();
 
   
     return true;
@@ -244,6 +263,7 @@ PlayerObject::PlayerObject()
     , m_bIsPlayable(true)
     , m_dwActionInput(0)
     , m_PlayerState(PS_DEFAULT)
+    , m_bIsFalling(true)
  
 {
 

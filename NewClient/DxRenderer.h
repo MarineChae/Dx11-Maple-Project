@@ -35,6 +35,9 @@ public:
 	void  SetIndexList(std::vector <DWORD> vIndexList) { m_vIndexList = vIndexList; };
 	void  SetConstantData(ConstantData& constdata) { m_ConstantData = constdata; };
 	const Shader* GetShader() { return m_pShader; };
+	const Texture* GetTexture() { return m_pTexture; }
+
+
 	virtual void  SetPlayerSprite() {};
 	//getter
 	ConstantData& GetConstantData() { return m_ConstantData; };

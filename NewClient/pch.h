@@ -29,7 +29,7 @@
 #pragma comment (lib , "dxgi.lib")
 #pragma comment (lib , "D3DCompiler.lib")
 #pragma comment (lib , "ws2_32.lib")
-
+#pragma comment( lib, "dxguid.lib")
 #ifdef _DEBUG
 #pragma comment (lib, "DirectXTex_debug.lib")
 #else
@@ -86,6 +86,11 @@ struct UVRect
     TVector2 m_vMin;
     TVector2 m_vMax;
 };
+struct Line
+{
+    TVector3 From;
+    TVector3 To;
+};
 
 enum PLAYER_STATE
 {
@@ -96,6 +101,17 @@ enum PLAYER_STATE
 
 
 };
+
+enum COLLISION_TYPE
+{
+    CT_FLOOR,
+    CT_LOPE,
+    CT_POTAL,
+    CT_ATTACK,
+    CT_DEFAULT
+};
+
+
 struct MyOV 
 {
     enum { MODE_RECV = 0, MODE_SEND = 1, };

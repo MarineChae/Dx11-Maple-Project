@@ -8,7 +8,8 @@ class ClientMain : public Core
 public:
 
 	std::shared_ptr<Object> test;
-
+	std::shared_ptr<Object> test2;
+	std::shared_ptr<Collider> testcol;
 
 public:
 	virtual bool Init();
