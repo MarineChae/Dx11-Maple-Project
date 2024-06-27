@@ -93,6 +93,8 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SaveLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientMain.h" />
@@ -197,6 +199,8 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SaveLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

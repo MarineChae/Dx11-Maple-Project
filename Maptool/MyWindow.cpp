@@ -69,11 +69,13 @@ bool MyWindow::SetWindow(const WCHAR* sztitle, DWORD dwWindowwidth, DWORD dwWind
     m_dwWindowExStyle = WS_EX_TOPMOST;
     m_dwWindowStyle = WS_POPUPWINDOW;
 #endif 
+    RECT rc = { 0, 0,  m_WindowStyle.m_dwWindowWidth, m_WindowStyle.m_dwWindowHeight };
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
     m_hWnd = CreateWindowEx(m_WindowStyle.m_dwWindowExStyle, L"윈도우", sztitle,
         m_WindowStyle.m_dwWindowStyle,//윈도우 속성변경
-        m_WindowStyle.m_dwWindowPosX, m_WindowStyle.m_dwWindowPosY,//윈도우 시작지점
-        m_WindowStyle.m_dwWindowWidth, m_WindowStyle.m_dwWindowHeight,//윈도우 크기
+        CW_USEDEFAULT, CW_USEDEFAULT,//윈도우 시작지점
+        rc.right - rc.left, rc.bottom - rc.top,//윈도우 크기
         nullptr, nullptr, m_hInstance, nullptr);
 
     if (!m_hWnd)

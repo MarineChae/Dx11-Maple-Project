@@ -9,8 +9,7 @@ private:
 	Camera	   m_MainCamera;
 
 public:
-	Camera& GetCamera() { return m_MainCamera; }
-
+	
 
 public:
 	virtual bool Init();

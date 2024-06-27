@@ -18,7 +18,7 @@ bool PlayerObject::Init()
 bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
-    m_bIsFalling = true;
+
 
   // for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
   // {
@@ -43,13 +43,7 @@ bool PlayerObject::Frame()
 
 
 
-    if (m_bIsFalling)
-    {
-      auto pos = GetTransform();
-      pos.y -= Timer::GetInstance().GetSecPerFrame() * 1000;
-      SetTransform(pos);
-    }
-    
+
 
 
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
@@ -223,7 +217,7 @@ void PlayerObject::InputAction()
                         (short)GetTransform().y,
                         GetPlayerState());
         ChangeState(PLAYER_STATE::PS_STAND);
-        OutputDebugString(L"stop\n");
+        //OutputDebugString(L"stop\n");
         break;
 
 
@@ -236,7 +230,7 @@ void PlayerObject::InputAction()
                         (short)GetTransform().y, 
                         GetPlayerState());
         ChangeState(PLAYER_STATE::PS_WALK);
-        OutputDebugString(L"start\n");
+        //OutputDebugString(L"start\n");
         break;
     }
 

@@ -1,4 +1,5 @@
 #pragma once
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <WinSock2.h>
 #include <windows.h>
@@ -18,7 +19,7 @@
 #include <thread>
 #include <system_error>
 #include<list>
-
+#include <codecvt>
 #include"Singleton.h"
 #include "DirectXTex.h"
 #include "TMath.h"
@@ -131,3 +132,15 @@ struct MyOV
         flag = MyOV::MODE_RECV;
     }
 };
+static std::wstring mtw(std::string str)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+    return conv.from_bytes(str);
+}
+
+static std::string wtm(std::wstring str)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+    return conv.to_bytes(str);
+}
+

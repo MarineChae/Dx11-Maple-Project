@@ -59,7 +59,10 @@ void Collider::SetCollisionPoint()
 {
     TVector3 Pos = GetTransform();
     m_vCollisionPoint = { Pos.x,Pos.y - m_iHeight,0 };
-
+    m_collisionline.From.x = m_vCollisionPoint.x - m_iWidth /2;
+    m_collisionline.From.y = Pos.y;
+    m_collisionline.To.x = m_vCollisionPoint.x + m_iWidth/2;
+    m_collisionline.To.y = Pos.y;
 }
 
 bool Collider::Init()
@@ -110,7 +113,7 @@ bool Collider::CreateVertexData()
 bool Collider::PreRender()
 {
     Object::PreRender();
-    Device::GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP); // 받아온 데이터를 어떤 방식으로 해석할지
+    Device::GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST); // 받아온 데이터를 어떤 방식으로 해석할지
   
     return true;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include"pch.h"
-
+#include"Singleton.h"
 class Camera
 {
 
@@ -24,6 +24,19 @@ public:
 	bool Render();
 	bool Release();
 
+
+};
+
+class CameraMgr : public Singleton<CameraMgr>
+{
+	friend class Singleton<CameraMgr>;
+
+private:
+	Camera m_MainCamera;
+
+public:
+	void SetCamera(Camera camera) { m_MainCamera = camera; };
+	Camera GetCamera() { return m_MainCamera; };
 
 };
 

@@ -7,42 +7,41 @@
 #include "ClientNet.h"
 #include"Collider.h"
 #include"Collision.h"
-
+#include"Scene.h"
+#include"SaveLoader.h"
 bool ClientMain::Init()
 {
-	
+	m_testscene = std::make_shared<Scene>();
+	m_pSaveLoader = std::make_shared<SaveLoader>();
+	m_testscene->Init(L" ");
 	//CurrentMap->Create(L" ", L"../Shader/Defalutshader.hlsl");
-	testcol = std::make_shared<Collider>();
-	testcol->Create(L" ", L"../Shader/LineDebug.hlsl");
+	
+	 v.resize(1);
 	 
-	
-	v.resize(3);
+	 v[0].Pos = {  };
 
-	v[0].Pos = { -1003.0f,10.0f,0.0f };
-	v[1].Pos = { -500.0f,10.0f,0.0f };
-	
-	v[2].Pos = { 100.0f,-100.0f,0.0f };
-	Line l;
-	l.From = v[0].Pos;
-	l.To = v[1].Pos;
-	linelist.push_back(l);
+	//Line l;
+	//l.From = v[0].Pos;
+	//l.To = v[1].Pos;
+	//linelist.push_back(l);
 
-	Line l2;
-	l2.From = v[1].Pos;
-	l2.To = v[2].Pos;
-	linelist.push_back(l2);
 
-	testcol->SetVertexList(v);
-	Device::GetContext()->UpdateSubresource(testcol->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
-	testcol->SetScale({ 1,1,0 });
+	//testcol->SetVertexList(v);
+	//Device::GetContext()->UpdateSubresource(testcol->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
+	//testcol->SetScale({ 1,1,0 });
 	return true;
 }
 
 bool ClientMain::Frame()
-{
+{	
+	Menu();
+	SelectMenu();
+	m_testscene->Frame();
+
+	static bool draw = false;
+	static bool draw2 = false;
 	if(CurrentMap!=nullptr)
 	CurrentMap->Frame();
-	Menu();
 
 	POINT pos = Input::GetInstance().GetMousePos();
 	std::wstring ws;
@@ -50,68 +49,92 @@ bool ClientMain::Frame()
 	ws += L" , ";
 	ws += std::to_wstring(pos.y);
 	ws += L" , \n";
-	OutputDebugString(ws.c_str());
-
-
+	
+	
+	
 	float x = (2 * (float)pos.x/ 1388) -1;
 	float y = 1- ( 2 * (float)pos.y /766);
-
-
-
-	v[v.size()-1].Pos = {x * 1388 ,y * 766,0.0f};
-
-	if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH)
+	if (Input::GetInstance().GetKeyState(VK_F2) >= KEY_PUSH)
 	{
-		Line l;
-		l.From  = v[v.size() - 1].Pos;
-
-		v.push_back({});
-		v[v.size() - 1].Pos = { x * 1388 ,y * 766,0.0f };
-
-		l.To = v[v.size() - 1].Pos;
-		testcol->SetVertexList(v);
-		linelist.push_back(l);
+		draw = true;
 	}
+	
+	
+	if (draw)
+	{
+		v[v.size() - 1].Pos = { x * 1388 + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+			,y * 766 + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+			0.0f};
+	}
+	static Line l;
+	if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
+	{
+		if (!draw2)
+		{
+			l.From = v[v.size() - 1].Pos;
+			v.push_back({});
+			draw2 = true;
+		}
+		else
+		{
+			l.To = v[v.size() - 1].Pos;
+	
+			v[v.size() - 1].Pos = { x * 1388 + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+								   ,y * 766 + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+								   0.0f };
+			v.push_back({});
+	
+			m_testscene->GetCollider()->SetVertexList(v);
+			m_testscene->PushLineCollider(l);
+			draw = false;
+			draw2 = false;
+		}
+		
+	
+	
+	}
+	
+	Device::GetContext()->UpdateSubresource(m_testscene->GetCollider()->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
 
-	Device::GetContext()->UpdateSubresource(testcol->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
+#pragma region Input
 	if (Input::GetInstance().GetKeyState(VK_HOME) >= KEY_PUSH)
 	{
 
-		GetCamera().AddZoom(Timer::GetInstance().GetSecPerFrame());
+		CameraMgr::GetInstance().GetCamera().AddZoom(Timer::GetInstance().GetSecPerFrame());
 
 	}
 	if (Input::GetInstance().GetKeyState(VK_END) >= KEY_PUSH)
 	{
 
-		GetCamera().AddZoom(-Timer::GetInstance().GetSecPerFrame());
+		CameraMgr::GetInstance().GetCamera().AddZoom(-Timer::GetInstance().GetSecPerFrame());
 
 	}
 	if (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH)
 	{
-		TVector3 pos = GetCamera().GetCameraPos();
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
 		pos.y += 500 * Timer::GetInstance().GetSecPerFrame();
-		GetCamera().SetCameraPos(pos);
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 
 	}
 	else if (Input::GetInstance().GetKeyState(VK_RIGHT) >= KEY_PUSH)
 	{
-		TVector3 pos = GetCamera().GetCameraPos();
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
 		pos.x += 500 * Timer::GetInstance().GetSecPerFrame();
-		GetCamera().SetCameraPos(pos);
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 	}
 	else if (Input::GetInstance().GetKeyState(VK_LEFT) >= KEY_PUSH)
 	{
-		TVector3 pos = GetCamera().GetCameraPos();
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
 		pos.x -= 500 * Timer::GetInstance().GetSecPerFrame();
-		GetCamera().SetCameraPos(pos);
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 	}
 	else if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH)
 	{
-		TVector3 pos = GetCamera().GetCameraPos();
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
 		pos.y -= 500 * Timer::GetInstance().GetSecPerFrame();
-		GetCamera().SetCameraPos(pos);
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 	}
-	
+
 	if (Input::GetInstance().GetKeyState(VK_F1) >= KEY_PUSH)
 	{
 
@@ -123,13 +146,14 @@ bool ClientMain::Frame()
 		test2->SetRenderState(true);
 		ObejctMgr::GetInstance().SetPlayerObject(test2);
 	}
+#pragma endregion
 
 
 	if (test2 != nullptr)
 	{
 		test2->Frame();
-
-		for (auto line : linelist)
+		test2->m_bIsFalling = true;
+		for (auto line : m_testscene->GetLineColliderList())
 		{
 
 			if (Collision::PointToLine(test2->GetCollider()->GetCollisionPoint(), line))
@@ -138,33 +162,32 @@ bool ClientMain::Frame()
 				auto p = test2->GetTransform();
 				p.y = ret.y + test2->GetCollider()->GetHeight();
 				test2->SetTransform(p);
+				test2->m_bIsFalling = false;
 
-				OutputDebugString(L"dsahdolisahdaslid\n");
 				
 			}
-
-
-
 		}
+		if (test2->m_bIsFalling)
+		{
+			auto pos = test2->GetTransform();
+			pos.y -= Timer::GetInstance().GetSecPerFrame() * 500;
+			test2->SetTransform(pos);
+		}
+
 	}
 		
-	testcol->Frame();
+	//testcol->Frame();
 	return true;
 }
 
 bool ClientMain::Render()
 {
-	if (CurrentMap != nullptr)
-	{
-		CurrentMap->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
-		CurrentMap->Render();
-	}
-	testcol->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
-	testcol->Render();
+
+	m_testscene->Render();
 
 	if (test2 != nullptr)
 	{
-		test2->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
+		test2->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 		test2->Render();
 	}	
 		
@@ -212,11 +235,10 @@ void ClientMain::Menu()
 		ImGui::EndMainMenuBar();
 	}
 
-
+	std::string filePath;
+	std::string filePathName;
 	if (OpenNew)
 	{
-
-		
 		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
 
 		// display
@@ -225,40 +247,133 @@ void ClientMain::Menu()
 			OpenNew = false;
 			m_bImguiNew = true;
 		}
+	
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
 
-	}
-	std::string filePath;
-	std::string filePathName;
-	if (ImGuiFileDialog::Instance()->IsOk())
-	{
-		filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-		filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-		ImGuiFileDialog::Instance()->Close();
-	}
 
 	if (m_bImguiNew && !filePathName.empty())
 	{
-		if(CurrentMap == nullptr)
-			CurrentMap = std::make_shared<Object>();
-		else
-		{
-			CurrentMap.reset();
-			CurrentMap = std::make_shared<Object>();
-		}
-		
+		m_testscene.reset();
+		m_testscene = std::make_shared<Scene>();
+
 		std::wstring message_w;
 		message_w.assign(filePathName.begin(), filePathName.end());
 
-		CurrentMap->Create(message_w,L"../Shader/Defalutshader.hlsl");
+		m_testscene->ResetMap(message_w);
 
-		CurrentMap->SetScale({ 1388,768,0 });
+		m_testscene->GetMap()->SetScale({ 1388,768,0 });
 
 
 		m_bImguiNew = false;
 	}
 
+	if (OpenSave)
+	{
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
+
+		// display
+		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", OpenSave))
+		{
+			OpenSave = false;
+			m_bImguiSave = true;
+		}
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+
+	if (m_bImguiSave && !filePathName.empty())
+	{
+		m_bImguiSave = false;
+		m_pSaveLoader->SaveData(m_testscene, filePathName);
+	}
+
+}
+
+void ClientMain::SelectMenu()
+{
+	static Line selectLine;
+	ImVec2 ivMin = { static_cast<float>(1388) - static_cast<float>(1388) /3,0 };
+	ImGui::SetNextWindowPos(ivMin);
+	ImGui::Begin("MapTool Menu");
+
+	if (ImGui::RadioButton("DRAW_LINE_COLLISION", (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)))
+	{
+		m_ClickAction = CLICK_ACTION::DRAW_LINE_COLLISION;
+	}
+	if (ImGui::RadioButton("MONSTER_PLACE", (m_ClickAction == CLICK_ACTION::MONSTER_PLACE)))
+	{
+		m_ClickAction = CLICK_ACTION::MONSTER_PLACE;
+
+	}//ImGui::SameLine();
+	if (ImGui::RadioButton("OBJECT_PLACE", (m_ClickAction == CLICK_ACTION::OBJECT_PLACE)))
+	{
+		m_ClickAction = CLICK_ACTION::OBJECT_PLACE;
+
+	}
+	
+	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
+	{
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Collision Line List");
+		if (ImGui::BeginListBox("## ", { 250,100 }))
+		{
+			for (auto& line : m_testscene->GetLineColliderList())
+			{
+				std::string s;
+				s += " From : ";
+				s += std::to_string(line.From.x);
+				s += " , ";
+				s += std::to_string(line.From.y);
+				s += " \n To   : ";
+				s += std::to_string(line.To.x);
+				s += " , ";
+				s += std::to_string(line.To.y);
+
+				if (ImGui::Selectable(s.c_str()))
+				{
+					selectLine = line;
+				}
 
 
+
+			}
+
+			ImGui::EndListBox();
+		}
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Select Collision Line");
+		if (ImGui::BeginListBox("####"))
+		{
+			if (ImGui::BeginListBox("From"))
+			{
+				ImGui::InputFloat("X : ##", &selectLine.From.x);
+				ImGui::InputFloat("Y : ##", &selectLine.From.y);
+
+				ImGui::EndListBox();
+			}
+
+
+			ImGui::EndListBox();
+		}
+		if (ImGui::Button("Conform", ImVec2(60, 30)))
+		{
+
+		}
+	}
+
+	
+
+	ImGui::End();
 }
 
 ClientMain::ClientMain()

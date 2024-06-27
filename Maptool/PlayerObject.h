@@ -13,13 +13,13 @@ private:
 	bool	     m_bIsPlayable;
 	DWORD	     m_dwActionInput;
 	PLAYER_STATE m_PlayerState;
-	bool	     m_bIsFalling;
+
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
 	virtual bool Render() override;
 	virtual bool Release() override;
-	
+	bool	     m_bIsFalling;
 public:
 
 	void InputAction();

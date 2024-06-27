@@ -19,7 +19,7 @@ private:
 	TVector3	   m_Axis[3];
 	COLLISION_TYPE m_CollisionType;
 	TVector3       m_vCollisionPoint;
-
+	
 public:
 	//getter
 	int			   GetHeight() const { return m_iHeight; }
@@ -34,6 +34,8 @@ public:
 	void		 SetCollisionBox();
 	void		 SetCollsionType(COLLISION_TYPE type) { m_CollisionType = type; };
 	void         SetCollisionPoint();
+
+	Line		m_collisionline;
 
 public:
 	virtual bool Init()override;
