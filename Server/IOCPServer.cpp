@@ -197,7 +197,6 @@ bool IOCPServer::Init()
 bool IOCPServer::ThreadRun()
 {
 
-
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{
 		if (!Broadcasting(data))

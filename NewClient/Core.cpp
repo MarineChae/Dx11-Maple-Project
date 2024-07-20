@@ -29,7 +29,8 @@ bool Core::EngineInit()
     
     Device::Init();
     m_MainCamera.CreateCamera(TVector3(0,0,0), TVector2(1388,766));
-    m_MainCamera.Init();
+    CameraMgr::GetInstance().SetCamera(m_MainCamera);
+    CameraMgr::GetInstance().GetCamera().Init();
     Input::GetInstance().Init();
     Timer::GetInstance().Init();
     if (!connentNetWork())
@@ -45,7 +46,7 @@ bool Core::EngineInit()
 bool Core::EngineFrame()
 {
     Device::Frame();
-    m_MainCamera.Frame();
+    CameraMgr::GetInstance().GetCamera().Frame();
     Input::GetInstance().Frame();
     Timer::GetInstance().Frame();
 
@@ -62,7 +63,7 @@ bool Core::EngineRender()
 {
     Device::PreRender();
     GetContext()->OMSetBlendState(GetBlendState().Get(), 0, -1);
-    m_MainCamera.Render();
+    CameraMgr::GetInstance().GetCamera().Render();
     Input::GetInstance().Render();
     Timer::GetInstance().Render();
 
@@ -75,7 +76,7 @@ bool Core::EngineRender()
 bool Core::EngineRelease()
 {
     Device::Release();
-    m_MainCamera.Release();
+    CameraMgr::GetInstance().GetCamera().Release();
     Release();
     return true;
 }

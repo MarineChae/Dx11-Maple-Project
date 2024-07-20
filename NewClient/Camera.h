@@ -36,7 +36,7 @@ private:
 
 public:
 	void SetCamera(Camera camera) { m_MainCamera = camera; };
-	Camera GetCamera() { return m_MainCamera; };
+	Camera&  GetCamera() { return m_MainCamera; };
 
 };
 

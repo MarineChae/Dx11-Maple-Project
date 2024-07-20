@@ -45,7 +45,7 @@ public:
 	//virtual
 	virtual void ChangeState(PLAYER_STATE state) {};
 	virtual TVector3 GetCollisionPoint() const { return TVector3(); };
-
+	virtual void SetFalling(bool state) {};
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

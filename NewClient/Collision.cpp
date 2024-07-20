@@ -5,7 +5,7 @@
 
 
 
-bool Collision::OBBCollision2D(std::shared_ptr<Collider> coll1 ,std::shared_ptr<Collider> coll2, TVector3 axis)
+bool Collision::OBBCollision2D(std::shared_ptr<Collider> coll1, std::shared_ptr<Collider> coll2, TVector3 axis)
 {
     float projection1 = 0;
 
@@ -29,14 +29,13 @@ bool Collision::PointToLine(TVector3 point, Line line)
 
 
 
-
     //직선의 방정식
     float A = line.To.y - line.From.y;
     float B = line.From.x - line.To.x;
     float C = (line.To.x * line.From.y) - (line.From.x * line.To.y);
 
     float dist = std::abs(A * point.x + B * point.y + C) / std::sqrt(A * A + B * B);
-    if (dist > 10)
+    if (dist > 10 || dist < -10)
         return false;
 
     float minX = min(line.From.x, line.To.x);
@@ -44,7 +43,7 @@ bool Collision::PointToLine(TVector3 point, Line line)
     float minY = min(line.From.y, line.To.y);
     float maxY = max(line.From.y, line.To.y);
 
-    bool isWithinSegment = (point.x >= minX && point.x <= maxX) && (point.y >= minY);
+    bool isWithinSegment = (point.x >= minX && point.x <= maxX) && (point.y >= minY - 50 && point.y <= maxY + 50);
 
 
 
@@ -66,4 +65,35 @@ TVector3 Collision::ClosestPoint(TVector3 point, Line line)
 
 
     return ret;
+}
+
+bool Collision::LinesIntersect(Line line1, Line line2)
+{
+    float A1 = line1.To.y - line1.From.y;
+    float B1 = line1.From.x - line1.To.x;
+    float C1 = A1 * line1.From.x + B1 * line1.From.y;
+
+    float A2 = line2.To.y - line2.From.y;
+    float B2 = line2.From.x - line2.To.x;
+    float C2 = A2 * line2.From.x + B2 * line2.From.y;
+
+    float denominator = A1 * B2 - A2 * B1;
+
+    if (std::abs(denominator) < std::numeric_limits<float>::epsilon()) {
+        // 두 선분이 평행한 경우
+        return false;
+    }
+
+    float intersectX = (C1 * B2 - C2 * B1) / denominator;
+    float intersectY = (A1 * C2 - A2 * C1) / denominator;
+
+    // 교차점이 두 선분 내에 있는지 확인
+    bool isWithinLine1 = (min(line1.From.x, line1.To.x) <= intersectX && intersectX <= max(line1.From.x, line1.To.x)) &&
+        (min(line1.From.y, line1.To.y) <= intersectY && intersectY <= max(line1.From.y, line1.To.y));
+
+    bool isWithinLine2 = (min(line2.From.x, line2.To.x) <= intersectX && intersectX <= max(line2.From.x, line2.To.x)) &&
+        (min(line2.From.y, line2.To.y) <= intersectY && intersectY <= max(line2.From.y, line2.To.y));
+
+    return isWithinLine1 && isWithinLine2;
+
 }

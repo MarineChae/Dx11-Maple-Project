@@ -156,6 +156,8 @@
     <ClCompile Include="PacketProc.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="SaveLoader.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="SpriteObject.cpp" />
@@ -182,6 +184,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="Protocol.h" />
+    <ClInclude Include="SaveLoader.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SpriteObject.h" />

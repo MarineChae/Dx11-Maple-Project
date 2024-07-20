@@ -9,7 +9,7 @@ private:
 
 public:
 	bool SaveData(std::shared_ptr<Scene> pSceneData,std::string SavePath);
-	bool LoadData(std::shared_ptr<Scene> pSceneData);
+	bool LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPath);
 
 
 

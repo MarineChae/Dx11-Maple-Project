@@ -9,6 +9,13 @@
 #include"Collision.h"
 #include"Scene.h"
 #include"SaveLoader.h"
+
+const int mapXsize = 5830;
+const int mapYsize = 1764;
+
+const int clientXsize = 1388;
+const int clientYsize = 766;
+
 bool ClientMain::Init()
 {
 	m_testscene = std::make_shared<Scene>();
@@ -52,8 +59,8 @@ bool ClientMain::Frame()
 	
 	
 	
-	float x = (2 * (float)pos.x/ 1388) -1;
-	float y = 1- ( 2 * (float)pos.y /766);
+	float x = (2 * (float)pos.x/ clientXsize) -1;
+	float y = 1- ( 2 * (float)pos.y / clientYsize);
 	if (Input::GetInstance().GetKeyState(VK_F2) >= KEY_PUSH)
 	{
 		draw = true;
@@ -62,8 +69,8 @@ bool ClientMain::Frame()
 	
 	if (draw)
 	{
-		v[v.size() - 1].Pos = { x * 1388 + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-			,y * 766 + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+		v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+			,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
 			0.0f};
 	}
 	static Line l;
@@ -79,8 +86,8 @@ bool ClientMain::Frame()
 		{
 			l.To = v[v.size() - 1].Pos;
 	
-			v[v.size() - 1].Pos = { x * 1388 + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-								   ,y * 766 + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+			v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+								   ,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
 								   0.0f };
 			v.push_back({});
 	
@@ -94,7 +101,8 @@ bool ClientMain::Frame()
 	
 	}
 	
-	Device::GetContext()->UpdateSubresource(m_testscene->GetCollider()->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
+	Device::GetContext()->UpdateSubresource(m_testscene->GetCollider()->GetVertexBuffer().Get(), 0, 0, 
+											&m_testscene->GetCollider()->GetVertexList().at(0), 0, 0);
 
 #pragma region Input
 	if (Input::GetInstance().GetKeyState(VK_HOME) >= KEY_PUSH)
@@ -267,7 +275,7 @@ void ClientMain::Menu()
 
 		m_testscene->ResetMap(message_w);
 
-		m_testscene->GetMap()->SetScale({ 1388,768,0 });
+		m_testscene->GetMap()->SetScale({ mapXsize,mapYsize,0 });
 
 
 		m_bImguiNew = false;
@@ -290,13 +298,39 @@ void ClientMain::Menu()
 			ImGuiFileDialog::Instance()->Close();
 		}
 	}
+	if (OpenLoad)
+	{
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
+
+		// display
+		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", OpenLoad))
+		{
+			OpenLoad = false;
+			m_bImguiLoad = true;
+		}
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
 
 	if (m_bImguiSave && !filePathName.empty())
 	{
 		m_bImguiSave = false;
-		m_pSaveLoader->SaveData(m_testscene, filePathName);
+		std::string name = "\\";
+		name += wtm(m_testscene->GetMapName());
+		name += ".txt";
+		filePath += name;
+		m_pSaveLoader->SaveData(m_testscene, filePath);
 	}
 
+	if (m_bImguiLoad && !filePathName.empty())
+	{
+		m_bImguiLoad = false;
+		m_pSaveLoader->LoadData(m_testscene, filePathName);
+	}
 }
 
 void ClientMain::SelectMenu()

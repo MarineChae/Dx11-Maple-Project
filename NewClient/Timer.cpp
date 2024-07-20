@@ -10,7 +10,7 @@ int Timer::GetFPS()
         FPS = 0;
     }
     ++FPS;
-
+  
     return m_iFps;
 }
 

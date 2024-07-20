@@ -11,37 +11,21 @@ bool PlayerObject::Init()
 {
     SpriteObject::Init();
     GetCollider()->Init();
-    m_bIsFalling = true;
+    m_bIsFalling = false;
     return true;
 }
 
 bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
-    
-
-  // for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
-  // {
-  //     if (obj != nullptr && (obj.get() != this))
-  //     {
-  // 
-  //         if (Collider::CheckOBBCollision(GetCollider(), obj->GetCollider()))
-  //         {
-  //             if (COLLISION_TYPE::CT_FLOOR == obj->GetCollider()->GetCollisionType())
-  //             {
-  //                 m_bIsFalling = false;
-  //             }
-  //             OutputDebugString(L"collision\n");
-  //         }
-  // 
-  //     }
-  // 
-  // }
 
 
-
-
-
+    if (GetDestination() != GetTransform() && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+    {
+        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
+        SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
+       
+    }
 
     if (m_bIsFalling)
     {
@@ -58,13 +42,12 @@ bool PlayerObject::Frame()
         InputAction();
 
     }
-
-    if (GetDestination() != GetTransform() && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+    if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
-        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
-        SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
-       
+        PacketSendProc();
     }
+
+   
     //for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
     //{
     //    if (obj != nullptr && ObejctMgr::GetInstance().GetPlayerObject() != obj)
@@ -124,6 +107,46 @@ void PlayerObject::InputKey()
 
 
     m_dwActionInput = dwAction;
+
+}
+
+void PlayerObject::PacketSendProc()
+{
+    Packet SendPacket;
+
+    switch (m_dwCurrentAction)
+    {
+    case ACTION_STAND:
+        MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
+            (short)GetTransform().x,
+            (short)GetTransform().y,
+            GetPlayerState());
+        ChangeState(PLAYER_STATE::PS_STAND);
+        OutputDebugString(L"stop\n");
+        break;
+
+
+    case ACTION_MOVELEFT:
+    case ACTION_MOVERIGHT:
+    case ACTION_MOVEUP: 
+    case ACTION_MOVEDOWN:
+        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
+            (short)GetTransform().x,
+            (short)GetTransform().y,
+            GetPlayerState());
+        ChangeState(PLAYER_STATE::PS_WALK);
+        OutputDebugString(L"start\n");
+        break;
+    }
+
+    static double sendtime = 0;
+    sendtime += Timer::GetInstance().GetSecPerFrame();
+
+    if (sendtime >= 0.0625)
+    {
+        NetSendPacket(&SendPacket);
+        sendtime -= 0.0625;
+    }
 
 }
 
@@ -213,43 +236,7 @@ void PlayerObject::InputAction()
         m_dwCurrentAction = m_dwActionInput;
     }
 
-    Packet SendPacket;
 
-    switch (m_dwCurrentAction)
-    {
-    case ACTION_STAND:
-        MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
-                        (short)GetTransform().x,
-                        (short)GetTransform().y,
-                        GetPlayerState());
-        ChangeState(PLAYER_STATE::PS_STAND);
-        OutputDebugString(L"stop\n");
-        break;
-
-
-    case ACTION_MOVELEFT:
-    case ACTION_MOVERIGHT: 
-    case ACTION_MOVEUP:
-    case ACTION_MOVEDOWN:
-        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
-                        (short)GetTransform().x,
-                        (short)GetTransform().y, 
-                        GetPlayerState());
-        ChangeState(PLAYER_STATE::PS_WALK);
-        OutputDebugString(L"start\n");
-        break;
-    }
-
-    static double sendtime = 0;
-    sendtime += Timer::GetInstance().GetSecPerFrame();
- 
-    if (sendtime >= 0.0625)
-    {
-        NetSendPacket(&SendPacket);
-        sendtime -= 0.0625;
-    }
-
-    
 }
 
 

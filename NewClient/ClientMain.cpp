@@ -7,77 +7,93 @@
 #include "ClientNet.h"
 #include"Collider.h"
 #include"Collision.h"
+#include"Scene.h"
+#include"SaveLoader.h"
 bool ClientMain::Init()
 {
 
-	test = std::make_shared<Object>();	
-	test->SetTransform(TVector3(0, -600, 0));
-	test->SetScale(TVector3(1800, 64, 0));
-	test->Init();
-	test->Create(L"../resource/MapObejct/2Phase BackCollision.png", L"../Shader/Defalutshader.hlsl");
-	test->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-	test->GetCollider()->SetTransform(test->GetTransform());
-	test->GetCollider()->SetScale(TVector3(1800, 64, 0));
-	test->GetCollider()->SetCollsionType(COLLISION_TYPE::CT_FLOOR);
-	test->m_vRotate.z = -45;
-	test->GetCollider()->m_vRotate.z = -45;
-	ObejctMgr::GetInstance().PushObject(test,60);
+	//test = std::make_shared<Object>();	
+	//test->SetTransform(TVector3(0, -600, 0));
+	//test->SetScale(TVector3(1800, 64, 0));
+	//test->Init();
+	//test->Create(L"../resource/MapObejct/2Phase BackCollision.png", L"../Shader/Defalutshader.hlsl");
+	//test->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+	//test->GetCollider()->SetTransform(test->GetTransform());
+	//test->GetCollider()->SetScale(TVector3(1800, 64, 0));
+	//test->GetCollider()->SetCollsionType(COLLISION_TYPE::CT_FLOOR);
+	//test->m_vRotate.z = -45;
+	//test->GetCollider()->m_vRotate.z = -45;
 
+	//ObejctMgr::GetInstance().PushObject(, 60);
+	saveload = std::make_shared<SaveLoader>();
+	testScene = std::make_shared<Scene>();
+	testScene->Init(L"../resource/20240720120407278_100000000.png");
 
+	testScene->GetMap()->SetScale(TVector3(5830, 1764, 0));
+
+	saveload->LoadData(testScene,"../resource/20240720120407278_100000000.txt");
 	return true;
 }
 
 bool ClientMain::Frame()
 {
+	testScene->Frame();
+
+	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
+
+
+
 
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
-		if (obj != nullptr)
-		{
 
+		if (obj != nullptr )
+		{//preframe 처리해야함
+	
 			obj->Frame();
-			if (obj->GetCollider() != nullptr)
-				obj->GetCollider()->Frame();
-			
-			Line line;
-			line.From = test->GetCollider()->GetVertexList()[0].Pos;
-			line.To = test->GetCollider()->GetVertexList()[1].Pos;
-			auto ma = test->GetCollider()->GetWorldMat();
-			D3DXVec3TransformCoord(&line.From, &line.From, &test->GetCollider()->GetWorldMat());
-			D3DXVec3TransformCoord(&line.To, &line.To, &test->GetCollider()->GetWorldMat());
-			auto pl = dynamic_cast<PlayerObject*>(obj.get());
-			if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line))
+			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
-				auto ret = Collision::ClosestPoint(obj->GetCollider()->GetCollisionPoint(), line);
-				auto p = obj->GetTransform();
-				p.y = ret.y + obj->GetCollider()->GetHeight();
-				obj->SetTransform(p);
+				for (auto& line : testScene->GetLineColliderList())
+				{
 
+					if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line))
+					{
+						auto ret = Collision::ClosestPoint(obj->GetCollider()->GetCollisionPoint(), line);
+						auto p = obj->GetTransform();
+						p.y = ret.y + obj->GetCollider()->GetHeight();
+						obj->SetTransform(p);
+						obj->SetFalling(false);
+
+						break;
+					}
+					obj->SetFalling(true);
+				}
 			}
 
+		
 		}
+
 	}
-	//test->m_vRotate.z += Timer::GetInstance().GetSecPerFrame()/10;
-	//test->GetCollider()->m_vRotate.z += Timer::GetInstance().GetSecPerFrame()/10;
 
 
-	//test->Frame();
+	
 
 	return true;
 }
 
 bool ClientMain::Render()
 {
-
+	
+	testScene->Render();
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
 		if (obj != nullptr)
 		{
-			obj->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
+			obj->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 			obj->Render();
 			if (obj->GetCollider() != nullptr)
 			{
-				obj->GetCollider()->SetMatrix(nullptr, &GetCamera().GetView(), &GetCamera().GetProjection());
+				obj->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 				obj->GetCollider()->Render();
 			}
 		}

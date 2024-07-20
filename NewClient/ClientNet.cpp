@@ -290,7 +290,7 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
 
 
 
-    return 0;
+    return TRUE;
 }
 
 BOOL NetSendPacket(Packet* packet)

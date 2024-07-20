@@ -24,11 +24,12 @@ public:
 
 	void InputAction();
 	void InputKey();
+	void PacketSendProc();
 	virtual void  SetPlayerSprite() override;
 	void ChangeState(PLAYER_STATE state);
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
 	virtual void SetState(PLAYER_STATE state) override;
-	
+	virtual void SetFalling(bool state) { m_bIsFalling = state; };
 public:
 	PlayerObject();
 	virtual ~PlayerObject();
