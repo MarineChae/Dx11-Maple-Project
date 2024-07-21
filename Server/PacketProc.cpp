@@ -22,7 +22,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
     if (player == nullptr)
         return FALSE;
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    Packet* SendPack = new Packet;
 
     player->SetXPos(shX);
     player->SetYPos(shY);
@@ -30,7 +30,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     
     IOCPServer::GetInstance().AddPacket(SendPack);
 
-    return 0;
+    return 0; 
 }
 
 BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
@@ -51,7 +51,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 
     if (player == nullptr)
         return FALSE;
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    Packet* SendPack = new Packet;
 
     player->SetXPos(shX);
     player->SetYPos(shY);

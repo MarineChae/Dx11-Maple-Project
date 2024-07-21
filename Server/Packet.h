@@ -1,8 +1,9 @@
 #pragma once
 #include <windows.h>
 #include <assert.h>
+#include"ObjectPool.h"
 
-class Packet
+class Packet : public ObjectPool<Packet>
 {
 	enum ePacket
 	{

@@ -47,7 +47,7 @@ bool AcceptIocp::ThreadRun()
 
 
 
-void IOCPServer::AddPacket(std::shared_ptr<Packet> packet)
+void IOCPServer::AddPacket(Packet* packet)
 {
 	
 	m_BroadcastPacketPool.Add(packet);
@@ -59,7 +59,7 @@ void IOCPServer::ChatMsg(Packet& packet)
 	
 }
 
-int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
+int IOCPServer::SendPacket(User* pUser, Packet* packet)
 {
 
 	char* SendBuffer = packet->GetBufferPointer();
@@ -88,7 +88,7 @@ int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 	return packet->GetDataSize();
 }
 
-bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
+bool IOCPServer::Broadcasting(Packet* packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
@@ -109,7 +109,7 @@ bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
 	return true;
 }
 
-bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet, std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())

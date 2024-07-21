@@ -12,7 +12,7 @@ int SessionMgr::m_iSessionCount = 0;
 
 void User::Close()
 {
-	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+	Packet* pack = new Packet;
 	DisConnectCharacter(pack, m_dwSessionID);
 	
 	for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
@@ -183,12 +183,12 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		short x = rand() % 500;
 		short y = rand() % 500;
 
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet;
 		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
 
 
-		std::shared_ptr<Packet> pack2 = std::make_shared<Packet>();
+		Packet* pack2 = new Packet;
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100);
 		IOCPServer::GetInstance().AddPacket(pack2);
 
@@ -205,7 +205,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 			}
 			else if (otherplayer->GetSessionID() != user->GetSessionId())
 			{
-				std::shared_ptr<Packet> playerpack = std::make_shared<Packet>();
+				Packet* playerpack = new Packet;
 				CreateOtherCharacter(playerpack,
 					otherplayer->GetSessionID(),
 					otherplayer->GetDirection(),

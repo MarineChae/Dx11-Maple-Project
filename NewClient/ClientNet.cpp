@@ -194,9 +194,9 @@ DWORD NetCompleteRecvPacket()
     //헤더 정보를 빼왔으므로 헤더크기만큼 데이터 지워줌
     NetRecvQ.RemoveData(PACKET_HEADER_SIZE);
 
-    Packet pack;
+    Packet* pack = new Packet;
     //큐에서 패킷 크기만큼 데이터를 빼온다
-    if(!NetRecvQ.Get(pack.GetBufferPointer(),ph.PacketSize))
+    if(!NetRecvQ.Get(pack->GetBufferPointer(),ph.PacketSize))
         return 0xff;
 
 
@@ -206,9 +206,9 @@ DWORD NetCompleteRecvPacket()
         return 0xff;
 
     //패킷에 데이터를 넣어주었으므로 읽기 위치를 이동
-    pack.MoveWritePos(ph.PacketSize);
+    pack->MoveWritePos(ph.PacketSize);
 
-    if (!PacketProc(ph.PacketType, &pack))
+    if (!PacketProc(ph.PacketType, pack))
         return 0xff;
 
 

@@ -22,7 +22,7 @@ bool PlayerObject::Frame()
 
     if (GetDestination() != GetTransform() && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
     {
-        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), Timer::GetInstance().GetSecPerFrame()));
+        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
         SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
        
     }
@@ -30,7 +30,7 @@ bool PlayerObject::Frame()
     if (m_bIsFalling)
     {
       auto pos = GetTransform();
-      pos.y -= Timer::GetInstance().GetSecPerFrame() * 1000;
+      pos.y -= static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 1000);
       SetTransform(pos);
     }
     
@@ -203,7 +203,7 @@ void PlayerObject::InputAction()
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x -= 500 * Timer::GetInstance().GetSecPerFrame();
+        pos.x -= static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
@@ -211,7 +211,7 @@ void PlayerObject::InputAction()
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.x += 500 * Timer::GetInstance().GetSecPerFrame();
+        pos.x += static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
@@ -219,14 +219,14 @@ void PlayerObject::InputAction()
     if (ACTION_MOVEUP == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y += 500 * Timer::GetInstance().GetSecPerFrame();
+        pos.y += static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_MOVEDOWN == m_dwActionInput)
     {
         TVector3 pos = GetTransform();
-        pos.y -= 500 * Timer::GetInstance().GetSecPerFrame();
+        pos.y -= static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
