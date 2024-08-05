@@ -58,7 +58,7 @@ TVector3 Collision::ClosestPoint(TVector3 point, Line line)
     float B = line.From.x - line.To.x;
     float C = (line.To.x * line.From.y) - (line.From.x * line.To.y);
 
-    double denom = A * A + B * B;
+    float denom = A * A + B * B;
     ret.x = point.x - A * (A * point.x + B * point.y + C) / denom;
     ret.y = point.y - B * (A * point.x + B * point.y + C) / denom;
 

@@ -35,7 +35,6 @@ bool PlayerObject::Frame()
     }
     if (m_bIsJump )
     {
-        m_bIsFalling=false;
         auto pos = GetTransform();
         pos.y += static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 800);
         SetTransform(pos);
@@ -116,7 +115,11 @@ void PlayerObject::InputKey()
     {
         dwAction = ACTION_STAND;
     }
-    if (Input::GetInstance().GetKeyState(VK_SPACE) >= KEY_PUSH && !m_bIsJump && !m_bIsFalling)
+    if (m_bIsFalling)
+    {
+        dwAction += ACTION_FALL;
+    }
+    else if (Input::GetInstance().GetKeyState(VK_SPACE) >= KEY_PUSH && !m_bIsJump)
     {
         dwAction += ACTION_JUMP;
     }
@@ -130,6 +133,7 @@ void PlayerObject::PacketSendProc()
 
     switch (m_dwCurrentAction)
     {
+
     case ACTION_STAND:
         MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
@@ -150,6 +154,17 @@ void PlayerObject::PacketSendProc()
             GetPlayerState(),(BYTE)m_bIsFalling);
         ChangeState(PLAYER_STATE::PS_WALK);
         OutputDebugString(L"start\n");
+        break;
+    case ACTION_STANDJUMP:
+    case ACTION_MOVELEFT_JUMP:
+    case ACTION_MOVERIGHT_JUMP:
+    case ACTION_MOVELEFT_FALL:
+    case ACTION_MOVERIGHT_FALL:
+        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
+            (short)GetTransform().x,
+            (short)GetTransform().y,
+            GetPlayerState(), (BYTE)m_bIsFalling);
+        ChangeState(PLAYER_STATE::PS_JUMP);
         break;
     
     }
@@ -185,11 +200,21 @@ void PlayerObject::SetPlayerSprite()
     SetSpriteInfo(walk);
     Create(L"../resource/Player/PWalk.png", L"../Shader/Defalutshader.hlsl");
 
+    std::shared_ptr<SpriteData> jump = std::make_shared<SpriteData>();
+    jump->iCol = 1;
+    jump->iRow = 1;
+    jump->iMaxImageCount = 1;
+    jump->m_fDelay = 0.18f;
+    jump->m_vScale = { 46,68,1 };
+    SetSpriteInfo(jump);
+    Create(L"../resource/Player/PJump.png", L"../Shader/Defalutshader.hlsl");
 
-  
+
+
+
+
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->SetScale(TVector3(46, 68, 1));
- 
     GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 }
 
@@ -273,9 +298,28 @@ void PlayerObject::InputAction()
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
+    if (ACTION_MOVELEFT_FALL == m_dwActionInput)
+    {
+        m_pMovePow.x = min(m_pMovePow.x, 200);
+        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        m_pMovePow.x = max(m_pMovePow.x, -500);
+          m_bIsFalling = true;
+        m_dwCurrentAction = m_dwActionInput;
+        SetDirection(0);
+    }
+    if (ACTION_MOVERIGHT_FALL == m_dwActionInput)
+    {
+        m_pMovePow.x = max(m_pMovePow.x, -200);
+        m_pMovePow.x += static_cast<float>(1000 * static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
+        m_pMovePow.x = min(m_pMovePow.x, 500);
+        m_bIsFalling = true;
+        m_dwCurrentAction = m_dwActionInput;
+        SetDirection(1);
+    }
+
     
     TVector3 pos = GetTransform();
-    pos = TVector3::Lerp(pos , pos + m_pMovePow , Timer::GetInstance().GetSecPerFrame());
+    pos = TVector3::Lerp(pos , pos + m_pMovePow , static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
     SetTransform(pos);
 }
 

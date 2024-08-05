@@ -25,8 +25,8 @@
 void Collider::SetScale(TVector3 scale)
 {
     Object::SetScale(scale);
-    m_iWidth = scale.x;
-    m_iHeight = scale.y;
+    m_iWidth = static_cast<int>(scale.x);
+    m_iHeight = static_cast<int>(scale.y);
 
 
 }

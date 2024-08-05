@@ -97,6 +97,7 @@ enum PLAYER_STATE
 {
     PS_STAND,
     PS_WALK,
+    PS_JUMP,
     PS_ATTACK,
     PS_DEFAULT,
 

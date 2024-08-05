@@ -113,12 +113,12 @@ bool DxRenderer::PostRender()
 {
     if (m_pIndexBuffer == nullptr)
     {
-        Device::GetContext()->Draw(m_vVertexList.size(), 0);
+        Device::GetContext()->Draw(static_cast<UINT>(m_vVertexList.size()), 0);
     }
     else
     {
          Device::GetContext()->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-         Device::GetContext()->DrawIndexed(m_vIndexList.size(), 0, 0);
+         Device::GetContext()->DrawIndexed(static_cast<UINT>(m_vIndexList.size()), 0, 0);
     }
 
 	return true;

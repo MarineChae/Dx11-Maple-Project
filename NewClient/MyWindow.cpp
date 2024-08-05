@@ -66,7 +66,7 @@ bool MyWindow::SetWindow(const WCHAR* sztitle, DWORD dwWindowwidth, DWORD dwWind
     m_dwWindowStyle = WS_POPUPWINDOW;
 #endif 
 
-    RECT rc = { 0, 0,  m_WindowStyle.m_dwWindowWidth, m_WindowStyle.m_dwWindowHeight };
+    RECT rc = { 0, 0,  static_cast<LONG>(m_WindowStyle.m_dwWindowWidth), static_cast<LONG>(m_WindowStyle.m_dwWindowHeight) };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
     m_hWnd = CreateWindowEx(m_WindowStyle.m_dwWindowExStyle, L"À©µµ¿ì", sztitle,
