@@ -161,7 +161,7 @@ bool ClientMain::Frame()
 	{
 		test2->Frame();
 		test2->m_bIsFalling = true;
-		for (auto line : m_testscene->GetLineColliderList())
+		for (auto& line : m_testscene->GetLineColliderList())
 		{
 
 			if (Collision::PointToLine(test2->GetCollider()->GetCollisionPoint(), line))
@@ -184,7 +184,7 @@ bool ClientMain::Frame()
 
 	}
 		
-	//testcol->Frame();
+
 	return true;
 }
 

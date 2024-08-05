@@ -15,6 +15,7 @@ public:
 	void SetCameraPos(TVector3 pos) { m_vCameraPos = pos; }
 	TVector3 GetCameraPos() { return m_vCameraPos; };
 	void AddZoom(float value) { Zoom += value; };
+	float GetZoomValue() const { return Zoom; };
 public:
 	bool CreateCamera(TVector3 pos, TVector2 size);
 

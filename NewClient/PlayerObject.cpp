@@ -27,11 +27,23 @@ bool PlayerObject::Frame()
        
     }
 
-    if (m_bIsFalling)
+    if (m_bIsFalling && !m_bIsJump)
     {
-      auto pos = GetTransform();
-      pos.y -= static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 1000);
-      SetTransform(pos);
+        auto pos = GetTransform();
+        pos.y -= static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 800);
+        SetTransform(pos);
+    }
+    if (m_bIsJump )
+    {
+        m_bIsFalling=false;
+        auto pos = GetTransform();
+        pos.y += static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 800);
+        SetTransform(pos);
+        if (pos.y - m_vBeforePos.y > fabs(200.0f))
+        {
+            m_bIsJump = false;
+            m_bIsFalling = true;
+        }
     }
     
 
@@ -104,8 +116,10 @@ void PlayerObject::InputKey()
     {
         dwAction = ACTION_STAND;
     }
-
-
+    if (Input::GetInstance().GetKeyState(VK_SPACE) >= KEY_PUSH && !m_bIsJump && !m_bIsFalling)
+    {
+        dwAction += ACTION_JUMP;
+    }
     m_dwActionInput = dwAction;
 
 }
@@ -120,7 +134,7 @@ void PlayerObject::PacketSendProc()
         MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState());
+            GetPlayerState(),(BYTE)m_bIsFalling);
         ChangeState(PLAYER_STATE::PS_STAND);
         OutputDebugString(L"stop\n");
         break;
@@ -133,10 +147,11 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState());
+            GetPlayerState(),(BYTE)m_bIsFalling);
         ChangeState(PLAYER_STATE::PS_WALK);
         OutputDebugString(L"start\n");
         break;
+    
     }
 
     static double sendtime = 0;
@@ -202,41 +217,66 @@ void PlayerObject::InputAction()
 
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
-        TVector3 pos = GetTransform();
-        pos.x -= static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
-        SetTransform(pos);
+        m_pMovePow.x = min(m_pMovePow.x, 200);
+        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        m_pMovePow.x = max(m_pMovePow.x, -500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
-        TVector3 pos = GetTransform();
-        pos.x += static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
-        SetTransform(pos);
+        m_pMovePow.x = max(m_pMovePow.x, -200);
+        m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        m_pMovePow.x = min(m_pMovePow.x, 500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
     if (ACTION_MOVEUP == m_dwActionInput)
     {
-        TVector3 pos = GetTransform();
-        pos.y += static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
-        SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_MOVEDOWN == m_dwActionInput)
     {
-        TVector3 pos = GetTransform();
-        pos.y -= static_cast<float>(500 * Timer::GetInstance().GetSecPerFrame());
-        SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_STAND == m_dwActionInput)
     {
-
+        m_pMovePow = m_pMovePow.Lerp(m_pMovePow, TVector3::Zero, 0.005f);
         m_dwCurrentAction = m_dwActionInput;
     }
-
-
+    if (ACTION_STANDJUMP == m_dwActionInput)
+    {
+        m_vBeforePos = GetTransform();
+        m_bIsJump = true;
+        m_bIsFalling = false;
+        m_dwCurrentAction = m_dwActionInput;
+    }
+    if (ACTION_MOVELEFT_JUMP == m_dwActionInput)
+    {
+        m_pMovePow.x = min(m_pMovePow.x, 200);
+        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        m_pMovePow.x = max(m_pMovePow.x, -500);
+        m_vBeforePos = GetTransform();
+        m_bIsJump = true;
+        m_bIsFalling = false;
+        m_dwCurrentAction = m_dwActionInput;
+        SetDirection(0);
+    }
+    if (ACTION_MOVERIGHT_JUMP == m_dwActionInput)
+    {
+        m_pMovePow.x = max(m_pMovePow.x, -200);
+        m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        m_pMovePow.x = min(m_pMovePow.x, 500);
+        m_vBeforePos = GetTransform();
+        m_bIsJump = true;
+        m_bIsFalling = false;
+        m_dwCurrentAction = m_dwActionInput;
+        SetDirection(1);
+    }
+    
+    TVector3 pos = GetTransform();
+    pos = TVector3::Lerp(pos , pos + m_pMovePow , Timer::GetInstance().GetSecPerFrame());
+    SetTransform(pos);
 }
 
 
@@ -251,7 +291,8 @@ PlayerObject::PlayerObject()
     , m_dwActionInput(0)
     , m_PlayerState(PS_DEFAULT)
     , m_bIsFalling(true)
- 
+    , m_bIsJump(false)
+    , m_vBeforePos()
 {
 
 

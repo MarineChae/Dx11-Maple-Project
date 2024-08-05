@@ -10,12 +10,14 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     BYTE byDirection;
     short shX;
     short shY;
+    BYTE isFalling;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
     *pack >> dwSessionID;
     *pack >> shX;
     *pack >> shY;
+    *pack >> isFalling;
     *pack >> state;
 
 
@@ -26,7 +28,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
 
     player->SetXPos(shX);
     player->SetYPos(shY);
-    MoveStartPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state);
+    MoveStartPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling);
     
     IOCPServer::GetInstance().AddPacket(SendPack);
 
@@ -39,12 +41,14 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
     BYTE byDirection;
     short shX;
     short shY; 
+    BYTE isFalling;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
     *pack >> dwSessionID; 
     *pack >> shX;
     *pack >> shY;
+    *pack >> isFalling;
     *pack >> state;
 
     auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
@@ -55,7 +59,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 
     player->SetXPos(shX);
     player->SetYPos(shY);
-    MoveStopPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state);
+    MoveStopPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling);
 
     IOCPServer::GetInstance().AddPacket(SendPack);
 

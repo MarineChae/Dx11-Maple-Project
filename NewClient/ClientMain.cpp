@@ -50,13 +50,13 @@ bool ClientMain::Frame()
 		if (obj != nullptr )
 		{//preframe 처리해야함
 	
-			obj->Frame();
+			
 			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
 				for (auto& line : testScene->GetLineColliderList())
 				{
 
-					if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line))
+					if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line) && !obj->GetJumping())
 					{
 						auto ret = Collision::ClosestPoint(obj->GetCollider()->GetCollisionPoint(), line);
 						auto p = obj->GetTransform();
@@ -68,8 +68,9 @@ bool ClientMain::Frame()
 					}
 					obj->SetFalling(true);
 				}
+				
 			}
-
+			obj->Frame();
 		
 		}
 

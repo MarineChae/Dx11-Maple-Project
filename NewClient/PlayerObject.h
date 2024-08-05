@@ -13,13 +13,15 @@ private:
 	bool	     m_bIsPlayable;
 	DWORD	     m_dwActionInput;
 	PLAYER_STATE m_PlayerState;
-	
+	TVector3     m_pMovePow;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
 	virtual bool Render() override;
 	virtual bool Release() override;
 	bool	     m_bIsFalling;
+	bool         m_bIsJump;
+	TVector3     m_vBeforePos;
 public:
 
 	void InputAction();
@@ -30,6 +32,8 @@ public:
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
 	virtual void SetState(PLAYER_STATE state) override;
 	virtual void SetFalling(bool state) { m_bIsFalling = state; };
+	virtual bool GetJumping() { return m_bIsJump; };
+	virtual bool GetFalling() { return m_bIsFalling; };
 public:
 	PlayerObject();
 	virtual ~PlayerObject();

@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "MakePacket.h"
 
-void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, short Y,PLAYER_STATE state)
+void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, short Y,PLAYER_STATE state, BYTE isFalling)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 9 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 10 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -15,17 +15,18 @@ void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, shor
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << isFalling;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state)
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state, BYTE isFalling)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 9 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 10 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -34,6 +35,7 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << isFalling;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
