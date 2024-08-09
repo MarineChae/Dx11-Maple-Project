@@ -9,6 +9,7 @@
 #include"Collision.h"
 #include"Scene.h"
 #include"SaveLoader.h"
+#include"Texture.h"
 
 const int mapXsize = 5830;
 const int mapYsize = 1764;
@@ -57,52 +58,77 @@ bool ClientMain::Frame()
 	ws += std::to_wstring(pos.y);
 	ws += L" , \n";
 	
-	
-	
-	float x = (2 * (float)pos.x/ clientXsize) -1;
-	float y = 1- ( 2 * (float)pos.y / clientYsize);
 	if (Input::GetInstance().GetKeyState(VK_F2) >= KEY_PUSH)
 	{
 		draw = true;
 	}
+
 	
-	
-	if (draw)
+	float x = (2 * (float)pos.x/ clientXsize) -1;
+	float y = 1- ( 2 * (float)pos.y / clientYsize);
+	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
 	{
-		v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-			,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
-			0.0f};
-	}
-	static Line l;
-	if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
-	{
-		if (!draw2)
+
+
+		if (draw)
 		{
-			l.From = v[v.size() - 1].Pos;
-			v.push_back({});
-			draw2 = true;
-		}
-		else
-		{
-			l.To = v[v.size() - 1].Pos;
-	
 			v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-								   ,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
-								   0.0f };
-			v.push_back({});
-	
-			m_testscene->GetCollider()->SetVertexList(v);
-			m_testscene->PushLineCollider(l);
-			draw = false;
-			draw2 = false;
+				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+				0.0f };
 		}
-		
-	
-	
+		static Line l;
+		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
+		{
+			if (!draw2)
+			{
+				l.From = v[v.size() - 1].Pos;
+				v.push_back({});
+				draw2 = true;
+			}
+			else
+			{
+				l.To = v[v.size() - 1].Pos;
+
+				v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+									   ,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+									   0.0f };
+				v.push_back({});
+
+				m_testscene->GetCollider()->SetVertexList(v);
+				m_testscene->PushLineCollider(l);
+				draw = false;
+				draw2 = false;
+			}
+
+		}
+		auto vb = m_testscene->GetCollider()->GetVertexBuffer().Get();
+		auto& vl = m_testscene->GetCollider()->GetVertexList();
+		Device::GetContext()->UpdateSubresource(vb, 0, 0,&vl.at(0), 0, 0);
+
 	}
-	
-	Device::GetContext()->UpdateSubresource(m_testscene->GetCollider()->GetVertexBuffer().Get(), 0, 0, 
-											&m_testscene->GetCollider()->GetVertexList().at(0), 0, 0);
+	if (m_ClickAction == CLICK_ACTION::MONSTER_PLACE)
+	{
+		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
+		{
+			if (m_EditMonster != nullptr)
+			{
+				std::shared_ptr<Object> mon = std::make_shared<Object>();
+				mon->Create(m_EditMonster->GetTexture(), m_EditMonster->GetShader());
+				mon->SetTransform({ x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+				0.0f });
+				mon->SetScale({ static_cast<float>(mon->GetTexture()->GetWidth()),
+								static_cast<float>(mon->GetTexture()->GetHeight()),0});
+				m_testscene->PushMonster(mon);
+			}
+
+		}
+
+
+
+	}
+
+
 
 #pragma region Input
 	if (Input::GetInstance().GetKeyState(VK_HOME) >= KEY_PUSH)
@@ -275,7 +301,8 @@ void ClientMain::Menu()
 
 		m_testscene->ResetMap(message_w);
 
-		m_testscene->GetMap()->SetScale({ mapXsize,mapYsize,0 });
+		m_testscene->GetMap()->SetScale({ static_cast<float>(m_testscene->GetMap()->GetTexture()->GetWidth()),
+										  static_cast<float>(m_testscene->GetMap()->GetTexture()->GetHeight()),0});
 
 
 		m_bImguiNew = false;
@@ -335,7 +362,9 @@ void ClientMain::Menu()
 
 void ClientMain::SelectMenu()
 {
-	static Line selectLine;
+	static Line* selectLine;
+	static float tempx;
+	static float tempy;
 	ImVec2 ivMin = { static_cast<float>(1388) - static_cast<float>(1388) /3,0 };
 	ImGui::SetNextWindowPos(ivMin);
 	ImGui::Begin("MapTool Menu");
@@ -375,7 +404,10 @@ void ClientMain::SelectMenu()
 
 				if (ImGui::Selectable(s.c_str()))
 				{
-					selectLine = line;
+					selectLine = &line;
+					tempx = selectLine->From.x;
+					tempy = selectLine->From.y;
+
 				}
 
 
@@ -390,8 +422,9 @@ void ClientMain::SelectMenu()
 		{
 			if (ImGui::BeginListBox("From"))
 			{
-				ImGui::InputFloat("X : ##", &selectLine.From.x);
-				ImGui::InputFloat("Y : ##", &selectLine.From.y);
+			
+				ImGui::InputFloat("X : ##", &tempx);
+				ImGui::InputFloat("Y : ##", &tempy);
 
 				ImGui::EndListBox();
 			}
@@ -401,11 +434,67 @@ void ClientMain::SelectMenu()
 		}
 		if (ImGui::Button("Conform", ImVec2(60, 30)))
 		{
+			selectLine->From.x = tempx;
+			selectLine->From.y = tempy;
+		}
+	}
+	if (m_ClickAction == CLICK_ACTION::MONSTER_PLACE)
+	{
 
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Monster List");
+		if (ImGui::BeginListBox("## ", { 250,100 }))
+		{
+			for (int isize = 0; isize < m_EditMonsterList.size(); isize++)
+			{
+				bool clickmonster;
+				auto tex = m_EditMonsterList[isize]->GetTexture();
+				clickmonster = ImGui::ImageButton((ImTextureID)tex->GetSRV(), ImVec2(64, 64));
+				if (clickmonster)
+				{
+					m_EditMonster = m_EditMonsterList[isize];
+					break;
+				}
+			}
+
+			ImGui::EndListBox();
+		}
+
+
+
+		ImGui::NewLine();
+		std::string filePath;
+		std::string filePathName;
+		static bool monsterlist;
+		if (ImGui::Button("Load", ImVec2(60, 30)))
+		{
+			monsterlist = true;
+			
+		}
+		if (monsterlist)
+		{
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
+
+			// display
+			if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", monsterlist))
+			{
+				monsterlist = false;
+			}
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				ImGuiFileDialog::Instance()->Close();
+				std::shared_ptr<Object> monster = std::make_shared<Object>();
+				std::wstring w;
+				w.assign(filePathName.begin(), filePathName.end());
+				monster->Create(w,L"../Shader/Defalutshader.hlsl");
+				m_EditMonsterList.push_back(monster);
+
+			}
 		}
 	}
 
-	
 
 	ImGui::End();
 }

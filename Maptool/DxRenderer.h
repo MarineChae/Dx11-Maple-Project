@@ -40,10 +40,10 @@ public:ComPtr<ID3D11Buffer> m_pVertexBuffer;
 
 	virtual void  SetPlayerSprite() {};
 	//getter
-	ConstantData& GetConstantData() { return m_ConstantData; };
+	ConstantData& GetConstantData()  { return m_ConstantData; };
 	ID3D11Buffer* GetConstantBuffer() { return m_pConstantBuffer.Get(); };
 	ComPtr<ID3D11Buffer>& GetVertexBuffer()  { return m_pVertexBuffer; }
-	std::vector<PNCT_VERTEX> GetVertexList() { return m_vVertexList; }
+	std::vector<PNCT_VERTEX>& GetVertexList() { return m_vVertexList; }
 	PNCT_VERTEX&  GetVertex(int num) { return m_vVertexList[num]; };
 public:
 	virtual bool CreateVertexBuffer();

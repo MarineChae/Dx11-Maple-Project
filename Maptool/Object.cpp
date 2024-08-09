@@ -56,6 +56,19 @@ bool Object::Create(std::wstring FileName, std::wstring ShaderFileName)
     return true;
 }
 
+bool Object::Create(const Texture* tex, const Shader* shader)
+{
+    CreateConstantBuffer();
+    CreateVertexData();
+    CreateVertexBuffer();
+    CreateIndexBuffer();
+    SetShader(shader);
+    SetTexture(tex);
+
+    CreateInputLayout();
+    return true;
+}
+
 void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix)
 {
     if (WolrdMatrix != nullptr)
@@ -75,7 +88,9 @@ void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjM
     GetConstantData().ViewMatrix = m_ViewMatrix.Transpose();
     GetConstantData().ProjMatrix = m_ProjMatrix.Transpose();
 
-    Device::GetContext()->UpdateSubresource(GetConstantBuffer(), 0, nullptr, &GetConstantData(), 0, 0);
+    auto t = GetConstantBuffer();
+    auto tt = GetConstantData();
+    Device::GetContext()->UpdateSubresource(t, 0, nullptr, &tt, 0, 0);
 }
 
 void Object::SetScale(TVector3 scale)

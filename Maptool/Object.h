@@ -51,6 +51,7 @@ public:
 	virtual bool CreateIndexData();
 	virtual void UpdataMatrix();
 	virtual bool Create(std::wstring FileName, std::wstring ShaderFileName);
+	virtual bool Create(const Texture* tex, const Shader* shader);
 	virtual void SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix);
 	virtual void SetScale(TVector3 scale);
 	virtual void SetMatrix();

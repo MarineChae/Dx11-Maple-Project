@@ -1,0 +1,4 @@
+#MapName
+../resource/MapObejct/ .png
+#LineCollider
+0

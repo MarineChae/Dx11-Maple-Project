@@ -28,6 +28,16 @@ bool Scene::Init(std::wstring MapName)
 bool Scene::Frame()
 {
 	m_pMap->Frame();
+
+	for (auto& p : m_PlayerList)
+	{
+		p->Frame();
+	}
+	for (auto& m : m_MonsterList)
+	{
+		m->Frame();
+	}
+
 	m_pCollider->Frame();
     return true;
 }
@@ -38,6 +48,19 @@ bool Scene::Render()
 							  &CameraMgr::GetInstance().GetCamera().GetProjection());
 	m_pMap->Render();
 
+	for (auto& p : m_PlayerList)
+	{
+		p->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		p->Render();
+
+	}
+	for (auto& m : m_MonsterList)
+	{
+		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		m->Render();
+	}
 
 	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 									&CameraMgr::GetInstance().GetCamera().GetProjection());
