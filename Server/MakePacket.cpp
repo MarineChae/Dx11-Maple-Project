@@ -2,12 +2,13 @@
 #include "MakePacket.h"
 #include "PlayerData.h"
 
-void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state, BYTE isFalling)
+
+void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 10 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 	PacketHeader.PacketTemp = 0;
 
@@ -18,16 +19,17 @@ void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, sho
 	*pack << X;
 	*pack << Y;
 	*pack << isFalling;
+	*pack << isJump;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state,BYTE isFalling)
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 10 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 
@@ -38,6 +40,7 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 	*pack << X;
 	*pack << Y;
 	*pack << isFalling;
+	*pack << isJump;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 

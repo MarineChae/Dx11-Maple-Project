@@ -14,6 +14,7 @@ const Texture* TextureMgr::Load(std::wstring FileName)
 
     }
     Texture* NewData = new Texture;
+    NewData->m_csPath = FileName;
     if (NewData->LoadTextureFile(Device::GetDevice(), FileName))
     {
         NewData->m_csName = Key;

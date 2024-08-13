@@ -4,7 +4,8 @@
 void Scene::ResetMap(std::wstring MapName)
 {
 	m_pMap.reset();
-	m_pCollider.reset(), 
+	m_pCollider.reset();
+	m_LineColliderList.clear();
 	Init(MapName);
 }
 bool Scene::Init(std::wstring MapName)

@@ -1,9 +1,20 @@
 #pragma once
 #include"Singleton.h"
 
+enum SceneNum
+{
+	Lobby,
+	BossRoom1,
+	BossRoom2,
+	BossRoom3,
+};
+
+
 class PlayerData
 {
 private:
+	SceneNum m_PlaceScene;
+
 	BOOL	m_bFlag;
 	DWORD	m_dwSessionID;
 			

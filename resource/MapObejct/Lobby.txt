@@ -1,0 +1,5 @@
+#MapName
+../resource/MapObejct/Lobby.png
+#LineCollider
+1
+-1833.143066	-730.276855	1831.852539	-732.276978

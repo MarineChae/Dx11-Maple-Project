@@ -5,13 +5,19 @@
 class Texture
 {
 
-	
-
 public:
 	ID3D11ShaderResourceView* m_pTextureSRV = nullptr;
 	std::wstring   m_csName;
 	std::wstring   m_csPath;
+private:
+	int m_iWidth;
+	int m_iHeight;
 
+public:
+	const int& GetWidth() const { return m_iWidth; };
+	const int& GetHeight() const { return m_iHeight; };
+
+public:
 	bool Apply(ID3D11DeviceContext* pImmediateContext, int iSlot) const
 	{
 
@@ -28,10 +34,9 @@ public:
 
 	bool Release();
 
-	ID3D11ShaderResourceView* GetSRV() const { return m_pTextureSRV; };
+	const ID3D11ShaderResourceView* GetSRV() const { return m_pTextureSRV; };
 	void SetSRV(ID3D11ShaderResourceView* srv) { m_pTextureSRV = srv; };
 };
-
 
 
 

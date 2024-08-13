@@ -33,6 +33,7 @@ public:
 	virtual void SetState(PLAYER_STATE state) override;
 	virtual void SetFalling(bool state) { m_bIsFalling = state; };
 	virtual bool GetJumping() { return m_bIsJump; };
+	virtual void SetJumping(bool state) { m_bIsJump = state; };
 	virtual bool GetFalling() { return m_bIsFalling; };
 public:
 	PlayerObject();

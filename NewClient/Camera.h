@@ -8,13 +8,14 @@ private:
 	TVector3 m_vCameraPos;
 	TMatrix m_ViewMatrix;
 	TMatrix m_ProjectionMatrix;
-
+	float m_fZoomScale=1.0f;
 public:
 	TMatrix& GetView() { return m_ViewMatrix; };
 	TMatrix& GetProjection() { return m_ProjectionMatrix; };
 	void SetCameraPos(TVector3 pos) { m_vCameraPos = pos; }
-
-
+	void ControlAngle(float WindowsizeX, float WindowsizeY,float MapSizeX ,float MapSizeY);
+	void SetZoomScale(float scale) { m_fZoomScale = scale; };
+	float GetZoomScale() const { return m_fZoomScale; };
 public:
 	bool CreateCamera(TVector3 pos, TVector2 size);
 

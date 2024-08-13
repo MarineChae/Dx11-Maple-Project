@@ -11,6 +11,7 @@ BOOL PacketProc_MoveStart(Packet* pack)
     short shX;
     short shY;
     BYTE isFalling;
+    BYTE isJump;
     PLAYER_STATE state;
 
     *pack >> byDirection;
@@ -18,6 +19,7 @@ BOOL PacketProc_MoveStart(Packet* pack)
     *pack >> shX;
     *pack >> shY;
     *pack >> isFalling;
+    *pack >> isJump;
     *pack >> state;
 
     std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
@@ -29,6 +31,8 @@ BOOL PacketProc_MoveStart(Packet* pack)
     obj->SetDirection(byDirection);
     obj->ChangeState(state);
     obj->SetFalling(isFalling);
+    obj->SetJumping(isJump);
+    
     return TRUE;
 }
 
@@ -39,12 +43,14 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     short shX;
     short shY;
     BYTE isFalling;
+    BYTE isJump;
     PLAYER_STATE state;
     *pack >> byDirection;
     *pack >> dwSessionID;
     *pack >> shX;
     *pack >> shY;
     *pack >> isFalling;
+    *pack >> isJump;
     *pack >> state;
 
     std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
@@ -56,7 +62,7 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     obj->SetDirection(byDirection);
     obj->ChangeState(state);
     obj->SetFalling(isFalling);
-
+    obj->SetJumping(isJump);
     return TRUE;
 }
 

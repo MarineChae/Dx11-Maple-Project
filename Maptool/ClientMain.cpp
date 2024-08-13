@@ -95,7 +95,10 @@ bool ClientMain::Frame()
 				v.push_back({});
 
 				m_testscene->GetCollider()->SetVertexList(v);
-				m_testscene->PushLineCollider(l);
+				std::shared_ptr<Line> line = std::make_shared<Line>();
+				line->From = l.From;
+				line->To = l.To;
+				m_testscene->PushLineCollider(line);
 				draw = false;
 				draw2 = false;
 			}
@@ -362,7 +365,7 @@ void ClientMain::Menu()
 
 void ClientMain::SelectMenu()
 {
-	static Line* selectLine;
+	static std::shared_ptr<Line> selectLine;
 	static float tempx;
 	static float tempy;
 	ImVec2 ivMin = { static_cast<float>(1388) - static_cast<float>(1388) /3,0 };
@@ -394,17 +397,17 @@ void ClientMain::SelectMenu()
 			{
 				std::string s;
 				s += " From : ";
-				s += std::to_string(line.From.x);
-				s += " , ";
-				s += std::to_string(line.From.y);
-				s += " \n To   : ";
-				s += std::to_string(line.To.x);
-				s += " , ";
-				s += std::to_string(line.To.y);
+				s += std::to_string(line->From.x);
+				s += " , ";				
+				s += std::to_string(line->From.y);
+				s += " \n To   : ";		
+				s += std::to_string(line->To.x);
+				s += " , ";				
+				s += std::to_string(line->To.y);
 
 				if (ImGui::Selectable(s.c_str()))
 				{
-					selectLine = &line;
+					selectLine = line;
 					tempx = selectLine->From.x;
 					tempy = selectLine->From.y;
 

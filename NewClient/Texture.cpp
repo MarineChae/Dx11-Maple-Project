@@ -14,6 +14,7 @@ const Texture* TextureMgr::Load(std::wstring FileName)
 
     }
     Texture* NewData = new Texture;
+    NewData->m_csPath = FileName;
     if (NewData->LoadTextureFile(Device::GetDevice(), FileName))
     {
         NewData->m_csName = Key;
@@ -73,6 +74,8 @@ bool Texture::LoadTextureFile(ID3D11Device* pDevice, std::wstring FileName)
             hr = DirectX::CreateShaderResourceViewEx(pDevice, ImageObj->GetImages(),
                 ImageObj->GetImageCount(),
                 mData, D3D11_USAGE_DYNAMIC, D3D11_BIND_SHADER_RESOURCE, D3D11_CPU_ACCESS_WRITE, 0, CREATETEX_DEFAULT, &m_pTextureSRV);
+            m_iWidth = mData.width;
+            m_iHeight = mData.height;
 
             if (SUCCEEDED(hr))
             {
@@ -90,6 +93,8 @@ bool Texture::LoadTextureFile(ID3D11Device* pDevice, std::wstring FileName)
             hr = DirectX::CreateShaderResourceViewEx(pDevice, ImageObj->GetImages(),
                 ImageObj->GetImageCount(),
                 mData, D3D11_USAGE_DYNAMIC, D3D11_BIND_SHADER_RESOURCE, D3D11_CPU_ACCESS_WRITE, 0, CREATETEX_DEFAULT, &m_pTextureSRV);
+            m_iWidth = mData.width;
+            m_iHeight = mData.height;
 
             if (SUCCEEDED(hr))
             {
@@ -107,6 +112,8 @@ bool Texture::LoadTextureFile(ID3D11Device* pDevice, std::wstring FileName)
             hr = DirectX::CreateShaderResourceViewEx(pDevice, ImageObj->GetImages(),
                 ImageObj->GetImageCount(),
                 mData, D3D11_USAGE_DYNAMIC, D3D11_BIND_SHADER_RESOURCE, D3D11_CPU_ACCESS_WRITE, 0, CREATETEX_DEFAULT, &m_pTextureSRV);
+            m_iWidth = mData.width;
+            m_iHeight = mData.height;
 
             if (SUCCEEDED(hr))
             {

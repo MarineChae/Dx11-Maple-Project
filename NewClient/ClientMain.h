@@ -13,6 +13,8 @@ public:
 	std::shared_ptr<Collider> testcol;
 	std::shared_ptr<Scene> testScene;
 	std::shared_ptr<SaveLoader>saveload;
+	float MapSizeX;
+	float MapSizeY;
 public:
 	virtual bool Init();
 	virtual bool Frame();

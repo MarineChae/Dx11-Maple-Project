@@ -9,6 +9,7 @@
 #include"Collision.h"
 #include"Scene.h"
 #include"SaveLoader.h"
+#include"Texture.h"
 bool ClientMain::Init()
 {
 
@@ -27,11 +28,13 @@ bool ClientMain::Init()
 	//ObejctMgr::GetInstance().PushObject(, 60);
 	saveload = std::make_shared<SaveLoader>();
 	testScene = std::make_shared<Scene>();
-	testScene->Init(L"../resource/20240720120407278_100000000.png");
 
-	testScene->GetMap()->SetScale(TVector3(5830, 1764, 0));
+	testScene->Init(L"../resource/MapObejct/Lobby.png");
 
-	saveload->LoadData(testScene,"../resource/20240720120407278_100000000.txt");
+
+	saveload->LoadData(testScene,"../resource/MapObejct/Lobby.txt");
+	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
+	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 	return true;
 }
 
@@ -39,10 +42,22 @@ bool ClientMain::Frame()
 {
 	testScene->Frame();
 
+
+
+	if (Input::GetInstance().GetKeyState(VK_F1) >= KEY_PUSH)
+	{
+		ObejctMgr::GetInstance().GetPlayerObject()->SetTransform({ 0,100,0 });
+
+		testScene->ResetMap(L"../resource/MapObejct/Phase1.png");
+		saveload->LoadData(testScene, "../resource/MapObejct/Phase1.txt");
+		MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
+		MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
+		CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
+	}
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
-
-
-
+	CameraMgr::GetInstance().GetCamera().ControlAngle(1388, 766
+													, MapSizeX* CameraMgr::GetInstance().GetCamera().GetZoomScale()
+													, MapSizeY * CameraMgr::GetInstance().GetCamera().GetZoomScale());
 
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{

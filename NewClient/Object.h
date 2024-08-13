@@ -47,6 +47,7 @@ public:
 	virtual TVector3 GetCollisionPoint() const { return TVector3(); };
 	virtual void SetFalling(bool state) {};
 	virtual bool GetFalling() { return false; };
+	virtual void SetJumping(bool state) {};
 	virtual bool GetJumping() { return false; };
 public:
 	virtual bool CreateVertexData();

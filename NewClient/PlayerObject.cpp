@@ -138,7 +138,7 @@ void PlayerObject::PacketSendProc()
         MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState(),(BYTE)m_bIsFalling);
+            GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump);
         ChangeState(PLAYER_STATE::PS_STAND);
         OutputDebugString(L"stop\n");
         break;
@@ -151,7 +151,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState(),(BYTE)m_bIsFalling);
+            GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump);
         ChangeState(PLAYER_STATE::PS_WALK);
         OutputDebugString(L"start\n");
         break;
@@ -163,7 +163,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState(), (BYTE)m_bIsFalling);
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump);
         ChangeState(PLAYER_STATE::PS_JUMP);
         break;
     

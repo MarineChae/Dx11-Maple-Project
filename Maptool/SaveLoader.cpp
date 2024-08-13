@@ -20,10 +20,10 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(pSceneData->GetLineColliderList().size()));
 		for (auto& line : pSceneData->GetLineColliderList())
 		{
-			bRet = fprintf_s(fpWrite, "%f\t", line.From.x);
-			bRet = fprintf_s(fpWrite, "%f\t", line.From.y); 
-			bRet = fprintf_s(fpWrite, "%f\t", line.To.x);
-			bRet = fprintf_s(fpWrite, "%f\n", line.To.y);
+			bRet = fprintf_s(fpWrite, "%f\t", line->From.x);
+			bRet = fprintf_s(fpWrite, "%f\t", line->From.y); 
+			bRet = fprintf_s(fpWrite, "%f\t", line->To.x);
+			bRet = fprintf_s(fpWrite, "%f\n", line->To.y);
 		}
 
 	}
@@ -69,12 +69,12 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 				for (int i = 0; i < iSize; i++)
 				{
 					_fgetts(buffer, _countof(buffer), fpRead);
-					Line line;
-					_stscanf_s(buffer, _T("%f %f %f %f \n"), &line.From.x, &line.From.y, &line.To.x, &line.To.y);
+					std::shared_ptr<Line> line;
+					_stscanf_s(buffer, _T("%f %f %f %f \n"), &line->From.x, &line->From.y, &line->To.x, &line->To.y);
 					v.push_back({});
-					v[v.size()-1].Pos = line.From;
+					v[v.size()-1].Pos = line->From;
 					v.push_back({});
-					v[v.size() - 1].Pos = line.To;
+					v[v.size() - 1].Pos = line->To;
 					
 					pSceneData->PushLineCollider(line);
 				}
