@@ -70,3 +70,26 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 
     return 0;
 }
+
+BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
+{
+
+    DWORD dwSessionID;
+    BYTE Scenenum;
+
+    *pack >> dwSessionID;
+    *pack >> Scenenum;
+
+    auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
+
+    if (player == nullptr)
+        return FALSE;
+    Packet* SendPack = new Packet;
+    player->SetCurrentScene((SceneNum)Scenenum);
+
+    SceneChangePacket(SendPack, dwSessionID, Scenenum);
+
+    IOCPServer::GetInstance().AddPacket(SendPack);
+
+    return 0;
+}

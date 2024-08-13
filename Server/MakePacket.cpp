@@ -46,11 +46,11 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 
 }
 
-void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X, short Y, int HP)
+void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 13;
+	PacketHeader.PacketSize = 14;
 	PacketHeader.PacketType = PACKET_CS_CREATE_MY_CHARACTER;
 
 
@@ -60,16 +60,17 @@ void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X,
 	*pack << X;
 	*pack << Y;
 	*pack << HP;
+	*pack << CurrentScene;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 
 }
 
-void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP)
+void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP,BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 13;
+	PacketHeader.PacketSize = 14;
 	PacketHeader.PacketType = PACKET_CS_CREATE_OTHER_CHARACTER;
 
 
@@ -79,6 +80,7 @@ void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X
 	*pack << X;
 	*pack << Y;
 	*pack << HP;
+	*pack << CurrentScene;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
@@ -95,5 +97,20 @@ void DisConnectCharacter(Packet* pack, DWORD SessionID)
 	*pack << SessionID;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
+}
+
+void SceneChangePacket(Packet* pack, DWORD SessionID, BYTE SceneNum)
+{
+	PACKET_HEADER PacketHeader;
+
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 5;
+	PacketHeader.PacketType = PACKET_CS_SCENE_CHANGE;
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+
+	*pack << SessionID;
+	*pack << SceneNum;
+	*pack << (BYTE)NETWORK_PACKET_END;
 }
 

@@ -34,6 +34,7 @@ public:
 	DWORD GetAction() const { return m_dwAction; };
 	BYTE  GetDirection()const { return m_byDirection; };
 
+	SceneNum GetCurrentScene()const { return m_PlaceScene; }
 
 	short GetXPos() const { return m_shX; };
 	short GetYPos() const { return m_shY; };
@@ -42,6 +43,7 @@ public:
 	void SetXPos(short shX) { m_shX = shX; };
 	void SetYPos(short shY) { m_shY = shY; };
 	void SetHP(int HP) { m_iHP = HP; };
+	void SetCurrentScene(SceneNum currentScene) { m_PlaceScene = currentScene; };
 };
 
 class PlayerDataMgr : public Singleton< PlayerDataMgr>

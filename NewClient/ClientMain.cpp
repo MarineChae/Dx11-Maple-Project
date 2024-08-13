@@ -47,12 +47,18 @@ bool ClientMain::Frame()
 	if (Input::GetInstance().GetKeyState(VK_F1) >= KEY_PUSH)
 	{
 		ObejctMgr::GetInstance().GetPlayerObject()->SetTransform({ 0,100,0 });
-
+		ObejctMgr::GetInstance().GetPlayerObject()->SetCurrentScene(SceneNum::BossRoom1);
 		testScene->ResetMap(L"../resource/MapObejct/Phase1.png");
 		saveload->LoadData(testScene, "../resource/MapObejct/Phase1.txt");
 		MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 		MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 		CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
+		Packet* pack = new Packet;
+		
+		SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(),SceneNum::BossRoom1);
+		NetSendPacket(pack);
+
+
 	}
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
 	CameraMgr::GetInstance().GetCamera().ControlAngle(1388, 766
@@ -61,16 +67,12 @@ bool ClientMain::Frame()
 
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
-
-		if (obj != nullptr )
-		{//preframe 처리해야함
-	
-			
+		if (obj != nullptr  && obj->GetCurrentScene() == ObejctMgr::GetInstance().GetPlayerObject()->GetCurrentScene())
+		{
 			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
 				for (auto& line : testScene->GetLineColliderList())
 				{
-
 					if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line) && !obj->GetJumping())
 					{
 						auto ret = Collision::ClosestPoint(obj->GetCollider()->GetCollisionPoint(), line);
@@ -83,12 +85,9 @@ bool ClientMain::Frame()
 					}
 					obj->SetFalling(true);
 				}
-				
 			}
 			obj->Frame();
-		
 		}
-
 	}
 
 
@@ -103,7 +102,7 @@ bool ClientMain::Render()
 	testScene->Render();
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
-		if (obj != nullptr)
+		if (obj != nullptr && obj->GetCurrentScene() == ObejctMgr::GetInstance().GetPlayerObject()->GetCurrentScene())
 		{
 			obj->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 			obj->Render();

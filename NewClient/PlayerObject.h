@@ -1,6 +1,7 @@
 #pragma once
 #include"SpriteObject.h"
 
+
 class PlayerObject :public SpriteObject
 {
 
@@ -14,6 +15,7 @@ private:
 	DWORD	     m_dwActionInput;
 	PLAYER_STATE m_PlayerState;
 	TVector3     m_pMovePow;
+	SceneNum     m_CurrentScene;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -27,14 +29,19 @@ public:
 	void InputAction();
 	void InputKey();
 	void PacketSendProc();
-	virtual void  SetPlayerSprite() override;
 	void ChangeState(PLAYER_STATE state);
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
+
+public:
+	virtual void  SetPlayerSprite() override;
 	virtual void SetState(PLAYER_STATE state) override;
 	virtual void SetFalling(bool state) { m_bIsFalling = state; };
 	virtual bool GetJumping() { return m_bIsJump; };
 	virtual void SetJumping(bool state) { m_bIsJump = state; };
 	virtual bool GetFalling() { return m_bIsFalling; };
+	virtual void SetCurrentScene(SceneNum  currentScene) { m_CurrentScene = currentScene; };
+	virtual SceneNum GetCurrentScene() const { return m_CurrentScene; };
+
 public:
 	PlayerObject();
 	virtual ~PlayerObject();

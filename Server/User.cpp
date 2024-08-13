@@ -140,6 +140,9 @@ BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, Packet* pack)
 	case PACKET_CS_MOVE_END:
 		return PacketProc_MoveEnd(SessionId, pack);
 		break;
+	case PACKET_CS_SCENE_CHANGE:
+		return PacketProc_SceneChange(SessionId, pack);
+		break;
 	}
 
 	return FALSE;
@@ -182,14 +185,14 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 
 		short x = rand() % 500;
 		short y = rand() % 500;
-
+		BYTE CurrentScene = 0;
 		Packet* pack = new Packet;
-		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100);
+		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100, CurrentScene);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
 
 
 		Packet* pack2 = new Packet;
- 		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100);
+ 		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100, CurrentScene);
 		IOCPServer::GetInstance().AddPacket(pack2);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
@@ -211,7 +214,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 					otherplayer->GetDirection(),
 					otherplayer->GetXPos(),
 					otherplayer->GetYPos(),
-					otherplayer->GetHP());
+					otherplayer->GetHP(), otherplayer->GetCurrentScene());
 
 				OutputDebugString(L"other character");
 				Sleep(50);

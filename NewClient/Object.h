@@ -1,6 +1,15 @@
 #pragma once
 #include"DxRenderer.h"
 
+enum SceneNum
+{
+	Lobby,
+	BossRoom1,
+	BossRoom2,
+	BossRoom3,
+};
+
+
 class Collider;
 #define MAX_USER_SIZE 63
 
@@ -49,6 +58,11 @@ public:
 	virtual bool GetFalling() { return false; };
 	virtual void SetJumping(bool state) {};
 	virtual bool GetJumping() { return false; };
+	virtual void SetCurrentScene(SceneNum  currentScene) {};
+	virtual SceneNum GetCurrentScene() const { return SceneNum::Lobby; };
+
+
+
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

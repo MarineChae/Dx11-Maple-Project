@@ -66,6 +66,28 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     return TRUE;
 }
 
+BOOL PacketProc_SceneChange(Packet* pack)
+{
+
+
+    DWORD dwSessionID;
+    BYTE Scenenum;
+
+    *pack >> dwSessionID;
+    *pack >> Scenenum;
+
+    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
+
+    if (obj == nullptr || obj == ObejctMgr::GetInstance().GetPlayerObject())
+        return FALSE;
+
+
+    obj->SetCurrentScene((SceneNum)Scenenum);
+
+
+    return 0;
+}
+
 BOOL PacketProc_CreateMyCharacter(Packet* pack)
 {
     DWORD dwSessionID;
@@ -73,13 +95,14 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     short shX;
     short shY;
     int  HP;
+    BYTE CurrentScene;
 
     *pack >> dwSessionID;
     *pack >> byDirection;
     *pack >> shX;
     *pack >> shY;
     *pack >> HP;
-
+    *pack >> CurrentScene;
 
 
     std::shared_ptr<Object> player = std::make_shared<PlayerObject>();
@@ -89,7 +112,7 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     player->SetDestination(TVector3(shX, shY, 0));
     player->SetRenderState(true);
     player->SetObejctID(dwSessionID);
-
+    player->SetCurrentScene((SceneNum)CurrentScene);
     ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
    
@@ -104,12 +127,14 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
     short shX;
     short shY;
     int  HP;
+    BYTE CurrentScene;
 
     *pack >> dwSessionID;
     *pack >> byDirection;
     *pack >> shX;
     *pack >> shY;
     *pack >> HP;
+    *pack >> CurrentScene;
 
       if (ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID() == dwSessionID)
         return 0;
@@ -123,6 +148,7 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
     other->SetDestination(TVector3(shX, shY, 0));
     other->SetRenderState(true);
     other->SetObejctID(dwSessionID);
+    other->SetCurrentScene((SceneNum)CurrentScene);
     ObejctMgr::GetInstance().PushObject(other, dwSessionID);
 
 

@@ -337,6 +337,7 @@ PlayerObject::PlayerObject()
     , m_bIsFalling(true)
     , m_bIsJump(false)
     , m_vBeforePos()
+    , m_CurrentScene(SceneNum::Lobby)
 {
 
 

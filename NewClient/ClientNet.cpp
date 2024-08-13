@@ -284,6 +284,9 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
     case PACKET_CS_DISCONNECT_CHARACTER:
         PacketProc_DisconnectOtherCharacter(pack);
         break;
+    case PACKET_CS_SCENE_CHANGE:
+        PacketProc_SceneChange(pack);
+        break;
 
     }
 
