@@ -40,6 +40,10 @@ bool Scene::Frame()
 	for (auto& ob : m_ObjectList)
 	{
 		ob->Frame();
+		if (ob->GetCollider() != nullptr)
+		{
+			ob->GetCollider()->Frame();
+		}
 	}
 
 	m_pCollider->Frame();
@@ -57,6 +61,13 @@ bool Scene::Render()
 		p->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		p->Render();
+		if (p->GetCollider() != nullptr)
+		{
+			p->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			p->GetCollider()->Render();
+		}
+
 
 	}
 	for (auto& m : m_MonsterList)
@@ -64,12 +75,24 @@ bool Scene::Render()
 		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		m->Render();
+		if (m->GetCollider() != nullptr)
+		{
+			m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			m->GetCollider()->Render();
+		}
 	}
 	for (auto& ob : m_ObjectList)
 	{
 		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		ob->Render();
+		if (ob->GetCollider() != nullptr)
+		{
+			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->GetCollider()->Render();
+		}
 	}
 	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 									&CameraMgr::GetInstance().GetCamera().GetProjection());

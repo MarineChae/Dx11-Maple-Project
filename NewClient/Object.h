@@ -8,6 +8,11 @@ enum SceneNum
 	BossRoom2,
 	BossRoom3,
 };
+enum ObejctType
+{
+	Defalut,
+	Portal
+};
 
 
 class Collider;
@@ -31,7 +36,7 @@ private:
 	DWORD m_dwObjectID;
 	bool  m_bRender;
 	std::shared_ptr<Collider> m_pCollider;
-
+	ObejctType m_ObjectType;
 public:
 	//getter
 	DWORD	 GetObejctID() const { return m_dwObjectID; }
@@ -41,6 +46,7 @@ public:
 	TMatrix& GetViewMat() { return m_ViewMatrix; }
 	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
 	std::shared_ptr<Collider> GetCollider() const;
+	ObejctType	GetObjectType() const { return m_ObjectType; };
 
 	//setter
 	void		 SetObejctID(DWORD id) { m_dwObjectID = id; }
@@ -48,7 +54,7 @@ public:
 	void		 SetDestination(TVector3 Destination) { m_vDestination = Destination; };
 	virtual void SetState(PLAYER_STATE state) {};
 	virtual void SetDirection(BYTE dir) { };
-
+	void SetObejctType(ObejctType type) { m_ObjectType = type; };
 	TVector3 m_vRotate;
 
 	//virtual
@@ -60,7 +66,7 @@ public:
 	virtual bool GetJumping() { return false; };
 	virtual void SetCurrentScene(SceneNum  currentScene) {};
 	virtual SceneNum GetCurrentScene() const { return SceneNum::Lobby; };
-
+	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
 
 
 public:
@@ -68,6 +74,7 @@ public:
 	virtual bool CreateIndexData();
 	virtual void UpdataMatrix();
 	virtual bool Create(std::wstring FileName, std::wstring ShaderFileName);
+	virtual bool Create(const Texture* tex, const Shader* shader);
 	virtual void SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix);
 	virtual void SetScale(TVector3 scale);
 	virtual void SetMatrix();

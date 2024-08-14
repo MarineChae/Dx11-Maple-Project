@@ -77,7 +77,7 @@ bool Collider::Frame()
 {
     Object::Frame();
     SetCollisionPoint();
-    //SetCollisionBox();
+    SetCollisionBox();
 
     return true;
 }
@@ -92,16 +92,31 @@ bool Collider::Render()
 bool Collider::CreateVertexData()
 {
     std::vector<PNCT_VERTEX> v;
-    v.resize(2);
+    if (m_ColliderType == ColliderType::BOX)
+    {
+       
+        v.resize(8);
 
-    v[0].Pos = { -1.0f,1.0f,0.0f };
-    v[1].Pos = { 1.0f,1.0f,0.0f };
+        v[0].Pos = { -1.0f,1.0f,0.0f };
+        v[1].Pos = { 1.0f,1.0f,0.0f };
 
-    //v[2].Pos = { 1.0f ,-1.0f,0.0f };
-    //v[3].Pos = { -1.0f, -1.0f,0.0f };
-    //v[4].Pos = { -1.0f,1.0f,0.0f };
-    //v[5].Pos = { 0.0f,1.0f,0.0f };
-    //
+        v[2].Pos = { 1.0f ,1.0f,0.0f };
+        v[3].Pos = { 1.0f, -1.0f,0.0f };
+
+        v[4].Pos = { 1.0f,-1.0f,0.0f };
+        v[5].Pos = { -1.0f,-1.0f,0.0f };
+        v[6].Pos = {  -1.0f,-1.0f,0.0f };
+        v[7].Pos = {  -1.0f,1.0f,0.0f };
+    }
+    if (m_ColliderType == ColliderType::LINE)
+    {
+          v.resize(2);
+
+        v[0].Pos = { -1.0f,1.0f,0.0f };
+        v[1].Pos = { 1.0f,1.0f,0.0f };
+    }
+
+    
     //v[6].Pos = {  0.0f,0.0f,0.0f };
     //v[7].Pos = {  1.0f,0.0f,0.0f };
     
@@ -113,7 +128,7 @@ bool Collider::CreateVertexData()
 bool Collider::PreRender()
 {
     Object::PreRender();
-    Device::GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST); // 받아온 데이터를 어떤 방식으로 해석할지
+    Device::GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST ); // 받아온 데이터를 어떤 방식으로 해석할지
   
     return true;
 }
@@ -144,6 +159,7 @@ Collider::Collider()
     ,m_Origin()
     ,m_Axis()
     ,m_CollisionType(COLLISION_TYPE::CT_DEFAULT)
+    ,m_ColliderType(ColliderType::BOX)
 {
 
 }

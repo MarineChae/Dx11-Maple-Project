@@ -20,7 +20,6 @@ public:
 	std::vector<std::shared_ptr<Object>> GetMonsterList() { return m_MonsterList; }
 	std::vector<std::shared_ptr<Object>> GetObjectList() { return m_ObjectList; }
 
-
 	void PushMonster(std::shared_ptr<Object> monster ) { return m_MonsterList.push_back(monster); }
 	void PushObject(std::shared_ptr<Object> object) { return m_ObjectList.push_back(object); }
 

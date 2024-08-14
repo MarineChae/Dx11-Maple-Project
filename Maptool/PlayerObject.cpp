@@ -10,7 +10,7 @@
 bool PlayerObject::Init()
 {
     SpriteObject::Init();
-    GetCollider()->Init();
+
 
     return true;
 }

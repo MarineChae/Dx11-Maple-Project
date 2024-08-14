@@ -66,15 +66,17 @@ bool ClientMain::Frame()
 	
 	float x = (2 * (float)pos.x/ clientXsize) -1;
 	float y = 1- ( 2 * (float)pos.y / clientYsize);
+
+	float mousePosX = x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x;
+	float mousePosY = y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y;
+
 	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
 	{
 
 
 		if (draw)
 		{
-			v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
-				0.0f };
+			v[v.size() - 1].Pos = { mousePosX,mousePosY,0.0f };
 		}
 		static Line l;
 		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
@@ -89,9 +91,7 @@ bool ClientMain::Frame()
 			{
 				l.To = v[v.size() - 1].Pos;
 
-				v[v.size() - 1].Pos = { x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
-									   ,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
-									   0.0f };
+				v[v.size() - 1].Pos = { mousePosX,mousePosY,0.0f };
 				v.push_back({});
 
 				m_testscene->GetCollider()->SetVertexList(v);
@@ -140,21 +140,38 @@ bool ClientMain::Frame()
 			if (m_EditObject != nullptr)
 			{
 				std::shared_ptr<SpriteObject> mon = std::make_shared<SpriteObject>();
-
+				mon->Init();
 				mon->SetSpriteInfo(m_EditObject->GetSpriteInfo());
 				mon->Create(m_EditObject->GetTexture(), m_EditObject->GetShader());
 				mon->SetTransform({ x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
 				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
 				0.0f });
 				mon->SetScale(m_EditObject->GetSpriteInfo()->m_vScale);
-
 				m_testscene->PushObject(mon);
+
+				mon->GetCollider()->SetTransform(mon->GetTransform());
+				mon->GetCollider()->SetScale(m_EditObject->GetSpriteInfo()->m_vScale);
+				mon->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 			}
 
 		}
+		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_HOLD && !draw)
+		{
+			for (auto& obj : m_testscene->GetObjectList())
+			{
+				if (mousePosX >= obj->GetCollider()->GetTransform().x - obj->GetCollider()->GetWidth()
+					&& mousePosX <= obj->GetCollider()->GetTransform().x + obj->GetCollider()->GetWidth()
+					&& mousePosY >= obj->GetCollider()->GetTransform().y - obj->GetCollider()->GetHeight()
+					&& mousePosY <= obj->GetCollider()->GetTransform().y + obj->GetCollider()->GetHeight())
+				{
+					obj->SetTransform({ mousePosX ,mousePosY,0 });
+					obj->GetCollider()->SetTransform({ mousePosX ,mousePosY,0 });
+					break;
+				}
 
+			}
 
-
+		}
 	}
 
 
@@ -306,18 +323,19 @@ void ClientMain::Menu()
 		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
 
 		// display
-		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", OpenNew))
+		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
 		{
 			OpenNew = false;
-			m_bImguiNew = true;
+			
+			ImGuiFileDialog::Instance()->Close();
 		}
-	
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
 			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-			ImGuiFileDialog::Instance()->Close();
+			m_bImguiNew = true;
 		}
+
 	}
 
 
@@ -342,49 +360,62 @@ void ClientMain::Menu()
 	{
 		OpenNew = false;
 		OpenLoad = false;
-		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
+		ImGuiFileDialog::Instance()->OpenDialog("Save", "Choose File", ".txt", "../resource/");
 
 		// display
-		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", OpenSave))
+		if (ImGuiFileDialog::Instance()->Display("Save", OpenSave))
 		{
 			OpenSave = false;
-			m_bImguiSave = true;
+			ImGuiFileDialog::Instance()->Close();
 		}
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
 			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-			ImGuiFileDialog::Instance()->Close();
+			m_bImguiSave = true;
+		
 		}
 	}
 	if (OpenLoad)
 	{
 		OpenNew = false;
 		OpenSave = false;
-		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
+		ImGuiFileDialog::Instance()->OpenDialog("Load", "Choose File", ".txt", "../resource/");
 
 		// display
-		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", OpenLoad))
+		if (ImGuiFileDialog::Instance()->Display("Load", OpenLoad))
 		{
 			OpenLoad = false;
-			m_bImguiLoad = true;
+			ImGuiFileDialog::Instance()->Close();
 		}
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
 			filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-			ImGuiFileDialog::Instance()->Close();
+	
+			m_bImguiLoad = true;
 		}
 	}
 
 	if (m_bImguiSave && !filePathName.empty())
 	{
 		m_bImguiSave = false;
-		std::string name = "\\";
-		name += wtm(m_testscene->GetMapName());
-		name += ".txt";
-		filePath += name;
-		m_pSaveLoader->SaveData(m_testscene, filePath);
+		auto ret = m_testscene->GetMapName().find(L"../resource");
+		if (!ret)
+		{
+			std::string name = wtm(m_testscene->GetMapName());
+			name+= ".txt";
+			m_pSaveLoader->SaveData(m_testscene, name);
+		}
+		else
+		{
+			std::string name = "\\";
+			name += wtm(m_testscene->GetMapName());
+			name += ".txt";
+			filePath += name;
+			m_pSaveLoader->SaveData(m_testscene, filePath);
+		}
+
 	}
 
 	if (m_bImguiLoad && !filePathName.empty())
@@ -546,9 +577,47 @@ void ClientMain::SelectMenu()
 					break;
 				}
 			}
-
 			ImGui::EndListBox();
 		}
+
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "PlacedObject List");
+		if (ImGui::BeginListBox("##", { 250,100 }))
+		{
+			for (int isize = 0; isize < m_testscene->GetObjectList().size(); isize++)
+			{
+				bool clickmonster;
+				auto tex = m_testscene->GetObjectList()[isize]->GetTexture();
+				std::string st = wtm(tex->GetName());
+				st += isize;
+				clickmonster = ImGui::Button(st.c_str(), ImVec2(100, 30));
+				if (clickmonster)
+				{
+					m_pPlacedObject = m_testscene->GetObjectList()[isize];
+					break;
+				}
+			}
+			ImGui::EndListBox();
+		}
+
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Object Data");
+		if (ImGui::BeginListBox("##@@# ", { 250,100 }))
+		{
+		
+			if (m_pPlacedObject != nullptr)
+			{
+				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Position");
+				ImGui::NewLine();
+				TVector3 tempPos = m_pPlacedObject->GetTransform();
+				ImGui::InputFloat("X : ", &tempPos.x);
+				ImGui::InputFloat("Y : ", &tempPos.y);
+
+				m_pPlacedObject->SetTransform(tempPos);
+			}
+			ImGui::EndListBox();
+		}
+
 		ImGui::NewLine();
 		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "SpriteData");
 		if (ImGui::BeginListBox("### ", { 250,100 }))
@@ -617,6 +686,7 @@ void ClientMain::SelectMenu()
 				filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 				ImGuiFileDialog::Instance()->Close();
 				std::shared_ptr<SpriteObject> SpriteObejct = std::make_shared<SpriteObject>();
+
 				std::wstring w;
 				w.assign(filePathName.begin(), filePathName.end());
 				std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
@@ -627,7 +697,7 @@ void ClientMain::SelectMenu()
 				SpriteInfo->m_vScale = { 46,68,1 };
 				SpriteObejct->SetSpriteInfo(SpriteInfo);
 				SpriteObejct->Create(w, L"../Shader/Defalutshader.hlsl");
-
+		
 				m_EditObjectList.push_back(SpriteObejct);
 
 			}

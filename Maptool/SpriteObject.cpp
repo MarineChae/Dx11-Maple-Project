@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "Device.h"
 #include"Texture.h"
+#include"Collider.h"
 bool SpriteObject::Create(std::wstring FileName, std::wstring ShaderFileName)
 {
     Object::Create(FileName,ShaderFileName);
@@ -84,6 +85,7 @@ bool SpriteObject::SetUVData(std::vector<UVRect>& rectlist, int iRow, int iCol)
 bool SpriteObject::Init()
 {
     Object::Init();
+    GetCollider()->Init();
     return true;
 }
 

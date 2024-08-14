@@ -24,6 +24,7 @@ public:
 	std::vector<std::shared_ptr<SpriteObject>> m_EditObjectList;
 	std::shared_ptr<Object> m_EditMonster;
 	std::shared_ptr<SpriteObject> m_EditObject;
+	std::shared_ptr<Object> m_pPlacedObject;
 	std::vector<PNCT_VERTEX> v;
 	std::vector<Line> linelist;
 	CLICK_ACTION m_ClickAction;

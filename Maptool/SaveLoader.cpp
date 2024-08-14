@@ -14,7 +14,17 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 		bool bRet = true;
 		std::string header = "#MapName";
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
-		std::string path = "../resource/MapObejct/" + wtm(pSceneData->GetMapName()) + ".png";
+		std::string path;
+		auto ret = pSceneData->GetMapName().find(L"../resource");
+		if (!ret)
+		{
+			path = wtm(pSceneData->GetMapName())+ ".png";
+		}
+		else
+		{
+			path = "../resource/MapObejct/" + wtm(pSceneData->GetMapName()) + ".png";
+		}
+
 		bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
 
 		header = "#LineCollider";
@@ -46,7 +56,7 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 			bRet = fprintf_s(fpWrite, "%lf\n", obj->GetSpriteInfo()->m_fDelay);
 		}
 
-
+		fclose(fpWrite);
 	}
 
 

@@ -55,6 +55,18 @@ bool Object::Create(std::wstring FileName, std::wstring ShaderFileName)
  
     return true;
 }
+bool Object::Create(const Texture* tex, const Shader* shader)
+{
+    CreateConstantBuffer();
+    CreateVertexData();
+    CreateVertexBuffer();
+    CreateIndexBuffer();
+    SetShader(shader);
+    SetTexture(tex);
+
+    CreateInputLayout();
+    return true;
+}
 
 void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix)
 {

@@ -29,7 +29,13 @@ bool Scene::Init(std::wstring MapName)
 bool Scene::Frame()
 {
 	m_pMap->Frame();
+	for (auto& ob : m_ObjectList)
+	{
+		ob->Frame();
+	}
+
 	m_pCollider->Frame();
+
     return true;
 }
 
@@ -39,6 +45,12 @@ bool Scene::Render()
 							  &CameraMgr::GetInstance().GetCamera().GetProjection());
 	m_pMap->Render();
 
+	for (auto& ob : m_ObjectList)
+	{
+		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		ob->Render();
+	}
 
 	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 									&CameraMgr::GetInstance().GetCamera().GetProjection());
