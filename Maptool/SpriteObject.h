@@ -14,12 +14,15 @@ private:
 	std::vector<std::shared_ptr<SpriteData>> m_vSpriteList;
 public:
 	virtual bool Create(std::wstring FileName, std::wstring ShaderFileName) override;
+	virtual bool Create(const Texture* tex, const Shader* shader)override;
+	virtual void SetSpriteInfo(std::shared_ptr<SpriteData> info) override { m_pSpriteInfo = info; };
+	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return m_pSpriteInfo; };
 	virtual void  SetPlayerSprite() override;
 	bool SetUVData(std::vector<UVRect>& rectlist , int iRow, int iCol);
-	void SetSpriteInfo(std::shared_ptr<SpriteData> info) {m_pSpriteInfo= info;}
+
 	std::shared_ptr<SpriteData> GetCurrentSpriteInfo() const { return m_pSpriteInfo; };
 	const std::shared_ptr<SpriteData> GetSpriteData(int state) const { return m_vSpriteList[state]; };
-	void InitTexIndex() { m_iTexIndex = 0; };
+	virtual void InitTexIndex() override { m_iTexIndex = 0; };
 	virtual void SetDirection(BYTE dir) { m_byDirection = dir; };
 	BYTE GetDirection()const { return m_byDirection; };
 public:

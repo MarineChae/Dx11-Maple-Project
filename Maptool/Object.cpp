@@ -149,6 +149,7 @@ Object::Object()
     , m_dwObjectID(1)
     , m_bRender(false)
     , m_pCollider()
+    , m_ObjectType()
 
 {
    

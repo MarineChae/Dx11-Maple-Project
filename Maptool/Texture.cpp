@@ -4,8 +4,20 @@
 const Texture* TextureMgr::Load(std::wstring FileName)
 {
     std::size_t found = FileName.find_last_of(L"/");
-    std::wstring path = FileName.substr(0, found + 1);
-    std::wstring Key = FileName.substr(found + 1);
+    std::wstring path;
+    std::wstring Key;
+    if (found != std::wstring::npos)
+    {
+       path = FileName.substr(0, found + 1);
+       Key = FileName.substr(found + 1);
+    }
+    else
+    {
+        found = FileName.find_last_of(L"\\");
+        path = FileName.substr(0, found + 1);
+        Key = FileName.substr(found + 1);
+    }
+
     const Texture* data = GetPtr(Key);
 
     if (data != nullptr)

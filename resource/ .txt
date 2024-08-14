@@ -2,3 +2,8 @@
 ../resource/MapObejct/ .png
 #LineCollider
 0
+#ObjectList
+2
+../resource/MapObejct/PStand.png
+0	-374.000000	138.000000	3	1	1	0.200000	../resource/MapObejct/PStand.png
+0	28.000059	158.000015	3	1	1	0.200000	

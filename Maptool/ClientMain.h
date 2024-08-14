@@ -21,8 +21,9 @@ public:
 	std::shared_ptr<Object> CurrentMap;
 	std::shared_ptr<PlayerObject> test2;
 	std::vector<std::shared_ptr<Object>> m_EditMonsterList;
+	std::vector<std::shared_ptr<SpriteObject>> m_EditObjectList;
 	std::shared_ptr<Object> m_EditMonster;
-
+	std::shared_ptr<SpriteObject> m_EditObject;
 	std::vector<PNCT_VERTEX> v;
 	std::vector<Line> linelist;
 	CLICK_ACTION m_ClickAction;

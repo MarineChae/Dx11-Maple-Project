@@ -102,17 +102,19 @@ bool ClientMain::Frame()
 				draw = false;
 				draw2 = false;
 			}
-
+			auto vb = m_testscene->GetCollider()->GetVertexBuffer().Get();
+			auto& vl = m_testscene->GetCollider()->GetVertexList();
+			Device::GetContext()->UpdateSubresource(vb, 0, 0, &vl.at(0), 0, 0);
 		}
-		auto vb = m_testscene->GetCollider()->GetVertexBuffer().Get();
-		auto& vl = m_testscene->GetCollider()->GetVertexList();
-		Device::GetContext()->UpdateSubresource(vb, 0, 0,&vl.at(0), 0, 0);
+
 
 	}
 	if (m_ClickAction == CLICK_ACTION::MONSTER_PLACE)
 	{
+	
 		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
 		{
+			draw = false;
 			if (m_EditMonster != nullptr)
 			{
 				std::shared_ptr<Object> mon = std::make_shared<Object>();
@@ -130,7 +132,30 @@ bool ClientMain::Frame()
 
 
 	}
+	if (m_ClickAction == CLICK_ACTION::OBJECT_PLACE)
+	{
+		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_PUSH && draw)
+		{
+			draw = false;
+			if (m_EditObject != nullptr)
+			{
+				std::shared_ptr<SpriteObject> mon = std::make_shared<SpriteObject>();
 
+				mon->SetSpriteInfo(m_EditObject->GetSpriteInfo());
+				mon->Create(m_EditObject->GetTexture(), m_EditObject->GetShader());
+				mon->SetTransform({ x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
+				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
+				0.0f });
+				mon->SetScale(m_EditObject->GetSpriteInfo()->m_vScale);
+
+				m_testscene->PushObject(mon);
+			}
+
+		}
+
+
+
+	}
 
 
 #pragma region Input
@@ -276,6 +301,8 @@ void ClientMain::Menu()
 	std::string filePathName;
 	if (OpenNew)
 	{
+		OpenSave = false;
+		OpenLoad = false;
 		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
 
 		// display
@@ -313,6 +340,8 @@ void ClientMain::Menu()
 
 	if (OpenSave)
 	{
+		OpenNew = false;
+		OpenLoad = false;
 		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
 
 		// display
@@ -330,6 +359,8 @@ void ClientMain::Menu()
 	}
 	if (OpenLoad)
 	{
+		OpenNew = false;
+		OpenSave = false;
 		ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".txt", "../resource/");
 
 		// display
@@ -497,6 +528,113 @@ void ClientMain::SelectMenu()
 			}
 		}
 	}
+	if (m_ClickAction == CLICK_ACTION::OBJECT_PLACE)
+	{
+
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Object List");
+		if (ImGui::BeginListBox("## ", { 250,100 }))
+		{
+			for (int isize = 0; isize < m_EditObjectList.size(); isize++)
+			{
+				bool clickmonster;
+				auto tex = m_EditObjectList[isize]->GetTexture();
+				clickmonster = ImGui::ImageButton((ImTextureID)tex->GetSRV(), ImVec2(64, 64));
+				if (clickmonster)
+				{
+					m_EditObject = m_EditObjectList[isize];
+					break;
+				}
+			}
+
+			ImGui::EndListBox();
+		}
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "SpriteData");
+		if (ImGui::BeginListBox("### ", { 250,100 }))
+		{
+			if (m_EditObject != nullptr)
+			{
+				std::string s;
+	
+				ImGui::InputInt("Col : #", &m_EditObject->GetSpriteInfo()->iCol);
+				ImGui::InputInt("Row : ##", &m_EditObject->GetSpriteInfo()->iRow);
+				ImGui::InputInt("MaxImageCount : ##@", &m_EditObject->GetSpriteInfo()->iMaxImageCount);
+				ImGui::InputDouble("Delay : ####", &m_EditObject->GetSpriteInfo()->m_fDelay);
+				
+				const char* itme[] = { "Defalut","Portal", };
+				static int ttemp = 0;
+				ImGui::Combo("ObjectType ",&ttemp, itme,IM_ARRAYSIZE(itme));
+				
+				
+				m_EditObject->InitTexIndex();
+				if (ImGui::Button("Conform", ImVec2(60, 30)))
+				{
+					
+					m_EditObject->GetSpriteInfo()->m_vScale = { static_cast<float>(m_EditObject->GetTexture()->GetWidth() / m_EditObject->GetSpriteInfo()->iCol),
+																static_cast<float>(m_EditObject->GetTexture()->GetHeight() / m_EditObject->GetSpriteInfo()->iRow),
+																	1 };
+					auto t = m_EditObject->GetSpriteInfo()->m_vScale;
+					m_EditObject->SetScale(t);
+					m_EditObject->GetSpriteInfo()->m_UVList.clear();
+					m_EditObject->SetUVData(m_EditObject->GetSpriteInfo()->m_UVList, m_EditObject->GetSpriteInfo()->iRow, m_EditObject->GetSpriteInfo()->iCol);
+					m_EditObject->SetObejctType((ObejctType)ttemp);
+					for (auto& obj : m_testscene->GetObjectList())
+					{
+						obj->InitTexIndex();
+					}
+				}
+				
+			}
+
+
+			ImGui::EndListBox();
+		}
+
+
+
+		ImGui::NewLine();
+		std::string filePath;
+		std::string filePathName;
+		static bool ObejctList;
+		if (ImGui::Button("Load", ImVec2(60, 30)))
+		{
+			ObejctList = true;
+
+		}
+		if (ObejctList)
+		{
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
+
+			// display
+			if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ObejctList))
+			{
+				ObejctList = false;
+			}
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				ImGuiFileDialog::Instance()->Close();
+				std::shared_ptr<SpriteObject> SpriteObejct = std::make_shared<SpriteObject>();
+				std::wstring w;
+				w.assign(filePathName.begin(), filePathName.end());
+				std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+				SpriteInfo->iCol = 1;
+				SpriteInfo->iRow = 1;
+				SpriteInfo->iMaxImageCount = 1;
+				SpriteInfo->m_fDelay = 0.18f;
+				SpriteInfo->m_vScale = { 46,68,1 };
+				SpriteObejct->SetSpriteInfo(SpriteInfo);
+				SpriteObejct->Create(w, L"../Shader/Defalutshader.hlsl");
+
+				m_EditObjectList.push_back(SpriteObejct);
+
+			}
+		}
+
+	}
+
 
 
 	ImGui::End();

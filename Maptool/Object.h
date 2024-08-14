@@ -3,6 +3,11 @@
 
 class Collider;
 #define MAX_USER_SIZE 63
+enum ObejctType
+{
+	Defalut,
+	Portal
+};
 
 class Object : public DxRenderer
 {
@@ -22,7 +27,7 @@ private:
 	DWORD m_dwObjectID;
 	bool  m_bRender;
 	std::shared_ptr<Collider> m_pCollider;
-
+	ObejctType m_ObjectType;
 public:
 	//getter
 	DWORD	 GetObejctID() const { return m_dwObjectID; }
@@ -32,19 +37,22 @@ public:
 	TMatrix& GetViewMat() { return m_ViewMatrix; }
 	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
 	std::shared_ptr<Collider> GetCollider() const;
-
+	ObejctType	GetObjectType() const { return m_ObjectType; };
 	//setter
 	void		 SetObejctID(DWORD id) { m_dwObjectID = id; }
 	virtual void SetTransform(TVector3 transform) { m_vTransform = transform; };
 	void		 SetDestination(TVector3 Destination) { m_vDestination = Destination; };
 	virtual void SetState(PLAYER_STATE state) {};
 	virtual void SetDirection(BYTE dir) { };
-
+	void SetObejctType(ObejctType type) { m_ObjectType = type; };
 	TVector3 m_vRotate;
 
 	//virtual
 	virtual void ChangeState(PLAYER_STATE state) {};
 	virtual TVector3 GetCollisionPoint() const { return TVector3(); };
+	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
+	virtual void SetSpriteInfo(std::shared_ptr<SpriteData> info) {};
+	virtual void InitTexIndex() {};
 
 public:
 	virtual bool CreateVertexData();

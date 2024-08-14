@@ -5,10 +5,40 @@
 bool SpriteObject::Create(std::wstring FileName, std::wstring ShaderFileName)
 {
     Object::Create(FileName,ShaderFileName);
-    SetScale(m_pSpriteInfo->m_vScale);
-    SetUVData(m_pSpriteInfo->m_UVList, m_pSpriteInfo->iRow, m_pSpriteInfo->iCol);
-    m_pSpriteInfo->m_pTexture = TextureMgr::GetInstance().Load(FileName);
-    m_vSpriteList.push_back(m_pSpriteInfo);
+    if (m_pSpriteInfo != nullptr)
+    {
+        //m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
+        SetScale(m_pSpriteInfo->m_vScale);
+        SetUVData(m_pSpriteInfo->m_UVList, m_pSpriteInfo->iRow, m_pSpriteInfo->iCol);
+        m_pSpriteInfo->m_pTexture = TextureMgr::GetInstance().Load(FileName);
+        m_vSpriteList.push_back(m_pSpriteInfo);
+    }
+    else
+    {
+        m_pSpriteInfo = std::make_shared<SpriteData>();
+        m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
+    }
+
+    return false;
+}
+
+bool SpriteObject::Create(const Texture* tex, const Shader* shader)
+{
+    Object::Create(tex, shader);
+    if (m_pSpriteInfo != nullptr)
+    {
+        //m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
+        SetScale(m_pSpriteInfo->m_vScale);
+        SetUVData(m_pSpriteInfo->m_UVList, m_pSpriteInfo->iRow, m_pSpriteInfo->iCol);
+        m_pSpriteInfo->m_pTexture = tex;
+        m_vSpriteList.push_back(m_pSpriteInfo);
+    }
+    else
+    {
+        m_pSpriteInfo = std::make_shared<SpriteData>();
+        m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
+    }
+
     return false;
 }
 

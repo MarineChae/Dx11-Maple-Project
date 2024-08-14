@@ -2,4 +2,10 @@
 ../resource/MapObejct/Lobby.png
 #LineCollider
 1
--1833.143066	-730.276855	1831.852539	-732.276978
+-1320.000000	-652.000000	1202.000000	-664.000000
+#ObjectList
+2
+../resource/MapObejct/potal.png
+0	-1056.000000	-402.000031	8	1	8	0.180000
+../resource/MapObejct/potal.png
+0	441.999969	-426.000000	8	1	8	0.180000
