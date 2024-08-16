@@ -3,6 +3,7 @@
 #include "Packet.h"
 #include "Timer.h"
 #include"PlayerData.h"
+#include"ServerScene.h"
 std::mutex m1;
 std::mutex broadMutex;
 
@@ -31,7 +32,7 @@ bool AcceptIocp::ThreadRun()
 
 		for (int iSize = 0; iSize < MAX_USER_SIZE; ++iSize)
 		{
-			if (SessionMgr::GetInstance().ConnectUser(user))
+ 			if (SessionMgr::GetInstance().ConnectUser(user))
 			{
 				break;
 			}
@@ -200,6 +201,12 @@ bool IOCPServer::Init()
 
 bool IOCPServer::ThreadRun()
 {
+
+	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
+	{
+		//scene.second.Update();
+	}
+
 
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{

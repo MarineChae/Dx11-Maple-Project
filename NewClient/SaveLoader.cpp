@@ -188,6 +188,39 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 
 
 			}
+			else if (_tcscmp(type, L"#MonsterList") == 0)
+			{
+
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int iSize = 0;
+				_stscanf_s(buffer, _T("%d"), &iSize);
+
+				for (int i = 0; i < iSize; ++i)
+				{
+					std::shared_ptr<Object> obj = std::make_shared<Object>();
+					TCHAR tex[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+					obj->Init();
+					obj->Create(tex, L"../Shader/Defalutshader.hlsl");
+
+					TVector3 temp;
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%f %f \n"), &temp.x, &temp.y);
+					obj->SetTransform(temp);
+
+					obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+					obj->GetCollider()->SetTransform(obj->GetTransform());
+					obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+
+					pSceneData->PushObject(obj);
+				}
+
+
+			}
 			else if (_tcscmp(type, L"#PotalList") == 0)
 			{
 

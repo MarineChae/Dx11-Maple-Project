@@ -6,6 +6,7 @@
 #include "Packet.h"
 #include"PacketProc.h"
 #include"StreamPacket.h"
+#include"ServerScene.h"
 std::mutex m;
 
 int SessionMgr::m_iSessionCount = 0;
@@ -185,11 +186,11 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 
 		short x = rand() % 500;
 		short y = rand() % 500;
-		BYTE CurrentScene = 0;
+		BYTE CurrentScene = 1;
 		Packet* pack = new Packet;
 		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100, CurrentScene);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
-
+		
 
 		Packet* pack2 = new Packet;
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100, CurrentScene);
@@ -198,8 +199,11 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),0,0,x,y,100);
  		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(),data);
+		data->SetCurrentScene((SceneNum)CurrentScene);
+		auto scene = ServerSceneMgr::GetInstance().InsertScene(CurrentScene);
+		scene->AddScenePlayer(data);
 
-		
+
  		for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
 		{
 			if (otherplayer == nullptr)

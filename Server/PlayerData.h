@@ -50,7 +50,7 @@ class PlayerDataMgr : public Singleton< PlayerDataMgr>
 {
 	friend class Singleton< PlayerDataMgr>;
 
-private:
+private: 
 	std::vector<std::shared_ptr<PlayerData>> m_PlayerList;
 
 

@@ -3,11 +3,24 @@
 #SceneNum
 2
 #LineCollider
-1
--1366.000000	-470.000000	1358.000000	-474.000000
+0
 #ObjectList
 0
+#MonsterList
+7
+../resource/Monster/Mush_Main.png
+-952.000061	-11.999979
+../resource/Monster/Mush_Main.png
+0.000000	-81.999985
+../resource/Monster/Mush_Main.png
+-507.999969	216.000000
+../resource/Monster/Mush_Main.png
+-522.000000	-224.000046
+../resource/Monster/Mush_Main.png
+55.999954	126.000015
+../resource/Monster/Mush_Main.png
+96.000015	-189.999985
+../resource/Monster/Mush_Main.png
+-791.999939	140.000000
 #PotalList
-1
-../resource/MapObejct/potal.png
-1	1	-1202.000000	-226.000015	8	1	8	0.180000
+0

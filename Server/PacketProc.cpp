@@ -4,6 +4,7 @@
 #include "Packet.h"
 #include "PlayerData.h"
 #include"MakePacket.h"
+#include"ServerScene.h"
 BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
@@ -90,7 +91,18 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
 
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
+    //현재씬과 이전씬에서 플레이어 목록삭제 및 추가
+    auto BeforeScene = ServerSceneMgr::GetInstance().InsertScene(beforeScenenum);
+    auto curScene = ServerSceneMgr::GetInstance().InsertScene(Scenenum);
+
+    BeforeScene->DeleteScenePlayer(player);
+    curScene->AddScenePlayer(player);
+
     IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
     IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
+
+
+
+
     return 0;
 }

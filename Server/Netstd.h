@@ -13,8 +13,10 @@
 #include <vector>
 #include<memory>
 #include<array>
+#include"tchar.h"
+#include<string>
 #include "Protocol.h"
-
+#include"TMath.h"
 using std::list;
 
 
@@ -27,4 +29,9 @@ enum PLAYER_STATE
     PS_DEFAULT,
 
 
+};
+struct Line
+{
+    TVector3 From;
+    TVector3 To;
 };
