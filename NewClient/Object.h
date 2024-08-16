@@ -64,8 +64,8 @@ public:
 	virtual bool GetFalling() { return false; };
 	virtual void SetJumping(bool state) {};
 	virtual bool GetJumping() { return false; };
-	virtual void SetCurrentScene(SceneNum  currentScene) {};
-	virtual SceneNum GetCurrentScene() const { return SceneNum::Lobby; };
+	virtual void SetCurrentScene(int  currentScene) {};
+	virtual int GetCurrentScene() const { return -1; };
 	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
 	virtual int GetNextSceneNum()const { return -1; }
 	virtual void SetNextSceneNum(int num) {}

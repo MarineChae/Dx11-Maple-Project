@@ -79,6 +79,7 @@ bool ClientMain::Frame()
 						MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 						MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 						obj->SetTransform({0,0,0});
+						obj->SetCurrentScene(potal->GetNextSceneNum());
 						CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
 						Packet* pack = new Packet;
 						SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(), potal->GetNextSceneNum());
@@ -91,7 +92,7 @@ bool ClientMain::Frame()
 	}
 
 
-	
+
 
 	return true;
 }

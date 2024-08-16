@@ -32,7 +32,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     player->SetYPos(shY);
     MoveStartPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling, isJump);
     
-    IOCPServer::GetInstance().AddPacket(SendPack);
+    IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
 
     return 0; 
 }
@@ -65,7 +65,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
     player->SetYPos(shY);
     MoveStopPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling, isJump);
 
-    IOCPServer::GetInstance().AddPacket(SendPack);
+    IOCPServer::GetInstance().AddPacket(SendPack,player->GetCurrentScene());
 
 
     return 0;
@@ -85,11 +85,12 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
     if (player == nullptr)
         return FALSE;
     Packet* SendPack = new Packet;
+    auto beforeScenenum = player->GetCurrentScene();
     player->SetCurrentScene((SceneNum)Scenenum);
 
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
-    IOCPServer::GetInstance().AddPacket(SendPack);
-
+    IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
+    IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
     return 0;
 }

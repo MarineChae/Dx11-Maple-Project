@@ -29,7 +29,7 @@ void User::Close()
 
 	}
 
-	IOCPServer::GetInstance().AddPacket(pack);
+	IOCPServer::GetInstance().AddPacket(pack,-1);
 	m_bConnected = false;
 	closesocket(m_UserSock);
 
@@ -193,7 +193,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 
 		Packet* pack2 = new Packet;
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100, CurrentScene);
-		IOCPServer::GetInstance().AddPacket(pack2);
+		IOCPServer::GetInstance().AddPacket(pack2, CurrentScene);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),0,0,x,y,100);

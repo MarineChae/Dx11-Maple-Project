@@ -2,6 +2,7 @@
 #include "IOCPServer.h"
 #include "Packet.h"
 #include "Timer.h"
+#include"PlayerData.h"
 std::mutex m1;
 std::mutex broadMutex;
 
@@ -47,10 +48,10 @@ bool AcceptIocp::ThreadRun()
 
 
 
-void IOCPServer::AddPacket(Packet* packet)
+void IOCPServer::AddPacket(Packet* packet, int currentScene)
 {
 	
-	m_BroadcastPacketPool.Add(packet);
+	m_BroadcastPacketPool.Add(packet, currentScene);
 
 }
 
@@ -88,14 +89,17 @@ int IOCPServer::SendPacket(User* pUser, Packet* packet)
 	return packet->GetDataSize();
 }
 
-bool IOCPServer::Broadcasting(Packet* packet)
+bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
 		if (iterSend == nullptr) continue;
 		if (iterSend->IsConnected() == false) continue;
 
- 		int iSendByte = SendPacket(iterSend.get(), packet);
+		if (packet.second != PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene() && packet.second != -1)
+			continue;
+
+ 		int iSendByte = SendPacket(iterSend.get(), packet.first);
 
 		if (iSendByte == SOCKET_ERROR)
 		{
@@ -109,7 +113,7 @@ bool IOCPServer::Broadcasting(Packet* packet)
 	return true;
 }
 
-bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(std::pair<Packet*, int> packet, std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
@@ -118,7 +122,7 @@ bool IOCPServer::Broadcasting(Packet* packet, std::shared_ptr<User> pUser)
 
 		if (iterSend->IsConnected() == false || iterSend == pUser) continue;
 
-		int iSendByte = SendPacket(iterSend.get(), packet);
+		int iSendByte = SendPacket(iterSend.get(), packet.first);
 
 		if (iSendByte == SOCKET_ERROR)
 		{

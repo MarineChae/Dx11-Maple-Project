@@ -15,7 +15,7 @@ private:
 	DWORD	     m_dwActionInput;
 	PLAYER_STATE m_PlayerState;
 	TVector3     m_pMovePow;
-	SceneNum     m_CurrentScene;
+	int			 m_CurrentScene;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -39,8 +39,8 @@ public:
 	virtual bool GetJumping() { return m_bIsJump; };
 	virtual void SetJumping(bool state) { m_bIsJump = state; };
 	virtual bool GetFalling() { return m_bIsFalling; };
-	virtual void SetCurrentScene(SceneNum  currentScene) { m_CurrentScene = currentScene; };
-	virtual SceneNum GetCurrentScene() const { return m_CurrentScene; };
+	virtual void SetCurrentScene(int  currentScene) { m_CurrentScene = currentScene; };
+	virtual int GetCurrentScene() const { return m_CurrentScene; };
 
 public:
 	PlayerObject();

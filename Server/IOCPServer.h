@@ -46,11 +46,11 @@ public:
 
 public:
 
-	void AddPacket(Packet* packet);
+	void AddPacket(Packet* packet, int currentScene);
 	virtual void ChatMsg(Packet& packet);
 	virtual int  SendPacket(User* pUser, Packet* packet);
-	bool		 Broadcasting(Packet* packet);
-	bool		 Broadcasting(Packet* packet, std::shared_ptr<User> pUser);
+	bool		 Broadcasting(std::pair<Packet*, int> packet);
+	bool		 Broadcasting(std::pair<Packet*, int> packet, std::shared_ptr<User> pUser);
 
 public:
 	bool		 Init();
