@@ -167,6 +167,7 @@
     <ClCompile Include="PacketProc.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="PotalObject.cpp" />
     <ClCompile Include="SaveLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="PacketProc.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="PotalObject.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="SaveLoader.h" />
     <ClInclude Include="Scene.h" />

@@ -12,27 +12,9 @@
 #include"Texture.h"
 bool ClientMain::Init()
 {
-
-	//test = std::make_shared<Object>();	
-	//test->SetTransform(TVector3(0, -600, 0));
-	//test->SetScale(TVector3(1800, 64, 0));
-	//test->Init();
-	//test->Create(L"../resource/MapObejct/2Phase BackCollision.png", L"../Shader/Defalutshader.hlsl");
-	//test->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-	//test->GetCollider()->SetTransform(test->GetTransform());
-	//test->GetCollider()->SetScale(TVector3(1800, 64, 0));
-	//test->GetCollider()->SetCollsionType(COLLISION_TYPE::CT_FLOOR);
-	//test->m_vRotate.z = -45;
-	//test->GetCollider()->m_vRotate.z = -45;
-
-	//ObejctMgr::GetInstance().PushObject(, 60);
 	saveload = std::make_shared<SaveLoader>();
 	testScene = std::make_shared<Scene>();
-
-	testScene->Init(L"../resource/MapObejct/Lobby.png");
-
-
-	saveload->LoadData(testScene,"../resource/MapObejct/Lobby.txt");
+	saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
 	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 	return true;
@@ -84,6 +66,24 @@ bool ClientMain::Frame()
 						break;
 					}
 					obj->SetFalling(true);
+				}
+				for (auto& potal : testScene->GetPotalList())
+				{
+					if (Collider::CheckOBBCollision(potal->GetCollider(), obj->GetCollider())
+						&& (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH))
+					{
+						std::string st = "../resource/MapObejct/";
+						st += std::to_string(potal->GetNextSceneNum());
+						st += ".txt";
+						saveload->LoadData(testScene, st);
+						MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
+						MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
+						obj->SetTransform({0,0,0});
+						CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
+						Packet* pack = new Packet;
+						SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(), potal->GetNextSceneNum());
+						NetSendPacket(pack);
+					}
 				}
 			}
 			obj->Frame();

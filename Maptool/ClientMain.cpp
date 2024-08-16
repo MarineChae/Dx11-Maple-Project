@@ -139,19 +139,30 @@ bool ClientMain::Frame()
 			draw = false;
 			if (m_EditObject != nullptr)
 			{
-				std::shared_ptr<SpriteObject> mon = std::make_shared<SpriteObject>();
+				std::shared_ptr<SpriteObject> mon;
+				if (m_EditObject->GetObjectType() == ObejctType::Defalut)
+				{
+					mon = std::make_shared<SpriteObject>();
+				}
+				else if (m_EditObject->GetObjectType() == ObejctType::Portal)
+				{
+					mon = std::make_shared<PotalObject>();
+				}
 				mon->Init();
 				mon->SetSpriteInfo(m_EditObject->GetSpriteInfo());
 				mon->Create(m_EditObject->GetTexture(), m_EditObject->GetShader());
 				mon->SetTransform({ x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
 				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
 				0.0f });
+				mon->SetObejctType(m_EditObject->GetObjectType());
 				mon->SetScale(m_EditObject->GetSpriteInfo()->m_vScale);
-				m_testscene->PushObject(mon);
-
 				mon->GetCollider()->SetTransform(mon->GetTransform());
 				mon->GetCollider()->SetScale(m_EditObject->GetSpriteInfo()->m_vScale);
 				mon->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+
+				m_testscene->PushObject(mon);
+				if (mon->GetObjectType() == ObejctType::Portal)
+					m_testscene->PushPotalObject(mon);
 			}
 
 		}
@@ -403,14 +414,14 @@ void ClientMain::Menu()
 		auto ret = m_testscene->GetMapName().find(L"../resource");
 		if (!ret)
 		{
-			std::string name = wtm(m_testscene->GetMapName());
+			std::string name = std::to_string(m_testscene->GetSceneNum());
 			name+= ".txt";
 			m_pSaveLoader->SaveData(m_testscene, name);
 		}
 		else
 		{
 			std::string name = "\\";
-			name += wtm(m_testscene->GetMapName());
+			name += std::to_string(m_testscene->GetSceneNum());
 			name += ".txt";
 			filePath += name;
 			m_pSaveLoader->SaveData(m_testscene, filePath);
@@ -448,7 +459,11 @@ void ClientMain::SelectMenu()
 		m_ClickAction = CLICK_ACTION::OBJECT_PLACE;
 
 	}
-	
+	if (ImGui::RadioButton("SceneData", (m_ClickAction == CLICK_ACTION::SCENE_DATA)))
+	{
+		m_ClickAction = CLICK_ACTION::SCENE_DATA;
+
+	}
 	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
 	{
 		ImGui::NewLine();
@@ -704,7 +719,54 @@ void ClientMain::SelectMenu()
 		}
 
 	}
+	if (m_ClickAction == CLICK_ACTION::SCENE_DATA)
+	{
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "SceneData");
+		ImGui::NewLine();
+		int scenenum = m_testscene->GetSceneNum();
+		ImGui::InputInt("SceneNum", &scenenum);
+		m_testscene->SetSceneNum(scenenum);
 
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Potal List");
+		static std::shared_ptr<Object> potalobj;
+		if (ImGui::BeginListBox("##", { 250,100 }))
+		{
+		
+			for (int isize = 0; isize < m_testscene->GetPotalList().size(); isize++)
+			{
+				bool clickObj;
+				auto tex = m_testscene->GetPotalList()[isize]->GetTexture();
+				std::string st = std::to_string(isize);
+				st += " : ";
+				st += wtm(tex->GetName());
+				clickObj = ImGui::Button(st.c_str(), ImVec2(100, 30));
+				if (clickObj)
+				{
+					potalobj = m_testscene->GetPotalList()[isize];
+					break;
+				}
+
+			}
+			ImGui::EndListBox();
+		}
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "PotalData");
+		if (ImGui::BeginListBox("###@ ", { 250,100 }))
+		{
+			if (potalobj != nullptr)
+			{
+				int nextSceneNum = potalobj->GetNextSceneNum();
+				ImGui::InputInt("SceneNum", &nextSceneNum);
+				potalobj->SetNextSceneNum(nextSceneNum);
+
+			}
+
+
+			ImGui::EndListBox();
+		}
+	}
 
 
 	ImGui::End();

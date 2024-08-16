@@ -74,7 +74,7 @@ bool Collider::Frame()
 {
     Object::Frame();
     SetCollisionPoint();
-    //SetCollisionBox();
+    SetCollisionBox();
 
     return true;
 }

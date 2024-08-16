@@ -38,6 +38,7 @@ public:
 	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
 	std::shared_ptr<Collider> GetCollider() const;
 	ObejctType	GetObjectType() const { return m_ObjectType; };
+	
 	//setter
 	void		 SetObejctID(DWORD id) { m_dwObjectID = id; }
 	virtual void SetTransform(TVector3 transform) { m_vTransform = transform; };
@@ -45,6 +46,7 @@ public:
 	virtual void SetState(PLAYER_STATE state) {};
 	virtual void SetDirection(BYTE dir) { };
 	void SetObejctType(ObejctType type) { m_ObjectType = type; };
+
 	TVector3 m_vRotate;
 
 	//virtual
@@ -53,7 +55,8 @@ public:
 	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
 	virtual void SetSpriteInfo(std::shared_ptr<SpriteData> info) {};
 	virtual void InitTexIndex() {};
-
+	virtual int GetNextSceneNum()const { return -1; }
+	virtual void SetNextSceneNum(int num) {}
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

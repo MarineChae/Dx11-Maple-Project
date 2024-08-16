@@ -67,7 +67,8 @@ public:
 	virtual void SetCurrentScene(SceneNum  currentScene) {};
 	virtual SceneNum GetCurrentScene() const { return SceneNum::Lobby; };
 	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
-
+	virtual int GetNextSceneNum()const { return -1; }
+	virtual void SetNextSceneNum(int num) {}
 
 public:
 	virtual bool CreateVertexData();

@@ -6,6 +6,11 @@ void Scene::ResetMap(std::wstring MapName)
 	m_pMap.reset();
 	m_pCollider.reset();
 	m_LineColliderList.clear();
+	m_PlayerList.clear();
+	m_MonsterList.clear();
+	m_ObjectList.clear();
+	m_PotalList.clear();
+	m_LineColliderList.clear();
 	Init(MapName);
 }
 bool Scene::Init(std::wstring MapName)
@@ -32,6 +37,7 @@ bool Scene::Frame()
 	for (auto& ob : m_ObjectList)
 	{
 		ob->Frame();
+		ob->GetCollider()->Frame();
 	}
 
 	m_pCollider->Frame();

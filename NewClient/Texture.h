@@ -16,7 +16,7 @@ private:
 public:
 	const int& GetWidth() const { return m_iWidth; };
 	const int& GetHeight() const { return m_iHeight; };
-
+	const std::wstring GetName() const { return m_csName; };
 public:
 	bool Apply(ID3D11DeviceContext* pImmediateContext, int iSlot) const
 	{

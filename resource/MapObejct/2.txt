@@ -1,0 +1,13 @@
+#MapName
+../resource/MapObejct/Phase1.png
+#SceneNum
+2
+#LineCollider
+1
+-1366.000000	-470.000000	1358.000000	-474.000000
+#ObjectList
+0
+#PotalList
+1
+../resource/MapObejct/potal.png
+1	1	-1202.000000	-226.000015	8	1	8	0.180000

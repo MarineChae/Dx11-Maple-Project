@@ -95,6 +95,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SaveLoader.cpp" />
+    <ClCompile Include="PotalObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientMain.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SaveLoader.h" />
+    <ClInclude Include="PotalObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

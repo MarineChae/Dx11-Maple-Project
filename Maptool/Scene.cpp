@@ -45,7 +45,6 @@ bool Scene::Frame()
 			ob->GetCollider()->Frame();
 		}
 	}
-
 	m_pCollider->Frame();
     return true;
 }
@@ -94,6 +93,7 @@ bool Scene::Render()
 			ob->GetCollider()->Render();
 		}
 	}
+
 	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 									&CameraMgr::GetInstance().GetCamera().GetProjection());
 	m_pCollider->Render();
@@ -107,7 +107,8 @@ bool Scene::Release()
 }
 
 Scene::Scene()
-	: m_pMap()
+	: m_iSceneNum(0)
+	, m_pMap()
 	, m_pBackGrondMap(std::make_shared<Object>())
 	, m_PlayerList()
 	, m_MonsterList()

@@ -2,7 +2,7 @@
 #include "SaveLoader.h"
 #include"Scene.h"
 #include"Collider.h"
-#include"SpriteObject.h"
+#include"PotalObject.h"
 #include"Texture.h"
 bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePath)
 {
@@ -14,8 +14,22 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 		bool bRet = true;
 		std::string header = "#MapName";
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
-		std::string path = "../resource/MapObejct/" + wtm(pSceneData->GetMapName()) + ".png";
+		std::string path;
+		auto ret = pSceneData->GetMapName().find(L"../resource");
+		if (!ret)
+		{
+			path = wtm(pSceneData->GetMapName()) + ".png";
+		}
+		else
+		{
+			path = "../resource/MapObejct/" + wtm(pSceneData->GetMapName()) + ".png";
+		}
+
 		bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
+
+		header = "#SceneNum";
+		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
+		bRet = fprintf_s(fpWrite, "%d\n", pSceneData->GetSceneNum());
 
 		header = "#LineCollider";
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
@@ -23,11 +37,53 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 		for (auto& line : pSceneData->GetLineColliderList())
 		{
 			bRet = fprintf_s(fpWrite, "%f\t", line->From.x);
-			bRet = fprintf_s(fpWrite, "%f\t", line->From.y); 
+			bRet = fprintf_s(fpWrite, "%f\t", line->From.y);
 			bRet = fprintf_s(fpWrite, "%f\t", line->To.x);
 			bRet = fprintf_s(fpWrite, "%f\n", line->To.y);
 		}
 
+		header = "#ObjectList";
+		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
+		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(pSceneData->GetObjectList().size() - pSceneData->GetPotalList().size()));
+		for (auto& obj : pSceneData->GetObjectList())
+		{
+			if (obj->GetObjectType() == ObejctType::Defalut)
+			{
+				std::string path = "../resource/MapObejct/" + wtm(obj->GetTexture()->GetName());
+				bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
+
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetObjectType());
+				bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().x);
+				bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().y);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iCol);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iRow);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iMaxImageCount);
+				bRet = fprintf_s(fpWrite, "%lf\n", obj->GetSpriteInfo()->m_fDelay);
+			}
+
+		}
+
+		header = "#PotalList";
+		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
+		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(pSceneData->GetPotalList().size()));
+		for (auto& obj : pSceneData->GetPotalList())
+		{
+			if (obj->GetObjectType() == ObejctType::Portal)
+			{
+				std::string path = "../resource/MapObejct/" + wtm(obj->GetTexture()->GetName());
+				bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetNextSceneNum());
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetObjectType());
+				bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().x);
+				bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().y);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iCol);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iRow);
+				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iMaxImageCount);
+				bRet = fprintf_s(fpWrite, "%lf\n", obj->GetSpriteInfo()->m_fDelay);
+			}
+
+		}
+		fclose(fpWrite);
 	}
 
 
@@ -61,6 +117,14 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 				pSceneData->ResetMap(tex);
 				pSceneData->GetMap()->SetScale({ static_cast<float>(pSceneData->GetMap()->GetTexture()->GetWidth()),
 												 static_cast<float>(pSceneData->GetMap()->GetTexture()->GetHeight()),0 });
+			}
+			else if (_tcscmp(type, L"#SceneNum") == 0)
+			{
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int Num = 0;
+				_stscanf_s(buffer, _T("%d"), &Num);
+				pSceneData->SetSceneNum(Num);
+
 			}
 			else if (_tcscmp(type, L"#LineCollider") == 0)
 			{
@@ -98,6 +162,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					TCHAR tex[80] = { 0, };
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+					obj->Init();
 					obj->Create(tex, L"../Shader/Defalutshader.hlsl");
 
 					int objectType;
@@ -114,13 +179,59 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 													   static_cast<float>(obj->GetTexture()->GetHeight() / data->iRow),1 };
 
 					obj->SetScale(data->m_vScale);
+					obj->GetCollider()->SetTransform(obj->GetTransform());
+					obj->GetCollider()->SetScale(data->m_vScale);
+					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 
 					pSceneData->PushObject(obj);
 				}
 
 
 			}
+			else if (_tcscmp(type, L"#PotalList") == 0)
+			{
 
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int iSize = 0;
+				_stscanf_s(buffer, _T("%d"), &iSize);
+
+				for (int i = 0; i < iSize; ++i)
+				{
+					std::shared_ptr<SpriteObject> obj = std::make_shared<PotalObject>();
+					std::shared_ptr<SpriteData> data = std::make_shared<SpriteData>();
+					TCHAR tex[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+					obj->Init();
+					obj->Create(tex, L"../Shader/Defalutshader.hlsl");
+
+					int nextSceneNum;
+					int objectType;
+					TVector3 temp;
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%d %d %f %f %d %d %d %lf \n"), &nextSceneNum, &objectType, &temp.x, &temp.y, &data->iCol, &data->iRow, &data->iMaxImageCount, &data->m_fDelay);
+					obj->SetNextSceneNum(nextSceneNum);
+					obj->SetObejctType((ObejctType)objectType);
+					obj->SetTransform(temp);
+					obj->SetSpriteInfo(data);
+
+
+					obj->SetUVData(data->m_UVList, data->iRow, data->iCol);
+					obj->GetSpriteInfo()->m_vScale = { static_cast<float>(obj->GetTexture()->GetWidth() / data->iCol),
+													   static_cast<float>(obj->GetTexture()->GetHeight() / data->iRow),1 };
+
+					obj->SetScale(data->m_vScale);
+
+					obj->SetScale(data->m_vScale);
+					obj->GetCollider()->SetTransform(obj->GetTransform());
+					obj->GetCollider()->SetScale(data->m_vScale);
+					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+					pSceneData->PushObject(obj);
+					pSceneData->PushPotalObject(obj);
+				}
+
+
+			}
 
 
 		}
@@ -130,4 +241,3 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 
 	return false;
 }
-

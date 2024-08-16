@@ -1,11 +1,21 @@
 #MapName
 ../resource/MapObejct/Lobby.png
+#SceneNum
+0
 #LineCollider
 1
--1833.515625	-669.104858	1830.119873	-669.104858
+-1834.549927	-696.849670	1826.556396	-702.849670
 #ObjectList
+3
+../resource/MapObejct/move.png
+0	765.120300	-626.849670	3	1	1	0.180000
+../resource/MapObejct/move.png
+0	191.120239	-630.849731	3	1	1	0.180000
+../resource/MapObejct/move.png
+0	-348.879761	-628.849731	3	1	1	0.180000
+#PotalList
 2
 ../resource/MapObejct/potal.png
-0	-1383.578735	-409.104797	8	1	8	0.180000
+1	1	-1378.660400	-440.849731	8	1	8	0.180000
 ../resource/MapObejct/potal.png
-0	1621.350830	-411.104858	8	1	8	0.180000
+2	1	1514.910400	-444.849731	8	1	8	0.180000
