@@ -4,6 +4,7 @@ class ServerScene
 {
 private:
 	std::vector<std::shared_ptr<PlayerData>> m_vScenePlayerList;
+
 	std::vector<std::shared_ptr<Line>>		  m_LineColliderList;
 
 public:

@@ -1,0 +1,12 @@
+#MapName
+../resource/MapObejct/Lobby.png
+#SceneNum
+55
+#LineCollider
+0
+#ObjectList
+0
+#MonsterList
+0
+#PotalList
+0

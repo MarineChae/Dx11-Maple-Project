@@ -142,7 +142,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 			}
 			else if (_tcscmp(type, L"#LineCollider") == 0)
 			{
-
+				pSceneData->ClearLineList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
@@ -159,12 +159,16 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					
 					pSceneData->PushLineCollider(line);
 				}
+				v.push_back({});
 				pSceneData->GetCollider()->SetVertexList(v);
+				auto& vb = pSceneData->GetCollider()->GetVertexBuffer();
+				auto& vl = pSceneData->GetCollider()->GetVertexList();
 
+				Device::GetContext()->UpdateSubresource(vb.Get(), 0, 0, &vl.at(0), 0, 0);
 			}
 			else if (_tcscmp(type, L"#ObjectList") == 0)
 			{
-
+				pSceneData->ClearObjectList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
@@ -204,7 +208,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 			}
 			else if (_tcscmp(type, L"#MonsterList") == 0)
 			{
-
+				pSceneData->ClearMonsterList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
@@ -230,14 +234,14 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
 					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 
-					pSceneData->PushObject(obj);
+					pSceneData->PushMonster(obj);
 				}
 
 
 			}
 			else if (_tcscmp(type, L"#PotalList") == 0)
 			{
-
+				pSceneData->ClearPotalList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);

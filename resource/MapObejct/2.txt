@@ -3,7 +3,8 @@
 #SceneNum
 2
 #LineCollider
-0
+1
+-1362.000000	-459.999969	1346.000000	-464.000000
 #ObjectList
 0
 #MonsterList

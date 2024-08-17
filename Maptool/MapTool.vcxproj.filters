@@ -63,34 +63,34 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_dx11.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_tables.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiFileDialog.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiManager.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -155,49 +155,49 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="stb_image_resize.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_dx11.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiFileDialog.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiFileDialogConfig.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="ImGuizmo.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_rectpack.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_textedit.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="dirent.h">
-      <Filter>imgui</Filter>
+      <Filter>Core\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Map.h" />
     <ClInclude Include="Scene.h" />
@@ -208,7 +208,7 @@
     <Filter Include="Core">
       <UniqueIdentifier>{c8dd3a83-a7a7-4c07-8193-2f45f0ae2246}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui">
+    <Filter Include="Core\imgui">
       <UniqueIdentifier>{13ce02ec-aa0d-4a0e-bde6-a842f1a76438}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

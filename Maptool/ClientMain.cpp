@@ -32,7 +32,7 @@ bool ClientMain::Init()
 	//l.From = v[0].Pos;
 	//l.To = v[1].Pos;
 	//linelist.push_back(l);
-
+	
 
 	//testcol->SetVertexList(v);
 	//Device::GetContext()->UpdateSubresource(testcol->GetVertexBuffer().Get(), 0, 0, &v.at(0), 0, 0);
@@ -72,7 +72,7 @@ bool ClientMain::Frame()
 
 	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
 	{
-
+		
 
 		if (draw)
 		{
@@ -414,7 +414,8 @@ void ClientMain::Menu()
 		auto ret = m_testscene->GetMapName().find(L"../resource");
 		if (!ret)
 		{
-			std::string name = std::to_string(m_testscene->GetSceneNum());
+			std::string name = "../resource/MapObejct/";
+			name += std::to_string(m_testscene->GetSceneNum());
 			name+= ".txt";
 			m_pSaveLoader->SaveData(m_testscene, name);
 		}
@@ -433,6 +434,7 @@ void ClientMain::Menu()
 	{
 		m_bImguiLoad = false;
 		m_pSaveLoader->LoadData(m_testscene, filePathName);
+		v = m_testscene->GetCollider()->GetVertexList();
 	}
 }
 
