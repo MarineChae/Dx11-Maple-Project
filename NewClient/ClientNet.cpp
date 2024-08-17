@@ -287,6 +287,10 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
     case PACKET_CS_SCENE_CHANGE:
         PacketProc_SceneChange(pack);
         break;
+    case PACKET_CS_CREATE_MONSTER:
+        PacketProc_CreateMonster(pack);
+        break;
+
 
     }
 

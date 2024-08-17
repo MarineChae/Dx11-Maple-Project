@@ -101,7 +101,12 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
     IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
     IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
 
-
+    for (auto& monster : curScene->GetSceneMonsterList())
+    {
+        Packet* pack = new Packet;
+        CreateMonster(pack, monster->GetName(), 0, monster->GetXPos(), monster->GetYPos(), 100, Scenenum);
+        IOCPServer::GetInstance().AddPacket(pack, player->GetCurrentScene());
+    }
 
 
     return 0;

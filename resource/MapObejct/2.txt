@@ -6,7 +6,13 @@
 1
 -1362.000000	-459.999969	1346.000000	-464.000000
 #ObjectList
-0
+3
+../resource/MapObejct/move.png
+0	-667.999939	392.000031	3	1	3	0.180000
+../resource/MapObejct/move.png
+0	-395.999969	372.000000	3	1	3	0.180000
+../resource/MapObejct/move.png
+0	399.999939	364.000000	3	1	3	0.180000
 #MonsterList
 7
 ../resource/Monster/Mush_Main.png
@@ -24,4 +30,6 @@
 ../resource/Monster/Mush_Main.png
 -791.999939	140.000000
 #PotalList
-0
+1
+../resource/MapObejct/potal.png
+1	1	-1224.000000	-135.999985	8	1	8	0.180000

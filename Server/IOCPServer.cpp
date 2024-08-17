@@ -96,6 +96,7 @@ bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
 	{
 		if (iterSend == nullptr) continue;
 		if (iterSend->IsConnected() == false) continue;
+		if (PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId()) == nullptr) continue;
 
 		if (packet.second != PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene() && packet.second != -1)
 			continue;

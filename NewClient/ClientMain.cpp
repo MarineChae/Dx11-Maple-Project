@@ -17,6 +17,9 @@ bool ClientMain::Init()
 	saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
 	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
+
+	SceneMgr::GetInstance().SetCurrentScene(testScene);
+
 	return true;
 }
 

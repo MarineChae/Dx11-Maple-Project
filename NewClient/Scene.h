@@ -33,6 +33,10 @@ public:
 	void PushPotalObject(std::shared_ptr<Object> object) { return m_PotalList.push_back(object); }
 	void PushLineCollider(std::shared_ptr <Line> line) { m_LineColliderList.push_back(line); };
 	void ResetMap(std::wstring MapName);
+	void ClearLineList() { m_LineColliderList.clear(); }
+	void ClearPotalList() { m_PotalList.clear(); };
+	void ClearObjectList() { m_ObjectList.clear(); };
+	void ClearMonsterList() { m_MonsterList.clear(); }
 public:
 	bool Init(std::wstring MapName);
 	bool Frame();
@@ -51,11 +55,11 @@ class SceneMgr :public Singleton<SceneMgr>
 
 private:
 	std::map<std::wstring, Scene> m_mSceneList;
-
+	std::shared_ptr<Scene> m_CurrentScene;
 public:
 
-
-
+	std::shared_ptr<Scene> GetCurrentScene() { return m_CurrentScene; }
+	void SetCurrentScene(std::shared_ptr<Scene> scene) { m_CurrentScene = scene; };
 
 
 };

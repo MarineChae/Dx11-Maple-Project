@@ -63,6 +63,20 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 
 		}
 
+		header = "#MonsterList";
+		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
+		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(pSceneData->GetMonsterList().size()));
+		for (auto& obj : pSceneData->GetMonsterList())
+		{
+
+			std::string path = "../resource/Monster/" + wtm(obj->GetTexture()->GetName());
+			bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
+			bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().x);
+			bRet = fprintf_s(fpWrite, "%f\n", obj->GetTransform().y);
+
+
+		}
+
 		header = "#PotalList";
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
 		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(pSceneData->GetPotalList().size()));
@@ -128,7 +142,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 			}
 			else if (_tcscmp(type, L"#LineCollider") == 0)
 			{
-
+				pSceneData->ClearLineList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
@@ -145,12 +159,16 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 
 					pSceneData->PushLineCollider(line);
 				}
+				v.push_back({});
 				pSceneData->GetCollider()->SetVertexList(v);
+				auto vb = pSceneData->GetCollider()->GetVertexBuffer();
+				auto vl = pSceneData->GetCollider()->GetVertexList();
 
+				Device::GetContext()->UpdateSubresource(vb.Get(), 0, 0, &vl.at(0), 0, 0);
 			}
 			else if (_tcscmp(type, L"#ObjectList") == 0)
 			{
-
+				pSceneData->ClearObjectList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
@@ -190,40 +208,40 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 			}
 			else if (_tcscmp(type, L"#MonsterList") == 0)
 			{
-
-				_fgetts(buffer, _countof(buffer), fpRead);
-				int iSize = 0;
-				_stscanf_s(buffer, _T("%d"), &iSize);
-
-				for (int i = 0; i < iSize; ++i)
-				{
-					std::shared_ptr<Object> obj = std::make_shared<Object>();
-					TCHAR tex[80] = { 0, };
-					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
-					obj->Init();
-					obj->Create(tex, L"../Shader/Defalutshader.hlsl");
-
-					TVector3 temp;
-					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%f %f \n"), &temp.x, &temp.y);
-					obj->SetTransform(temp);
-
-					obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-					obj->GetCollider()->SetTransform(obj->GetTransform());
-					obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-
-					pSceneData->PushObject(obj);
-				}
-
-
+				//pSceneData->ClearMonsterList();
+				//_fgetts(buffer, _countof(buffer), fpRead);
+				//int iSize = 0;
+				//_stscanf_s(buffer, _T("%d"), &iSize);
+				//
+				//for (int i = 0; i < iSize; ++i)
+				//{
+				//	std::shared_ptr<Object> obj = std::make_shared<Object>();
+				//	TCHAR tex[80] = { 0, };
+				//	_fgetts(buffer, _countof(buffer), fpRead);
+				//	_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+				//	obj->Init();
+				//	obj->Create(tex, L"../Shader/Defalutshader.hlsl");
+				//
+				//	TVector3 temp;
+				//	_fgetts(buffer, _countof(buffer), fpRead);
+				//	_stscanf_s(buffer, _T("%f %f \n"), &temp.x, &temp.y);
+				//	obj->SetTransform(temp);
+				//
+				//	obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+				//								 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+				//	obj->GetCollider()->SetTransform(obj->GetTransform());
+				//	obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+				//								 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+				//	obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+				//
+				//	pSceneData->PushMonster(obj);
+				//}
+				//
+				//
 			}
 			else if (_tcscmp(type, L"#PotalList") == 0)
 			{
-
+				pSceneData->ClearPotalList();
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);

@@ -1,6 +1,8 @@
 #include"Netstd.h"
 #include"PlayerData.h"
+//#include"MonsterData.h"
 #include "ServerScene.h"
+#include"MakePacket.h"
 
 std::mutex sceneMutex;
 
@@ -36,7 +38,28 @@ void ServerScene::LoadSceneData(int Scenenum)
 
 			if (_tcscmp(type, L"#MonsterList") == 0)
 			{
-					//TODO
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int iSize = 0;
+				_stscanf_s(buffer, _T("%d"), &iSize);
+				for (int i = 0; i < iSize; i++)
+				{
+					TCHAR tex[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+					std::shared_ptr<MonsterData> Monster = std::make_shared<MonsterData>();
+
+					float x;
+					float y;
+ 					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%f %f\n"), &x, &y);
+					char name[80];
+					WideCharToMultiByte(CP_ACP, 0, tex, sizeof(tex), name, sizeof(name), NULL, NULL);
+
+
+					Monster->Create(name, 0, 0, x, y, 100);
+
+					m_vSceneMonsterList.push_back(Monster);
+				}
 			}
 			else if (_tcscmp(type, L"#LineCollider") == 0)
 			{

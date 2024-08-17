@@ -11,4 +11,5 @@ void SceneChangePacket(Packet* pack, DWORD SessionID, BYTE SceneNum);
 
 void CreateMyCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene);
 void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP ,BYTE CurrentScene);
+void CreateMonster(Packet* pack,char* name, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene);
 void DisConnectCharacter(Packet* pack, DWORD SessionID);

@@ -2,8 +2,8 @@
 #include "PacketProc.h"
 #include"PlayerObject.h"
 #include"Collider.h"
-
-
+#include"texture.h"
+#include"Scene.h"
 BOOL PacketProc_MoveStart(Packet* pack)
 {
     DWORD dwSessionID;
@@ -88,6 +88,48 @@ BOOL PacketProc_SceneChange(Packet* pack)
     return 0;
 }
 
+BOOL PacketProc_CreateMonster(Packet* pack)
+{
+    char name[80];
+    int namelen;
+    BYTE Direction;
+    short X;
+    short Y;
+    int HP;
+    BYTE CurrentScene;
+
+    *pack >> namelen;
+    pack->GetData(name, namelen);
+    *pack >> Direction;
+    *pack >> X;
+    *pack >> Y;
+    *pack >> HP;
+    *pack >> CurrentScene;
+
+
+    std::wstring ws(name, &name[namelen]);
+
+    std::shared_ptr<Object> obj = std::make_shared<Object>();
+    obj->Init();
+    obj->Create(ws, L"../Shader/Defalutshader.hlsl");
+
+    obj->SetTransform({static_cast<float>(X),static_cast<float>(Y),0});
+    
+    obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+    							 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+    obj->GetCollider()->SetTransform(obj->GetTransform());
+    obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
+    							 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+    obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+    
+
+
+    SceneMgr::GetInstance().GetCurrentScene()->PushMonster(obj);
+
+
+    return 0;
+}
+
 BOOL PacketProc_CreateMyCharacter(Packet* pack)
 {
     DWORD dwSessionID;
@@ -150,6 +192,7 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
     other->SetObejctID(dwSessionID);
     other->SetCurrentScene((SceneNum)CurrentScene);
     ObejctMgr::GetInstance().PushObject(other, dwSessionID);
+
 
 
     return 0;

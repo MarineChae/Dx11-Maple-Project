@@ -11,7 +11,7 @@
 ////////////클라이언트 서버 전송 패킷/////////
 #define	PACKET_CS_CREATE_MY_CHARACTER 1
 #define	PACKET_CS_CREATE_OTHER_CHARACTER 2
-
+#define	PACKET_CS_CREATE_MONSTER 3
 
 #define	PACKET_CS_MOVE_START 10
 #define	PACKET_CS_MOVE_END 11

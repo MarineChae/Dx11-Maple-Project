@@ -40,6 +40,11 @@ bool Scene::Frame()
 		ob->GetCollider()->Frame();
 	}
 
+	for (auto& m : m_MonsterList)
+	{
+		m->Frame();
+		m->GetCollider()->Frame();
+	}
 	m_pCollider->Frame();
 
     return true;
@@ -57,10 +62,17 @@ bool Scene::Render()
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		ob->Render();
 	}
+	for (auto& m : m_MonsterList)
+	{
+		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		m->Render();
+	}
 
-	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-									&CameraMgr::GetInstance().GetCamera().GetProjection());
-	m_pCollider->Render();
+	//디버그용
+	//m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+	//								&CameraMgr::GetInstance().GetCamera().GetProjection());
+	//m_pCollider->Render();
 
     return true;
 }

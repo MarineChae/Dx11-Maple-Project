@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MakePacket.cpp" />
+    <ClCompile Include="MonsterData.cpp" />
     <ClCompile Include="PacketProc.cpp" />
     <ClCompile Include="PlayerData.cpp" />
     <ClCompile Include="IocpModel.cpp" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MakePacket.h" />
+    <ClInclude Include="MonsterData.h" />
     <ClInclude Include="PacketProc.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="IocpModel.h" />

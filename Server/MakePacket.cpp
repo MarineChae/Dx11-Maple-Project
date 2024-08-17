@@ -85,6 +85,27 @@ void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X
 
 }
 
+void CreateMonster(Packet* pack, char* name, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene)
+{
+	int namelen = strlen(name);
+	PACKET_HEADER PacketHeader;
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 14 + namelen;
+	PacketHeader.PacketType = PACKET_CS_CREATE_MONSTER;
+
+
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << namelen;
+	pack->PutData(name, namelen);
+	*pack << Direction;
+	*pack << X;
+	*pack << Y;
+	*pack << HP;
+	*pack << CurrentScene;
+	*pack << (BYTE)NETWORK_PACKET_END;
+}
+
 void DisConnectCharacter(Packet* pack, DWORD SessionID)
 {
 	PACKET_HEADER PacketHeader;
