@@ -96,6 +96,9 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SaveLoader.cpp" />
     <ClCompile Include="PotalObject.cpp" />
+    <ClCompile Include="MonsterObject.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientMain.h" />
@@ -203,6 +206,9 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SaveLoader.h" />
     <ClInclude Include="PotalObject.h" />
+    <ClInclude Include="MonsterObject.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

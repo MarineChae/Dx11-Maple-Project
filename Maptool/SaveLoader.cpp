@@ -215,7 +215,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 
 				for (int i = 0; i < iSize; ++i)
 				{
-					std::shared_ptr<Object> obj = std::make_shared<Object>();
+					std::shared_ptr<MonsterObject> obj = std::make_shared<MonsterObject>();
 					TCHAR tex[80] = { 0, };
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));

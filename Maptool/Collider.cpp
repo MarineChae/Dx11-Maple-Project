@@ -177,8 +177,9 @@ bool Collider::CreateVertexBuffer()
     Desc.MiscFlags = 0;
     Desc.StructureByteStride = 0;
     D3D11_SUBRESOURCE_DATA InitialData;
+    ZeroMemory(&InitialData, sizeof(InitialData));
     InitialData.pSysMem = &m_vVertexList.at(0);
 
-    auto ret = Device::GetDevice()->CreateBuffer(&Desc, &InitialData, GetVertexBuffer().GetAddressOf());
+    auto ret = Device::GetDevice()->CreateBuffer(&Desc, &InitialData, m_pVertexBuffer.GetAddressOf());
     return true;
 }

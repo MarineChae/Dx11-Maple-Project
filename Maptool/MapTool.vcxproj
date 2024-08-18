@@ -161,6 +161,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MakePacket.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MonsterObject.cpp" />
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Packet.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="MakePacket.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MonsterObject.h" />
     <ClInclude Include="MyWindow.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Packet.h" />

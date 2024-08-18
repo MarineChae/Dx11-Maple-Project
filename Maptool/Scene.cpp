@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include"Camera.h"
 #include"Collider.h"
+
 void Scene::ResetMap(std::wstring MapName)
 {
 	m_pMap.reset();
@@ -36,6 +37,7 @@ bool Scene::Frame()
 	for (auto& m : m_MonsterList)
 	{
 		m->Frame();
+
 	}
 	for (auto& ob : m_ObjectList)
 	{

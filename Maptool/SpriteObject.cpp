@@ -80,6 +80,19 @@ bool SpriteObject::SetUVData(std::vector<UVRect>& rectlist, int iRow, int iCol)
     return true;
 }
 
+bool SpriteObject::ChangeSpriteData(std::shared_ptr<SpriteData> data, MONSTER_STATE state)
+{
+    if (m_vSpriteList.size() - 1 >= state)
+    {
+
+        m_vSpriteList[state] = data;
+
+    }
+
+
+    return false;
+}
+
 
 
 bool SpriteObject::Init()

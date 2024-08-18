@@ -11,14 +11,23 @@
 #include"SaveLoader.h"
 #include"Texture.h"
 
+
 const int mapXsize = 5830;
 const int mapYsize = 1764;
 
 const int clientXsize = 1388;
 const int clientYsize = 766;
-
+std::unordered_map< MONSTER_STATE, std::string> monsterStateMap =
+{ {MONSTER_STATE::MS_IDLE ,"MS_IDLE"},
+	{MONSTER_STATE::MS_WALK ,"MS_WALK"},
+	{MONSTER_STATE::MS_ATTACK ,"MS_ATTACK"},
+	{MONSTER_STATE::MS_SKILL1 ,"MS_SKILL1"},
+	{MONSTER_STATE::MS_SKILL2 ,"MS_SKILL2"},
+		{ MONSTER_STATE::MS_SKILL3 ,"MS_SKILL3" }
+};
 bool ClientMain::Init()
 {
+	
 	m_testscene = std::make_shared<Scene>();
 	m_pSaveLoader = std::make_shared<SaveLoader>();
 	m_testscene->Init(L" ");
@@ -117,18 +126,41 @@ bool ClientMain::Frame()
 			draw = false;
 			if (m_EditMonster != nullptr)
 			{
-				std::shared_ptr<Object> mon = std::make_shared<Object>();
+				std::shared_ptr<MonsterObject> mon = std::make_shared<MonsterObject>();
+				mon->Init();
 				mon->Create(m_EditMonster->GetTexture(), m_EditMonster->GetShader());
 				mon->SetTransform({ x * clientXsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().x
 				,y * clientYsize + CameraMgr::GetInstance().GetCamera().GetCameraPos().y,
 				0.0f });
 				mon->SetScale({ static_cast<float>(mon->GetTexture()->GetWidth()),
 								static_cast<float>(mon->GetTexture()->GetHeight()),0});
+				mon->SetSpriteInfo(m_EditMonster->GetSpriteInfo());
+				mon->GetCollider()->SetTransform(mon->GetTransform());
+				mon->GetCollider()->SetScale({ static_cast<float>(mon->GetTexture()->GetWidth()),
+								static_cast<float>(mon->GetTexture()->GetHeight()),0 });
+				mon->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 				m_testscene->PushMonster(mon);
 			}
 
 		}
+		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_HOLD && !draw)
+		{
+			for (auto& obj : m_testscene->GetMonsterList())
+			{
+				if (mousePosX >= obj->GetCollider()->GetTransform().x - obj->GetCollider()->GetWidth()
+					&& mousePosX <= obj->GetCollider()->GetTransform().x + obj->GetCollider()->GetWidth()
+					&& mousePosY >= obj->GetCollider()->GetTransform().y - obj->GetCollider()->GetHeight()
+					&& mousePosY <= obj->GetCollider()->GetTransform().y + obj->GetCollider()->GetHeight())
+				{
+					obj->SetTransform({ mousePosX ,mousePosY,0 });
+					obj->GetCollider()->SetTransform({ mousePosX ,mousePosY,0 });
+					break;
+				}
 
+			}
+
+
+		}
 
 
 	}
@@ -181,6 +213,7 @@ bool ClientMain::Frame()
 				}
 
 			}
+
 
 		}
 	}
@@ -440,6 +473,8 @@ void ClientMain::Menu()
 
 void ClientMain::SelectMenu()
 {
+	std::string filePath;
+	std::string filePathName;
 	static std::shared_ptr<Line> selectLine;
 	static float tempx;
 	static float tempy;
@@ -541,6 +576,206 @@ void ClientMain::SelectMenu()
 
 			ImGui::EndListBox();
 		}
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "PlacedMonster List");
+		if (ImGui::BeginListBox("##", { 250,100 }))
+		{
+			for (int isize = 0; isize < m_testscene->GetMonsterList().size(); isize++)
+			{
+				bool clickmonster;
+				auto tex = m_testscene->GetMonsterList()[isize]->GetMonsterName();
+				std::string st = "No : ";
+				st += std::to_string(isize);
+				st += " ";
+				st += tex;
+				clickmonster = ImGui::Button(st.c_str(), ImVec2(100, 30));
+				if (clickmonster)
+				{
+					m_pPlacedMonster = m_testscene->GetMonsterList()[isize];
+					break;
+				}
+			}
+			ImGui::EndListBox();
+		}
+		static std::shared_ptr<SpriteData> sprite;
+		static MONSTER_STATE statenum;
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "MonsterSprite");
+		if (ImGui::BeginListBox("### ", { 300,100 }))
+		{
+			
+			if (m_pPlacedMonster != nullptr)
+			{
+				for (int i = 0; i < m_pPlacedMonster->GetSpriteList().size(); ++i)
+				{
+			
+					std::string s = monsterStateMap[(MONSTER_STATE)i];
+					if (ImGui::Button(s.c_str(), ImVec2(150, 30)))
+					{
+						if (m_pPlacedMonster->GetSpriteData(i) != nullptr)
+						{
+							sprite = m_pPlacedMonster->GetSpriteData(i);
+							statenum = (MONSTER_STATE)i;
+							m_pPlacedMonster->SetScale(sprite->m_vScale);
+							m_pPlacedMonster->SetUVData(sprite->m_UVList, sprite->iRow, sprite->iCol);
+							m_pPlacedMonster->SetSpriteInfo(sprite);
+							m_pPlacedMonster->SetTexture(sprite->m_pTexture);
+							m_pPlacedMonster->InitTexIndex();
+							
+							
+							break;
+						}
+
+					}
+
+				}
+
+
+			}
+			
+
+			if (ImGui::Button("AddState", ImVec2(60, 30)))
+			{
+				if (m_pPlacedMonster != nullptr)
+				{
+					std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+					SpriteInfo->iCol = 1;
+					SpriteInfo->iRow = 1;
+					SpriteInfo->iMaxImageCount = 1;
+					SpriteInfo->m_fDelay = 0.18f;
+					SpriteInfo->m_vScale = { 46,68,1 };
+					m_pPlacedMonster->PushSpriteData(SpriteInfo);
+				}
+
+			}
+
+			/*if (m_pPlacedMonster != nullptr)
+			{
+				std::string s;
+
+				ImGui::InputInt("Col : #", &m_pPlacedMonster->GetSpriteInfo()->iCol);
+				ImGui::InputInt("Row : ##", &m_pPlacedMonster->GetSpriteInfo()->iRow);
+				ImGui::InputInt("MaxImageCount : ##@", &m_pPlacedMonster->GetSpriteInfo()->iMaxImageCount);
+				ImGui::InputDouble("Delay : ####", &m_pPlacedMonster->GetSpriteInfo()->m_fDelay);
+
+				const char* itme[] = { "MS_IDLE",
+									   "MS_WALK",	
+									   "MS_ATTACK",	
+									   "MS_SKILL1",	
+									   "MS_SKILL2",	
+									   "MS_SKILL3",	
+									   };	
+		
+				static int ttemp = 0;
+				ImGui::Combo("SpriteState ", &ttemp, itme, IM_ARRAYSIZE(itme));
+
+				m_pPlacedMonster->InitTexIndex();
+				if (ImGui::Button("AddState", ImVec2(60, 30)))
+				{
+
+					m_pPlacedMonster->GetSpriteInfo()->m_vScale = { static_cast<float>(m_pPlacedMonster->GetTexture()->GetWidth() / m_pPlacedMonster->GetSpriteInfo()->iCol),
+																static_cast<float>(m_pPlacedMonster->GetTexture()->GetHeight() / m_pPlacedMonster->GetSpriteInfo()->iRow),
+																	1 };
+					auto t = m_pPlacedMonster->GetSpriteInfo()->m_vScale;
+					m_pPlacedMonster->SetScale(t);
+					m_pPlacedMonster->GetSpriteInfo()->m_UVList.clear();
+					m_pPlacedMonster->SetUVData(m_pPlacedMonster->GetSpriteInfo()->m_UVList, m_pPlacedMonster->GetSpriteInfo()->iRow, m_pPlacedMonster->GetSpriteInfo()->iCol);
+					m_pPlacedMonster->SetObejctType((ObejctType)ttemp);
+					for (auto& obj : m_testscene->GetMonsterList())
+					{
+						obj->InitTexIndex();
+					}
+				}
+
+			}*/
+
+
+			ImGui::EndListBox();
+		}
+		static bool ChangeImage = false;
+
+		ImGui::NewLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "MonsterSpriteData");
+		if (ImGui::BeginListBox("##@@## ", { 300,200 }))
+		{
+			if (sprite != nullptr)
+			{
+				std::string s;
+
+				ImGui::InputInt("Col : #", &sprite->iCol);
+				ImGui::InputInt("Row : ##", &sprite->iRow);
+				ImGui::InputInt("MaxImageCount : ##@", &sprite->iMaxImageCount);
+				ImGui::InputDouble("Delay : ####", &sprite->m_fDelay);
+
+				const char* itme[] = { "Defalut","Portal", };
+				static int ttemp = 0;
+				ImGui::Combo("ObjectType ", &ttemp, itme, IM_ARRAYSIZE(itme));
+			
+	
+				if (ImGui::Button("Conform", ImVec2(60, 30)))
+				{
+					/////이미지 불러오기는 다했음 세이브 로드 만들어라
+					m_pPlacedMonster->GetSpriteInfo()->m_vScale = { static_cast<float>(m_pPlacedMonster->GetTexture()->GetWidth() / m_pPlacedMonster->GetSpriteInfo()->iCol),
+																static_cast<float>(m_pPlacedMonster->GetTexture()->GetHeight() / m_pPlacedMonster->GetSpriteInfo()->iRow),
+																	1 };
+					auto t = m_pPlacedMonster->GetSpriteInfo()->m_vScale;
+					m_pPlacedMonster->SetScale(t);
+					m_pPlacedMonster->GetSpriteInfo()->m_UVList.clear();
+					m_pPlacedMonster->SetUVData(m_pPlacedMonster->GetSpriteInfo()->m_UVList, m_pPlacedMonster->GetSpriteInfo()->iRow, m_pPlacedMonster->GetSpriteInfo()->iCol);
+					m_pPlacedMonster->SetObejctType((ObejctType)ttemp);
+					for (auto& obj : m_testscene->GetMonsterList())
+					{
+						obj->InitTexIndex();
+					}
+				}
+
+				if (ImGui::Button("ChangeImage", ImVec2(60, 30)))
+				{
+					ChangeImage = true;
+				}
+
+
+			}
+			ImGui::EndListBox();
+		}
+
+		if (ChangeImage)
+		{
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".png", "../resource/");
+
+			// display
+			if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ChangeImage))
+			{
+				ChangeImage = false;
+			}
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				ImGuiFileDialog::Instance()->Close();
+				std::wstring w;
+				w.assign(filePathName.begin(), filePathName.end());
+
+				auto tex = TextureMgr::GetInstance().Load(w);
+
+				std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+				SpriteInfo->iCol = 1;
+				SpriteInfo->iRow = 1;
+				SpriteInfo->iMaxImageCount = 1;
+				SpriteInfo->m_fDelay = 0.18f;
+				SpriteInfo->m_vScale = { 46,68,1 };
+				SpriteInfo->m_pTexture = tex;
+				m_pPlacedMonster->SetScale(SpriteInfo->m_vScale);
+				m_pPlacedMonster->SetUVData(SpriteInfo->m_UVList, SpriteInfo->iRow, SpriteInfo->iCol);
+				m_pPlacedMonster->ChangeSpriteData(SpriteInfo, statenum);
+				m_pPlacedMonster->SetTexture(SpriteInfo->m_pTexture);
+				m_pPlacedMonster->InitTexIndex();
+			}
+		}
+
+
+
+
 
 
 
@@ -567,14 +802,71 @@ void ClientMain::SelectMenu()
 				filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 				filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 				ImGuiFileDialog::Instance()->Close();
-				std::shared_ptr<Object> monster = std::make_shared<Object>();
+				std::shared_ptr<MonsterObject> monster = std::make_shared<MonsterObject>();
 				std::wstring w;
 				w.assign(filePathName.begin(), filePathName.end());
+				monster->Init();
 				monster->Create(w,L"../Shader/Defalutshader.hlsl");
+
+				std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+				SpriteInfo->iCol = 1;
+				SpriteInfo->iRow = 1;
+				SpriteInfo->iMaxImageCount = 1;
+				SpriteInfo->m_fDelay = 0.18f;
+				SpriteInfo->m_vScale = { 46,68,1 };
+				monster->SetSpriteInfo(SpriteInfo);
+				monster->Create(w, L"../Shader/Defalutshader.hlsl");
+
+
 				m_EditMonsterList.push_back(monster);
+
+
 
 			}
 		}
+		static bool isCreate;
+		if (ImGui::Button("Create", ImVec2(60, 30)))
+		{
+			isCreate = true;
+			
+		}
+		if (isCreate)
+		{
+			static char g_MonsterName[64] = "";
+
+			static bool bAccountWindow = true;
+			ImGui::SetNextWindowSize(ImVec2(200, 100));
+			ImGui::SetNextWindowPos(ImVec2(300, 300), 0, ImVec2(0, 0));
+			ImGui::Begin("AccountWindow", &bAccountWindow);
+			ImGui::Text("MonsterName : ");
+			ImGui::InputText("##MonsterName", g_MonsterName, sizeof(g_MonsterName));
+
+			if (ImGui::Button("Conform", ImVec2(60, 30)))
+			{
+				isCreate = false;
+				std::shared_ptr<MonsterObject> monster = std::make_shared<MonsterObject>();
+				monster->Init();
+
+				std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+				SpriteInfo->iCol = 1;
+				SpriteInfo->iRow = 1;
+				SpriteInfo->iMaxImageCount = 1;
+				SpriteInfo->m_fDelay = 0.18f;
+				SpriteInfo->m_vScale = { 46,68,1 };
+				monster->SetSpriteInfo(SpriteInfo);
+				monster->Create(L"../resource/Monster/Defalut/Defalut.png", L"../Shader/Defalutshader.hlsl");
+
+				monster->GetCollider()->SetTransform(monster->GetTransform());
+				monster->GetCollider()->SetScale({ static_cast<float>(monster->GetTexture()->GetWidth()),
+								static_cast<float>(monster->GetTexture()->GetHeight()),0 });
+				monster->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+				monster->SetMonsterName(g_MonsterName);
+				m_testscene->PushMonster(monster);
+			}
+
+			ImGui::End();
+		}
+
 	}
 	if (m_ClickAction == CLICK_ACTION::OBJECT_PLACE)
 	{
@@ -680,8 +972,7 @@ void ClientMain::SelectMenu()
 
 
 		ImGui::NewLine();
-		std::string filePath;
-		std::string filePathName;
+
 		static bool ObejctList;
 		if (ImGui::Button("Load", ImVec2(60, 30)))
 		{

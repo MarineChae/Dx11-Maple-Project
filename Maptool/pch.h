@@ -105,7 +105,15 @@ enum PLAYER_STATE
 
 
 };
-
+enum MONSTER_STATE
+{
+    MS_IDLE,
+    MS_WALK,
+    MS_ATTACK,
+    MS_SKILL1,
+    MS_SKILL2,
+    MS_SKILL3,
+};
 enum COLLISION_TYPE
 {
     CT_FLOOR,
