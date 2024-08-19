@@ -65,6 +65,7 @@ public:
 	virtual bool Create(const Texture* tex, const Shader* shader);
 	virtual void SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjMatrix);
 	virtual void SetScale(TVector3 scale);
+	virtual TVector3 GetScale() const { return m_vScale; }
 	virtual void SetMatrix();
 	virtual void SetRenderState(bool state) {m_bRender = state;}
 

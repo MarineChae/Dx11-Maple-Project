@@ -1,0 +1,8 @@
+#MonsterName
+mush
+#MonsterState
+2
+../resource/Monster/mush/Stand.png
+0	2	1	2	0.180000	
+../resource/Monster/mush/move.png
+1	3	1	3	0.180000	

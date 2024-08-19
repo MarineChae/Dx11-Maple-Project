@@ -109,6 +109,8 @@ enum MONSTER_STATE
 {
     MS_IDLE,
     MS_WALK,
+    MS_HIT,
+    MS_DIE,
     MS_ATTACK,
     MS_SKILL1,
     MS_SKILL2,

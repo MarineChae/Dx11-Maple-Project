@@ -7,6 +7,7 @@ enum CLICK_ACTION
 	DRAW_LINE_COLLISION,
 	OBJECT_PLACE,
 	MONSTER_PLACE,
+	EDIT_MONSTER,
 	SCENE_DATA,
 
 };
@@ -23,6 +24,7 @@ public:
 
 	std::vector<std::shared_ptr<MonsterObject>> m_EditMonsterList;
 	std::vector<std::shared_ptr<SpriteObject>> m_EditObjectList;
+	std::shared_ptr<MonsterObject> m_CreateMonster;
 	std::shared_ptr<MonsterObject> m_EditMonster;
 	std::shared_ptr<SpriteObject> m_EditObject;
 	std::shared_ptr<Object> m_pPlacedObject;
