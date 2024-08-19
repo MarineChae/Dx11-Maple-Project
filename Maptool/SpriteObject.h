@@ -16,6 +16,7 @@ public:
 	virtual bool Create(std::wstring FileName, std::wstring ShaderFileName) override;
 	virtual bool Create(const Texture* tex, const Shader* shader)override;
 	virtual void SetSpriteInfo(std::shared_ptr<SpriteData> info) override { m_pSpriteInfo = info; };
+	virtual void SetSpriteList(std::vector<std::shared_ptr<SpriteData>> list) { m_vSpriteList = list; };
 	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return m_pSpriteInfo; };
 	virtual void  SetPlayerSprite() override;
 	bool SetUVData(std::vector<UVRect>& rectlist , int iRow, int iCol);

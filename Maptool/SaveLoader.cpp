@@ -391,8 +391,12 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 						&SpriteInfo->iRow,
 						&SpriteInfo->iMaxImageCount,
 						&SpriteInfo->m_fDelay);
+	
 					monster->SetSpriteInfo(SpriteInfo);
 					monster->Create(tex, L"../Shader/Defalutshader.hlsl");
+					SpriteInfo->m_vScale = { static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
+											  static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
+											 1 };
 
 				}
 				monster->SetScale({ static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
