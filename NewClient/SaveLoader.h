@@ -1,6 +1,7 @@
 #pragma once
 #include"Singleton.h"
 class Scene;
+class MonsterObject;
 class SaveLoader
 {
 private:
@@ -11,7 +12,16 @@ public:
 	bool SaveData(std::shared_ptr<Scene> pSceneData,std::string SavePath);
 	bool LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPath);
 
-
+	bool SaveMonsterData(std::shared_ptr<MonsterObject> monster);
+	bool LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::string LoadPath);
 
 };
 
+class SaveLoadMgr :public Singleton<SaveLoadMgr>
+{
+	private:
+		SaveLoader m_SaveLoader;
+	
+	public:
+		SaveLoader GetSaveLoader() { return m_SaveLoader; };
+};

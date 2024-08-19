@@ -1,0 +1,18 @@
+#MapName
+../resource/MapObejct/20240720120407278_100000000.png
+#SceneNum
+0
+#LineCollider
+2
+-34.087463	-682.462341	1653.912598	-688.462341
+-700.087402	-1102.462402	1593.912598	-1116.462280
+#ObjectList
+0
+#MonsterList
+2
+../resource/MonsterData/mush.txt
+103.912567	-610.462280
+../resource/MonsterData/mush.txt
+269.912567	-608.462280
+#PotalList
+0

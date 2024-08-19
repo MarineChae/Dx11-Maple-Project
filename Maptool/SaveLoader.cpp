@@ -72,7 +72,7 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 		for (auto& obj : pSceneData->GetMonsterList())
 		{
 
-			std::string path = "../resource/Monster/" + wtm(obj->GetTexture()->GetName());
+			std::string path = "../resource/MonsterData/" + obj->GetMonsterName() + ".txt";
 			bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
 			bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().x);
 			bRet = fprintf_s(fpWrite, "%f\n", obj->GetTransform().y);
@@ -222,21 +222,14 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					TCHAR tex[80] = { 0, };
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
-					obj->Init();
-					obj->Create(tex, L"../Shader/Defalutshader.hlsl");
 
-					TVector3 temp;
+					LoadMonsterData(obj, wtm(tex));
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%f %f \n"),&temp.x, &temp.y);
-					obj->SetTransform(temp);
-
-					obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-					obj->GetCollider()->SetTransform(obj->GetTransform());
-					obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-												 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-					obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-
+					float tempx;
+					float tempy;
+					_stscanf_s(buffer, _T("%f %f \n"), &tempx, &tempy);
+					obj->SetTransform({ tempx,tempy,0 });
+					obj->GetCollider()->SetTransform({ tempx,tempy,0 });
 					pSceneData->PushMonster(obj);
 				}
 

@@ -108,6 +108,9 @@
     <ClCompile Include="PotalObject.cpp">
       <Filter>Core\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="MonsterObject.cpp">
+      <Filter>Core\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TMath.h">
@@ -192,6 +195,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PotalObject.h">
+      <Filter>Core\header</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterObject.h">
       <Filter>Core\header</Filter>
     </ClInclude>
   </ItemGroup>

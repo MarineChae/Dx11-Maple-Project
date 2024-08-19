@@ -144,6 +144,7 @@ bool ClientMain::Frame()
 				mon->GetCollider()->SetScale(m_EditMonster->GetCollider()->GetScale());
 				mon->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 				mon->SetSpriteList(m_EditMonster->GetSpriteList());
+				mon->SetMonsterName(m_EditMonster->GetMonsterName());
 				m_testscene->PushMonster(mon);
 			}
 

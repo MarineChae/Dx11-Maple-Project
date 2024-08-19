@@ -1,9 +1,11 @@
 #include "Object.h"
 #include "PacketProc.h"
 #include"PlayerObject.h"
+#include"MonsterObject.h"
 #include"Collider.h"
 #include"texture.h"
 #include"Scene.h"
+#include"SaveLoader.h"
 BOOL PacketProc_MoveStart(Packet* pack)
 {
     DWORD dwSessionID;
@@ -109,20 +111,14 @@ BOOL PacketProc_CreateMonster(Packet* pack)
 
     std::wstring ws(name, &name[namelen]);
 
-    std::shared_ptr<Object> obj = std::make_shared<Object>();
-    obj->Init();
-    obj->Create(ws, L"../Shader/Defalutshader.hlsl");
+    std::shared_ptr<MonsterObject> obj = std::make_shared<MonsterObject>();
 
-    obj->SetTransform({static_cast<float>(X),static_cast<float>(Y),0});
-    
-    obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-    							 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+
+    SaveLoadMgr::GetInstance().GetSaveLoader().LoadMonsterData(obj,wtm(ws));
+    obj->SetTransform({ static_cast<float>(X),static_cast<float>(Y),0 });
     obj->GetCollider()->SetTransform(obj->GetTransform());
-    obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-    							 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
+    obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-    
-
 
     SceneMgr::GetInstance().GetCurrentScene()->PushMonster(obj);
 
