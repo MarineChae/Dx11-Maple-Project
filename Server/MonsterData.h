@@ -1,4 +1,6 @@
 #pragma once
+class BehaviorTree;
+class PlayerData;
 class MonsterData
 {
 private:
@@ -10,30 +12,33 @@ private:
 	DWORD	m_dwAction;
 	BYTE	m_byDirection;
 
-	short	m_shX;
-	short	m_shY;
+	TVector3 m_vPos;
 
 	int 	m_iHP;
 	//behaviortree 추가해야함
 
+	std::shared_ptr<BehaviorTree> m_pBehaviorTree;
+	std::shared_ptr<PlayerData> m_pTargetPlayer;
 public:
-	void Create(char* name, DWORD Action, BYTE Direction, short X, short Y, int HP);
+	void Create(char* name, DWORD Action, BYTE Direction, float X, float Y, int HP);
 
+	void Update();
 
 	DWORD GetAction() const { return m_dwAction; };
 	BYTE  GetDirection()const { return m_byDirection; };
 	char* GetName()  {return m_csMonsterName;}
-	short GetXPos() const { return m_shX; };
-	short GetYPos() const { return m_shY; };
+	TVector3 GetPos() const { return m_vPos; };
 	int   GetHP() const { return m_iHP; };
 
-	void SetXPos(short shX) { m_shX = shX; };
-	void SetYPos(short shY) { m_shY = shY; };
+	void SetPos(TVector3 pos) { m_vPos = pos; };
+
 	void SetHP(int HP) { m_iHP = HP; };
 
 	void SetAction(DWORD action)  { m_dwAction = action; };
 	void SetDirection(BYTE dir) { m_byDirection = dir; };
 
+	void MoveTo(TVector3 dest);
+	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
 public:
 	MonsterData();
 	~MonsterData();

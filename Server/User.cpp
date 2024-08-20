@@ -216,8 +216,8 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 				CreateOtherCharacter(playerpack,
 					otherplayer->GetSessionID(),
 					otherplayer->GetDirection(),
-					otherplayer->GetXPos(),
-					otherplayer->GetYPos(),
+					otherplayer->GetPos().x,
+					otherplayer->GetPos().y,
 					otherplayer->GetHP(), otherplayer->GetCurrentScene());
 
 				OutputDebugString(L"other character");

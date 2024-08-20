@@ -88,7 +88,10 @@ void ServerScene::LoadSceneData(int Scenenum)
 
 void ServerScene::Update()
 {
-
+	for (auto& mon : m_vSceneMonsterList)
+	{
+		mon->Update();
+	}
 }
 
 

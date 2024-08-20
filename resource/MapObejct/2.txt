@@ -10,25 +10,25 @@
 #MonsterList
 10
 ../resource/MonsterData/mush.txt
--660.000000	378.000000
+-654.000000	364.000000
 ../resource/MonsterData/mush.txt
--388.000031	389.999969
+-400.000031	364.000000
 ../resource/MonsterData/mush.txt
--934.000061	-43.999985
+-944.000000	-65.999977
 ../resource/MonsterData/mush.txt
--736.000000	-55.999966
+-686.000000	-65.999977
 ../resource/MonsterData/mush.txt
-372.000061	375.999969
+375.999939	348.000000
 ../resource/MonsterData/mush.txt
 707.999939	336.000031
 ../resource/MonsterData/mush.txt
-526.000000	-77.999954
+556.000000	-93.999962
 ../resource/MonsterData/mush.txt
-773.999939	-81.999985
+800.000061	-100.000046
 ../resource/MonsterData/mush.txt
--658.000000	-404.000000
+-673.999939	-410.000000
 ../resource/MonsterData/mush.txt
-432.000061	-392.000031
+398.000000	-411.999969
 #PotalList
 2
 ../resource/MapObejct/potal.png

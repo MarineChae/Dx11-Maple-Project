@@ -9,16 +9,16 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY;
+    float fX;
+    float fY;
     BYTE isFalling;
     BYTE isJump;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
     *pack >> dwSessionID;
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> state;
@@ -29,9 +29,9 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
         return FALSE;
     Packet* SendPack = new Packet;
 
-    player->SetXPos(shX);
-    player->SetYPos(shY);
-    MoveStartPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling, isJump);
+    player->SetPos({fX,fY,0});
+
+    MoveStartPacket(SendPack, byDirection, Sessionid, player->GetPos().x,player->GetPos().y, state, isFalling, isJump);
     
     IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
 
@@ -42,16 +42,16 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY; 
+    float fX;
+    float fY; 
     BYTE isFalling;
     BYTE isJump;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
     *pack >> dwSessionID; 
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> state;
@@ -62,9 +62,9 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
         return FALSE;
     Packet* SendPack = new Packet;
 
-    player->SetXPos(shX);
-    player->SetYPos(shY);
-    MoveStopPacket(SendPack, byDirection, Sessionid, player->GetXPos(), player->GetYPos(), state, isFalling, isJump);
+    player->SetPos({ fX,fY,0 });
+
+    MoveStopPacket(SendPack, byDirection, Sessionid, player->GetPos().x,player->GetPos().y, state, isFalling, isJump);
 
     IOCPServer::GetInstance().AddPacket(SendPack,player->GetCurrentScene());
 
@@ -99,13 +99,13 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
     curScene->AddScenePlayer(player);
 
     IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
-    IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
+    IOCPServer::GetInstance().AddPacket(SendPack, Scenenum);
 
     for (auto& monster : curScene->GetSceneMonsterList())
     {
         Packet* pack = new Packet;
-        CreateMonster(pack, monster->GetName(), 0, monster->GetXPos(), monster->GetYPos(), 100, Scenenum);
-        IOCPServer::GetInstance().AddPacket(pack, player->GetCurrentScene());
+        CreateMonster(pack, monster->GetName(), 0, monster->GetPos().x,monster->GetPos().y, 100, Scenenum);
+        IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
     }
 
 

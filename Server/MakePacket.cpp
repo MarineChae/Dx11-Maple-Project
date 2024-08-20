@@ -3,12 +3,12 @@
 #include "PlayerData.h"
 
 
-void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
+void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 	PacketHeader.PacketTemp = 0;
 
@@ -25,11 +25,11 @@ void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, sho
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 
@@ -46,11 +46,11 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, shor
 
 }
 
-void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene)
+void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 14;
+	PacketHeader.PacketSize = 18;
 	PacketHeader.PacketType = PACKET_CS_CREATE_MY_CHARACTER;
 
 
@@ -66,11 +66,11 @@ void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, short X,
 
 }
 
-void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X, short Y, int HP,BYTE CurrentScene)
+void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, float X, float Y, int HP,BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 14;
+	PacketHeader.PacketSize = 18;
 	PacketHeader.PacketType = PACKET_CS_CREATE_OTHER_CHARACTER;
 
 
@@ -85,12 +85,12 @@ void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, short X
 
 }
 
-void CreateMonster(Packet* pack, char* name, BYTE Direction, short X, short Y, int HP, BYTE CurrentScene)
+void CreateMonster(Packet* pack, char* name, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	int namelen = strlen(name);
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 14 + namelen;
+	PacketHeader.PacketSize = 18 + namelen;
 	PacketHeader.PacketType = PACKET_CS_CREATE_MONSTER;
 
 

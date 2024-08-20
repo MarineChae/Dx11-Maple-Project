@@ -202,10 +202,11 @@ bool IOCPServer::Init()
 
 bool IOCPServer::ThreadRun()
 {
+	Timer::GetInstance().Frame();
 
 	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
 	{
-		//scene.second.Update();
+		scene.second->Update();
 	}
 
 

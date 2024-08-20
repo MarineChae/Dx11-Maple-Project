@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="BehaviorTree">
+      <UniqueIdentifier>{7580bdb3-d16f-4499-9f91-fa619269004c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainServer.cpp">
@@ -75,6 +78,15 @@
     <ClCompile Include="MonsterData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="BehaviorTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTreeNode.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMonsterTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCPServer.h">
@@ -133,6 +145,15 @@
     </ClInclude>
     <ClInclude Include="MonsterData.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTreeNode.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMonsterTree.h">
+      <Filter>BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

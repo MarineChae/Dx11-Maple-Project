@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "MakePacket.h"
 
-void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, short Y,
+void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,float X, float Y,
 					PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -23,13 +23,13 @@ void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,short X, shor
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, short X, short Y, 
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y,
 					PLAYER_STATE state, BYTE isFalling,BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 11 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);

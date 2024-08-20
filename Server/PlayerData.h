@@ -21,14 +21,13 @@ private:
 	DWORD	m_dwAction;
 	BYTE	m_byDirection;
 
-	short	m_shX;
-	short	m_shY;
+	TVector3 m_vPos;
 			
 	int 	m_iHP;
 
 public:
 
-	void Init(BOOL	Flag, DWORD SessionID, DWORD Action, BYTE Direction, short X, short Y, int HP);
+	void Init(BOOL	Flag, DWORD SessionID, DWORD Action, BYTE Direction, float X, float Y, int HP);
 
 	DWORD GetSessionID() const { return m_dwSessionID; };
 	DWORD GetAction() const { return m_dwAction; };
@@ -36,12 +35,10 @@ public:
 
 	SceneNum GetCurrentScene()const { return m_PlaceScene; }
 
-	short GetXPos() const { return m_shX; };
-	short GetYPos() const { return m_shY; };
+	TVector3 GetPos() const { return m_vPos; };
 	int   GetHP() const { return m_iHP; };
 
-	void SetXPos(short shX) { m_shX = shX; };
-	void SetYPos(short shY) { m_shY = shY; };
+	void SetPos(TVector3 pos) { m_vPos = pos; };
 	void SetHP(int HP) { m_iHP = HP; };
 	void SetCurrentScene(SceneNum currentScene) { m_PlaceScene = currentScene; };
 };

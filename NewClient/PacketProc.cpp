@@ -10,16 +10,16 @@ BOOL PacketProc_MoveStart(Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY;
+    float fX;
+    float fY;
     BYTE isFalling;
     BYTE isJump;
     PLAYER_STATE state;
 
     *pack >> byDirection;
     *pack >> dwSessionID;
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> state;
@@ -29,7 +29,7 @@ BOOL PacketProc_MoveStart(Packet* pack)
     if (obj == nullptr|| obj == ObejctMgr::GetInstance().GetPlayerObject())
         return FALSE;
 
-    obj->SetDestination(TVector3(shX, shY, 1));
+    obj->SetDestination(TVector3(fX, fY, 1));
     obj->SetDirection(byDirection);
     obj->ChangeState(state);
     obj->SetFalling(isFalling);
@@ -42,15 +42,15 @@ BOOL PacketProc_MoveEnd(Packet* pack)
 { 
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY;
+    float fX;
+    float fY;
     BYTE isFalling;
     BYTE isJump;
     PLAYER_STATE state;
     *pack >> byDirection;
     *pack >> dwSessionID;
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> state;
@@ -60,7 +60,7 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     if (obj == nullptr || obj == ObejctMgr::GetInstance().GetPlayerObject())
         return FALSE;
 
-    obj->SetDestination(TVector3(shX, shY, 0));
+    obj->SetDestination(TVector3(fX, fY, 0));
     obj->SetDirection(byDirection);
     obj->ChangeState(state);
     obj->SetFalling(isFalling);
@@ -95,8 +95,8 @@ BOOL PacketProc_CreateMonster(Packet* pack)
     char name[80];
     int namelen;
     BYTE Direction;
-    short X;
-    short Y;
+    float X;
+    float Y;
     int HP;
     BYTE CurrentScene;
 
@@ -115,7 +115,7 @@ BOOL PacketProc_CreateMonster(Packet* pack)
 
 
     SaveLoadMgr::GetInstance().GetSaveLoader().LoadMonsterData(obj,wtm(ws));
-    obj->SetTransform({ static_cast<float>(X),static_cast<float>(Y),0 });
+    obj->SetTransform({X,Y,0 });
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
@@ -130,15 +130,15 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY;
+    float fX;
+    float fY;
     int  HP;
     BYTE CurrentScene;
 
     *pack >> dwSessionID;
     *pack >> byDirection;
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> HP;
     *pack >> CurrentScene;
 
@@ -146,8 +146,8 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     std::shared_ptr<Object> player = std::make_shared<PlayerObject>();
     player->Init();
     player->SetPlayerSprite();
-    player->SetTransform(TVector3(shX,shY,0));
-    player->SetDestination(TVector3(shX, shY, 0));
+    player->SetTransform(TVector3(fX,fY,0));
+    player->SetDestination(TVector3(fX, fY, 0));
     player->SetRenderState(true);
     player->SetObejctID(dwSessionID);
     player->SetCurrentScene((SceneNum)CurrentScene);
@@ -162,15 +162,15 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
-    short shX;
-    short shY;
+    float fX;
+    float fY;
     int  HP;
     BYTE CurrentScene;
 
     *pack >> dwSessionID;
     *pack >> byDirection;
-    *pack >> shX;
-    *pack >> shY;
+    *pack >> fX;
+    *pack >> fY;
     *pack >> HP;
     *pack >> CurrentScene;
 
@@ -182,8 +182,8 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
 
     other->Init();
     other->SetPlayerSprite();
-    other->SetTransform(TVector3(shX, shY, 0));
-    other->SetDestination(TVector3(shX, shY, 0));
+    other->SetTransform(TVector3(fX, fY, 0));
+    other->SetDestination(TVector3(fX, fY, 0));
     other->SetRenderState(true);
     other->SetObejctID(dwSessionID);
     other->SetCurrentScene((SceneNum)CurrentScene);
