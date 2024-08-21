@@ -15,9 +15,9 @@ extern StreamPacket NetSendQ;
 BOOL connentNetWork();
 BOOL NetworkProc(WPARAM wParam, LPARAM lParam);
 BOOL networkClean();
-BOOL NetSendPacket(Packet* packet);
+BOOL NetSendPacket(std::shared_ptr<Packet> packet);
 DWORD NetCompleteRecvPacket();
-BOOL PacketProc(BYTE byPacketType, Packet* pack);
+BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack);
 
 BOOL NetSendEvent();
 BOOL NetRecvEvent();

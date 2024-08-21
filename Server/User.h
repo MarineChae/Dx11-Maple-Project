@@ -53,8 +53,8 @@ public:
 	void bind(HANDLE iocp);
 	void Recv();
 	void Dispatch(DWORD dwTransfer, OVERLAPPED* ov);
-	void ParsePacket(Packet& pack);
-	BOOL PacketProc(DWORD SessionId, BYTE PacketType, Packet* pack);
+	void ParsePacket(std::shared_ptr<Packet> pack);
+	BOOL PacketProc(DWORD SessionId, BYTE PacketType, std::shared_ptr<Packet> pack);
 public:
 	User();
 	User(SOCKET sock, SOCKADDR_IN Addr);

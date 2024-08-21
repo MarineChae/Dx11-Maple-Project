@@ -3,16 +3,18 @@
 
 
 
-BOOL PacketProc_MoveStart(Packet* pack);
-BOOL PacketProc_MoveEnd(Packet* pack);
-BOOL PacketProc_SceneChange(Packet* pack);
-BOOL PacketProc_CreateMonster(Packet* pack);
+BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack);
+BOOL PacketProc_MoveEnd(std::shared_ptr<Packet> pack);
+BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack);
+BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack);
+BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack);
 
 
-BOOL PacketProc_CreateMyCharacter(Packet* pack);
 
-BOOL PacketProc_CreateOtherCharacter(Packet* pack);
+BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack);
+
+BOOL PacketProc_CreateOtherCharacter(std::shared_ptr<Packet> pack);
 
 
-BOOL PacketProc_DisconnectOtherCharacter(Packet* pack);
+BOOL PacketProc_DisconnectOtherCharacter(std::shared_ptr<Packet> pack);
 

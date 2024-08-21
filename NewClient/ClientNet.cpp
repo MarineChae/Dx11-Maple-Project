@@ -1,9 +1,12 @@
+#include"pch.h"
 #include "ClientNet.h"
 #include"MyWindow.h"
 #include"Packet.h"
 #include"StreamPacket.h"
 #include"Protocol.h"
 #include"PacketProc.h"
+
+
 
 SOCKET       m_SOCK;
 short        m_PortNum = 12345;
@@ -145,7 +148,7 @@ BOOL NetSendEvent()
 
         if (WSAEWOULDBLOCK == GetLastError())
         {
-
+            delete ov;
             return TRUE;
         }
         return FALSE;
@@ -155,6 +158,7 @@ BOOL NetSendEvent()
     {
         if (WsaBuff.len < SendSize)
         {
+            delete ov;
             return FALSE;
         }
         else
@@ -162,7 +166,7 @@ BOOL NetSendEvent()
             NetSendQ.RemoveData(SendSize);
         }
     }
-
+    
     return TRUE;
 }
 
@@ -194,7 +198,7 @@ DWORD NetCompleteRecvPacket()
     //헤더 정보를 빼왔으므로 헤더크기만큼 데이터 지워줌
     NetRecvQ.RemoveData(PACKET_HEADER_SIZE);
 
-    Packet* pack = new Packet;
+    std::shared_ptr<Packet> pack = std::make_shared<Packet>();
     //큐에서 패킷 크기만큼 데이터를 빼온다
     if(!NetRecvQ.Get(pack->GetBufferPointer(),ph.PacketSize))
         return 0xff;
@@ -262,7 +266,7 @@ BOOL NetRecvEvent()
     return 0;
 }
 
-BOOL PacketProc(BYTE byPacketType, Packet* pack)
+BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
 {
     switch (byPacketType)
     {
@@ -290,6 +294,10 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
     case PACKET_CS_CREATE_MONSTER:
         PacketProc_CreateMonster(pack);
         break;
+    case PACKET_CS_UPDATE_MONSTER_STATE:
+        PacketProc_UpdateMonster(pack);
+        break;
+
 
 
     }
@@ -300,7 +308,7 @@ BOOL PacketProc(BYTE byPacketType, Packet* pack)
     return TRUE;
 }
 
-BOOL NetSendPacket(Packet* packet)
+BOOL NetSendPacket(std::shared_ptr<Packet> packet)
 {
 
     NetSendQ.Put(packet->GetBufferPointer(), packet->GetDataSize());

@@ -6,7 +6,7 @@
 #include"texture.h"
 #include"Scene.h"
 #include"SaveLoader.h"
-BOOL PacketProc_MoveStart(Packet* pack)
+BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -38,7 +38,7 @@ BOOL PacketProc_MoveStart(Packet* pack)
     return TRUE;
 }
 
-BOOL PacketProc_MoveEnd(Packet* pack)
+BOOL PacketProc_MoveEnd(std::shared_ptr<Packet> pack)
 { 
     DWORD dwSessionID;
     BYTE byDirection;
@@ -68,7 +68,7 @@ BOOL PacketProc_MoveEnd(Packet* pack)
     return TRUE;
 }
 
-BOOL PacketProc_SceneChange(Packet* pack)
+BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
 {
 
 
@@ -90,10 +90,11 @@ BOOL PacketProc_SceneChange(Packet* pack)
     return 0;
 }
 
-BOOL PacketProc_CreateMonster(Packet* pack)
+BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
 {
     char name[80];
     int namelen;
+    int ID;
     BYTE Direction;
     float X;
     float Y;
@@ -102,6 +103,7 @@ BOOL PacketProc_CreateMonster(Packet* pack)
 
     *pack >> namelen;
     pack->GetData(name, namelen);
+    *pack >> ID;
     *pack >> Direction;
     *pack >> X;
     *pack >> Y;
@@ -119,14 +121,39 @@ BOOL PacketProc_CreateMonster(Packet* pack)
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-
+    //id관련 추가해야함
     SceneMgr::GetInstance().GetCurrentScene()->PushMonster(obj);
 
 
     return 0;
 }
 
-BOOL PacketProc_CreateMyCharacter(Packet* pack)
+BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
+{
+    int ID;
+    BYTE byDirection;
+    float fX;
+    float fY;
+    int HP;
+    BYTE CurrentScene;
+
+    *pack >> ID;
+    *pack >> byDirection;
+    *pack >> fX;
+    *pack >> fY;
+    *pack >> HP;
+    *pack >> CurrentScene;
+
+    auto list = SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList();
+    auto& monster = list[ID];
+    monster->SetDirection(byDirection);
+    monster->SetTransform({ fX,fY,0 });
+    monster->SetCurrentScene(CurrentScene);
+
+    return 0;
+}
+
+BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -158,7 +185,7 @@ BOOL PacketProc_CreateMyCharacter(Packet* pack)
     return 0;
 }
 
-BOOL PacketProc_CreateOtherCharacter(Packet* pack)
+BOOL PacketProc_CreateOtherCharacter(std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -194,7 +221,7 @@ BOOL PacketProc_CreateOtherCharacter(Packet* pack)
     return 0;
 }
 
-BOOL PacketProc_DisconnectOtherCharacter(Packet* pack)
+BOOL PacketProc_DisconnectOtherCharacter(std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     *pack >> dwSessionID;

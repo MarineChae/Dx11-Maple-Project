@@ -171,7 +171,7 @@ void StreamPacket::RemoveData(int iSize)
 
 int StreamPacket::GetUseSize()
 {
-    if (m_iReadPos <= m_iWritePos)
+     if (m_iReadPos <= m_iWritePos)
     {
         return m_iWritePos - m_iReadPos;
     }

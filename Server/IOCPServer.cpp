@@ -3,14 +3,16 @@
 #include "Packet.h"
 #include "Timer.h"
 #include"PlayerData.h"
+#include"ObjectPool.h"
 #include"ServerScene.h"
+#include"PacketPool.h"
 std::mutex m1;
 std::mutex broadMutex;
 
 bool AcceptIocp::ThreadRun()
 {
 	if (m_pServer == nullptr)return false;
-
+	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 	SOCKADDR_IN clientaddr;
 	int addlen = sizeof(clientaddr);
 	SOCKET clientsock = accept(m_pServer->GetNetWork().GetSocket(), (SOCKADDR*)&clientaddr, &addlen);
@@ -49,9 +51,9 @@ bool AcceptIocp::ThreadRun()
 
 
 
-void IOCPServer::AddPacket(Packet* packet, int currentScene)
+void IOCPServer::AddPacket(std::shared_ptr<Packet> packet, int currentScene)
 {
-	
+
 	m_BroadcastPacketPool.Add(packet, currentScene);
 
 }
@@ -61,15 +63,15 @@ void IOCPServer::ChatMsg(Packet& packet)
 	
 }
 
-int IOCPServer::SendPacket(User* pUser, Packet* packet)
+int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 {
 
 	char* SendBuffer = packet->GetBufferPointer();
 	pUser->GetSendBuffer().buf = SendBuffer;
 	pUser->GetSendBuffer().len = packet->GetDataSize();
 
+	//std::shared_ptr<MyOV> ov = std::make_shared<MyOV>(MyOV::MODE_SEND);//new MyOV(MyOV::MODE_SEND);
 	MyOV* ov = new MyOV(MyOV::MODE_SEND);
-
 	int iSendByte = 0;
 	int iTotalByte = 0;
 	DWORD dwSendByte;
@@ -86,11 +88,11 @@ int IOCPServer::SendPacket(User* pUser, Packet* packet)
 		}
 	}
 
-
+	
 	return packet->GetDataSize();
 }
 
-bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
+bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
@@ -98,10 +100,12 @@ bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
 		if (iterSend->IsConnected() == false) continue;
 		if (PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId()) == nullptr) continue;
 
-		if (packet.second != PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene() && packet.second != -1)
-			continue;
 
- 		int iSendByte = SendPacket(iterSend.get(), packet.first);
+		int curScene = PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene();
+
+
+		int iSendByte = SendPacket(iterSend.get(), packet);
+
 
 		if (iSendByte == SOCKET_ERROR)
 		{
@@ -115,7 +119,36 @@ bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
 	return true;
 }
 
-bool IOCPServer::Broadcasting(std::pair<Packet*, int> packet, std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>,int> packet)
+{
+	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
+	{
+		if (iterSend == nullptr) continue;
+		if (iterSend->IsConnected() == false) continue;
+		if (PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId()) == nullptr) continue;
+
+
+		int curScene = PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene();
+
+		if (packet.second != curScene && packet.second != -1)
+			continue;
+
+ 		int iSendByte = SendPacket(iterSend.get(), packet.first);
+
+
+		if (iSendByte == SOCKET_ERROR)
+		{
+
+			int err = GetLastError();
+			ERRORMSG(L"BroadCasting");
+			iterSend->SetConnect(false);
+			continue;
+		}
+	}
+	return true;
+}
+
+bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
@@ -203,6 +236,15 @@ bool IOCPServer::Init()
 bool IOCPServer::ThreadRun()
 {
 	Timer::GetInstance().Frame();
+	static double threadtimer=0;
+	threadtimer += Timer::GetInstance().GetSecPerFrame();
+	if (threadtimer <= 0.0625)
+	{
+
+		return true;
+	}
+
+	threadtimer -= 0.0625; 
 
 	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
 	{
@@ -212,12 +254,15 @@ bool IOCPServer::ThreadRun()
 
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{
+		
 		if (!Broadcasting(data))
 		{
 			
 		}
+
 		OutputDebugString(L"send\n");
 	}
+
 	m_BroadcastPacketPool.GetPacketList().clear();
 
 	for (std::vector<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();

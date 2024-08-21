@@ -129,13 +129,13 @@ void PlayerObject::InputKey()
 
 void PlayerObject::PacketSendProc()
 {
-    Packet SendPacket;
+    std::shared_ptr<Packet> SendPacket = std::make_shared<Packet>();
 
     switch (m_dwCurrentAction)
     {
 
     case ACTION_STAND:
-        MoveStopPacket(&SendPacket, GetDirection(), GetObejctID(),
+        MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
             GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump);
@@ -148,7 +148,7 @@ void PlayerObject::PacketSendProc()
     case ACTION_MOVERIGHT:
     case ACTION_MOVEUP: 
     case ACTION_MOVEDOWN:
-        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
+        MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
             GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump);
@@ -160,7 +160,7 @@ void PlayerObject::PacketSendProc()
     case ACTION_MOVERIGHT_JUMP:
     case ACTION_MOVELEFT_FALL:
     case ACTION_MOVERIGHT_FALL:
-        MoveStartPacket(&SendPacket, GetDirection(), GetObejctID(),
+        MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump);
@@ -174,7 +174,7 @@ void PlayerObject::PacketSendProc()
 
     if (sendtime >= 0.0625)
     {
-        NetSendPacket(&SendPacket);
+        NetSendPacket(SendPacket);
         sendtime -= 0.0625;
     }
 

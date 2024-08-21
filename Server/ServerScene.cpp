@@ -1,8 +1,11 @@
 #include"Netstd.h"
 #include"PlayerData.h"
-//#include"MonsterData.h"
+#include"MonsterData.h"
 #include "ServerScene.h"
 #include"MakePacket.h"
+#include"IOCPServer.h"
+#include"Timer.h"
+#include"Packet.h"
 
 std::mutex sceneMutex;
 
@@ -56,7 +59,7 @@ void ServerScene::LoadSceneData(int Scenenum)
 					WideCharToMultiByte(CP_ACP, 0, tex, sizeof(tex), name, sizeof(name), NULL, NULL);
 
 
-					Monster->Create(name, 0, 0, x, y, 100);
+					Monster->Create(name, i, 0, 0, x, y, 100, Scenenum);
 
 					m_vSceneMonsterList.push_back(Monster);
 				}
@@ -88,10 +91,18 @@ void ServerScene::LoadSceneData(int Scenenum)
 
 void ServerScene::Update()
 {
+
 	for (auto& mon : m_vSceneMonsterList)
 	{
 		mon->Update();
+	
+	
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		MonsterStateUpdatePacket(pack, *mon);
+		IOCPServer::GetInstance().AddPacket(pack, mon->GetCurrentScene());
 	}
+		
+
 }
 
 

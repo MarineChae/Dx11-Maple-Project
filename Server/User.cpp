@@ -13,7 +13,7 @@ int SessionMgr::m_iSessionCount = 0;
 
 void User::Close()
 {
-	Packet* pack = new Packet;
+	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 	DisConnectCharacter(pack, m_dwSessionID);
 	
 	for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
@@ -49,6 +49,7 @@ void User::Recv()
 	DWORD dwTransfer;
 	DWORD dwFlag = 0;
 	MyOV* myov = new MyOV(MyOV::MODE_RECV);
+	//std::shared_ptr<MyOV> ov = std::make_shared<MyOV>(MyOV::MODE_RECV);
 	m_wsaRecvBuffer.buf = m_buffer;
 	m_wsaRecvBuffer.len = sizeof(m_buffer);
 	int iret = WSARecv(m_UserSock, &m_wsaRecvBuffer, 1, &dwTransfer, &dwFlag, (LPOVERLAPPED)myov, NULL);
@@ -76,7 +77,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 
 		m_pStreamPacket->Put(m_buffer, dwTransfer);
 
-		Packet pack;
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 		ParsePacket(pack);
 
 	/*	Packet pack;
@@ -110,26 +111,27 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	
 }
 
-void User::ParsePacket(Packet& pack)
+void User::ParsePacket(std::shared_ptr<Packet> pack)
 {
 	PACKET_HEADER hd;
 	BYTE end;
 	m_pStreamPacket->Peek((char*)&hd, PACKET_HEADER_SIZE);
 	m_pStreamPacket->RemoveData(PACKET_HEADER_SIZE);
 	//OutputDebugString(L"send\n");
-	m_pStreamPacket->Get(pack.GetBufferPointer(), hd.PacketSize);
+	m_pStreamPacket->Get(pack->GetBufferPointer(), hd.PacketSize);
 				  
 	m_pStreamPacket->Get((char*)&end, 1);
 
-	pack.MoveWritePos(hd.PacketSize);
+	pack->MoveWritePos(hd.PacketSize);
 
 
 	
-	PacketProc(m_dwSessionID, hd.PacketType, &pack);
+	PacketProc(m_dwSessionID, hd.PacketType, pack);
 
 }
 
-BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, Packet* pack)
+
+BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, std::shared_ptr<Packet> pack)
 {
 
 	switch (PacketType)
@@ -187,14 +189,14 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		short x = rand() % 500;
 		short y = rand() % 500;
 		BYTE CurrentScene = 1;
-		Packet* pack = new Packet;
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100, CurrentScene);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
 		
 
-		Packet* pack2 = new Packet;
+		std::shared_ptr<Packet> pack2 = std::make_shared<Packet>();
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100, CurrentScene);
-		IOCPServer::GetInstance().AddPacket(pack2, CurrentScene);
+		IOCPServer::GetInstance().Broadcasting(pack2);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),0,0,x,y,100);
@@ -212,7 +214,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 			}
 			else if (otherplayer->GetSessionID() != user->GetSessionId())
 			{
-				Packet* playerpack = new Packet;
+				std::shared_ptr<Packet> playerpack = std::make_shared<Packet>();
 				CreateOtherCharacter(playerpack,
 					otherplayer->GetSessionID(),
 					otherplayer->GetDirection(),

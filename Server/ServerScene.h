@@ -1,5 +1,5 @@
 #pragma once
-#include"MonsterData.h"
+class MonsterData;
 class ServerScene
 {
 private:

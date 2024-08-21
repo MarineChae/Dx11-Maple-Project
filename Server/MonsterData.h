@@ -5,6 +5,8 @@ class MonsterData
 {
 private:
 	
+	int		m_iId;
+	BYTE    m_iCurrentScene;
 	char	m_csMonsterName[80];
 	bool	m_bIsDead;
 	float   m_fResponTime;
@@ -20,7 +22,7 @@ private:
 	std::shared_ptr<BehaviorTree> m_pBehaviorTree;
 	std::shared_ptr<PlayerData> m_pTargetPlayer;
 public:
-	void Create(char* name, DWORD Action, BYTE Direction, float X, float Y, int HP);
+	void Create(char* name, int Id, DWORD Action, BYTE Direction, float X, float Y, int HP, BYTE icurrentScene);
 
 	void Update();
 
@@ -29,6 +31,8 @@ public:
 	char* GetName()  {return m_csMonsterName;}
 	TVector3 GetPos() const { return m_vPos; };
 	int   GetHP() const { return m_iHP; };
+	BYTE   GetCurrentScene()const { return m_iCurrentScene; }
+	int	  GetId()const { return m_iId; };
 
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 
@@ -39,6 +43,9 @@ public:
 
 	void MoveTo(TVector3 dest);
 	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
+
+
+
 public:
 	MonsterData();
 	~MonsterData();

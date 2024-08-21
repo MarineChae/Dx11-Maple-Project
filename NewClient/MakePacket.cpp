@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MakePacket.h"
 
-void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,float X, float Y,
+void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction,DWORD SessionID ,float X, float Y,
 					PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
@@ -23,7 +23,7 @@ void MoveStartPacket(Packet* pack, BYTE direction,DWORD SessionID ,float X, floa
 
 }
 
-void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y,
+void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y,
 					PLAYER_STATE state, BYTE isFalling,BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
@@ -45,7 +45,7 @@ void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, floa
 
 }
 
-void SceneChangePacket(Packet* pack, DWORD SessionID, BYTE SceneNum)
+void SceneChangePacket(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE SceneNum)
 {
 	PACKET_HEADER PacketHeader;
 

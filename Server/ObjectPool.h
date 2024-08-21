@@ -1,5 +1,6 @@
 #pragma once
 
+static std::mutex PoolMutex;
 
 template<typename T>
 class ObjectPool
@@ -8,7 +9,7 @@ class ObjectPool
 public:
 	enum
 	{
-		POOL_MAX_SIZE = 8,
+		POOL_MAX_SIZE = 50,
 		POOL_SIZE_MASK = POOL_MAX_SIZE - 1,
 	};
 
@@ -16,7 +17,7 @@ public:
 	//오브젝트 풀링을 위한 연산자 오버로딩
 	
 	static void* operator new(size_t size)
-	{	
+	{
 		//여러 스레드에서 접근하는것을 방지하기 위해 사용하는 매크로임 
 		//원자적 동작은 경쟁 상태(race condition)를 방지
 		long long pos = InterlockedIncrement64(&m_HeadPos) - 1;
@@ -33,7 +34,7 @@ public:
 		}
 
 		//16바이트 정렬방식으로 메모리를 할당
-		return _aligned_malloc(size, MEMORY_ALLOCATION_ALIGNMENT);
+  		return _aligned_malloc(size, MEMORY_ALLOCATION_ALIGNMENT);
 	
 	}
 
@@ -65,6 +66,8 @@ private:
 	static void* volatile m_pool[POOL_MAX_SIZE];
 	static long long volatile m_HeadPos;
 	static long long volatile m_TailPos;
+
+
 };
 
 //초기화

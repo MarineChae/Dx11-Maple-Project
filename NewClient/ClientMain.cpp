@@ -38,7 +38,7 @@ bool ClientMain::Frame()
 		MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 		MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 		CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
-		Packet* pack = new Packet;
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 		
 		SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(),SceneNum::BossRoom1);
 		NetSendPacket(pack);
@@ -84,7 +84,7 @@ bool ClientMain::Frame()
 						obj->SetTransform({0,0,0});
 						obj->SetCurrentScene(potal->GetNextSceneNum());
 						CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
-						Packet* pack = new Packet;
+						std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 						SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(), potal->GetNextSceneNum());
 						NetSendPacket(pack);
 					}

@@ -3,7 +3,7 @@
 #include <assert.h>
 #include"ObjectPool.h"
 
-class Packet : public ObjectPool<Packet>
+class Packet 
 {
 	enum ePacket
 	{

@@ -5,7 +5,8 @@
 #include "PlayerData.h"
 #include"MakePacket.h"
 #include"ServerScene.h"
-BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
+#include"MonsterData.h"
+BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -27,7 +28,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
     if (player == nullptr)
         return FALSE;
-    Packet* SendPack = new Packet;
+    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
 
     player->SetPos({fX,fY,0});
 
@@ -38,7 +39,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
     return 0; 
 }
 
-BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
+BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -60,7 +61,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 
     if (player == nullptr)
         return FALSE;
-    Packet* SendPack = new Packet;
+    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
 
     player->SetPos({ fX,fY,0 });
 
@@ -72,7 +73,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
     return 0;
 }
 
-BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
+BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
 {
 
     DWORD dwSessionID;
@@ -85,7 +86,7 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
 
     if (player == nullptr)
         return FALSE;
-    Packet* SendPack = new Packet;
+    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
     auto beforeScenenum = player->GetCurrentScene();
     player->SetCurrentScene((SceneNum)Scenenum);
 
@@ -101,10 +102,11 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
     IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
     IOCPServer::GetInstance().AddPacket(SendPack, Scenenum);
 
+    int iId = 0;
     for (auto& monster : curScene->GetSceneMonsterList())
     {
-        Packet* pack = new Packet;
-        CreateMonster(pack, monster->GetName(), 0, monster->GetPos().x,monster->GetPos().y, 100, Scenenum);
+        std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+        CreateMonster(pack, iId++,monster->GetName(), 0, monster->GetPos().x,monster->GetPos().y, 100, Scenenum);
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
     }
 
