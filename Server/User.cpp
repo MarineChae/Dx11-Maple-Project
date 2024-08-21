@@ -49,14 +49,18 @@ void User::Recv()
 	DWORD dwTransfer;
 	DWORD dwFlag = 0;
 	MyOV* myov = new MyOV(MyOV::MODE_RECV);
-	//std::shared_ptr<MyOV> ov = std::make_shared<MyOV>(MyOV::MODE_RECV);
+
 	m_wsaRecvBuffer.buf = m_buffer;
 	m_wsaRecvBuffer.len = sizeof(m_buffer);
 	int iret = WSARecv(m_UserSock, &m_wsaRecvBuffer, 1, &dwTransfer, &dwFlag, (LPOVERLAPPED)myov, NULL);
 	if (iret == SOCKET_ERROR)
 	{
-		int i = WSAGetLastError();
-		int a = i;
+		DWORD err = WSAGetLastError();
+		if (err == WSA_IO_PENDING)
+		{
+			
+			
+		}
 	}
 
 
@@ -107,7 +111,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 		
 
 	}
-	
+	delete myov;
 	
 }
 
