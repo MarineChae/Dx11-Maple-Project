@@ -30,11 +30,16 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
         return FALSE;
     std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
 
-    player->SetPos({fX,fY,0});
-
-    MoveStartPacket(SendPack, byDirection, Sessionid, player->GetPos().x,player->GetPos().y, state, isFalling, isJump);
-    
-    IOCPServer::GetInstance().AddPacket(SendPack, player->GetCurrentScene());
+ 
+    player->SetIsFalling(isFalling);
+    if (player->GetIsJumping() != isJump)
+    {
+        player->SetBeforePos(player->GetPos());
+    }
+    player->SetIsJumping(isJump);
+    player->SetIsMove(true);
+    player->SetAction(state);
+    player->SetDirection(byDirection);
 
     return 0; 
 }
@@ -61,15 +66,18 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     if (player == nullptr)
         return FALSE;
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    
+    
+    player->SetIsFalling(isFalling);
+    player->SetIsMove(false);
+    player->SetAction(state);
+    player->SetDirection(byDirection);
 
-    player->SetPos({ fX,fY,0 });
-
-    MoveStopPacket(SendPack, byDirection, Sessionid, player->GetPos().x,player->GetPos().y, state, isFalling, isJump);
-
-    IOCPServer::GetInstance().AddPacket(SendPack,player->GetCurrentScene());
-
-
+    if (player->GetIsJumping() != isJump)
+    {
+        player->SetBeforePos(player->GetPos());
+    }
+    player->SetIsJumping(isJump);
     return 0;
 }
 
@@ -89,7 +97,7 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
     auto beforeScenenum = player->GetCurrentScene();
     player->SetCurrentScene((SceneNum)Scenenum);
-
+    player->SetPos({ 0,0,0 });
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
     //현재씬과 이전씬에서 플레이어 목록삭제 및 추가

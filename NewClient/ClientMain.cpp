@@ -28,23 +28,6 @@ bool ClientMain::Frame()
 	testScene->Frame();
 
 
-
-	if (Input::GetInstance().GetKeyState(VK_F1) >= KEY_PUSH)
-	{
-		ObejctMgr::GetInstance().GetPlayerObject()->SetTransform({ 0,100,0 });
-		ObejctMgr::GetInstance().GetPlayerObject()->SetCurrentScene(SceneNum::BossRoom1);
-		testScene->ResetMap(L"../resource/MapObejct/Phase1.png");
-		saveload->LoadData(testScene, "../resource/MapObejct/Phase1.txt");
-		MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
-		MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
-		CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-		
-		SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(),SceneNum::BossRoom1);
-		NetSendPacket(pack);
-
-
-	}
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
 	CameraMgr::GetInstance().GetCamera().ControlAngle(1388, 766
 													, MapSizeX* CameraMgr::GetInstance().GetCamera().GetZoomScale()
@@ -56,20 +39,7 @@ bool ClientMain::Frame()
 		{
 			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
-				for (auto& line : testScene->GetLineColliderList())
-				{
-					if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line) && !obj->GetJumping())
-					{
-						auto ret = Collision::ClosestPoint(obj->GetCollider()->GetCollisionPoint(), line);
-						auto p = obj->GetTransform();
-						p.y = ret.y + obj->GetCollider()->GetHeight();
-						obj->SetTransform(p);
-						obj->SetFalling(false);
 
-						break;
-					}
-					obj->SetFalling(true);
-				}
 				for (auto& potal : testScene->GetPotalList())
 				{
 					if (Collider::CheckOBBCollision(potal->GetCollider(), obj->GetCollider())

@@ -244,7 +244,7 @@ bool IOCPServer::ThreadRun()
 		return true;
 	}
 
-	threadtimer -= 0.0625; 
+	threadtimer = 0;
 
 	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
 	{

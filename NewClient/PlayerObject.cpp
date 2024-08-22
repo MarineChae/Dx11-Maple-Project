@@ -1,4 +1,3 @@
-
 #include "PlayerObject.h"
 #include "Input.h"
 #include "Timer.h"
@@ -7,11 +6,16 @@
 #include "MakePacket.h"
 #include "Collider.h"
 #include "Collision.h"
+
+
+std::vector<std::shared_ptr<Packet>> SendPacketList;
+
 bool PlayerObject::Init()
 {
     SpriteObject::Init();
     GetCollider()->Init();
     m_bIsFalling = false;
+    
     return true;
 }
 
@@ -20,31 +24,14 @@ bool PlayerObject::Frame()
     SpriteObject::Frame();
 
 
-    if (GetDestination() != GetTransform() && ObejctMgr::GetInstance().GetPlayerObject().get() != this)
-    {
-        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-        SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
-       
-    }
-
-    if (m_bIsFalling && !m_bIsJump)
-    {
-        auto pos = GetTransform();
-        pos.y -= static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 800);
-        SetTransform(pos);
-    }
-    if (m_bIsJump )
-    {
-        auto pos = GetTransform();
-        pos.y += static_cast<float>(Timer::GetInstance().GetSecPerFrame() * 800);
-        SetTransform(pos);
-        if (pos.y - m_vBeforePos.y > fabs(200.0f))
-        {
-            m_bIsJump = false;
-            m_bIsFalling = true;
-        }
-    }
-    
+   if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+   {
+       auto tr = GetTransform();
+       auto des = GetDestination();
+       SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
+       SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
+      
+   }
 
 
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
@@ -136,8 +123,8 @@ void PlayerObject::PacketSendProc()
 
     case ACTION_STAND:
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
-            (short)GetTransform().x,
-            (short)GetTransform().y,
+            GetTransform().x,
+            GetTransform().y,
             GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump);
         ChangeState(PLAYER_STATE::PS_STAND);
         OutputDebugString(L"stop\n");
@@ -149,8 +136,8 @@ void PlayerObject::PacketSendProc()
     case ACTION_MOVEUP: 
     case ACTION_MOVEDOWN:
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
-            (short)GetTransform().x,
-            (short)GetTransform().y,
+            GetTransform().x,
+            GetTransform().y,
             GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump);
         ChangeState(PLAYER_STATE::PS_WALK);
         OutputDebugString(L"start\n");
@@ -242,17 +229,17 @@ void PlayerObject::InputAction()
 
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
-        m_pMovePow.x = min(m_pMovePow.x, 200);
-        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        m_pMovePow.x = max(m_pMovePow.x, -500);
+       // m_pMovePow.x = min(m_pMovePow.x, 200);
+       // m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+       // m_pMovePow.x = max(m_pMovePow.x, -500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
-        m_pMovePow.x = max(m_pMovePow.x, -200);
-        m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        m_pMovePow.x = min(m_pMovePow.x, 500);
+        //m_pMovePow.x = max(m_pMovePow.x, -200);
+        //m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        //m_pMovePow.x = min(m_pMovePow.x, 500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
@@ -266,7 +253,7 @@ void PlayerObject::InputAction()
     }
     if (ACTION_STAND == m_dwActionInput)
     {
-        m_pMovePow = m_pMovePow.Lerp(m_pMovePow, TVector3::Zero, 0.005f);
+        //m_pMovePow = m_pMovePow.Lerp(m_pMovePow, TVector3::Zero, 0.005f);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_STANDJUMP == m_dwActionInput)
@@ -278,10 +265,10 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVELEFT_JUMP == m_dwActionInput)
     {
-        m_pMovePow.x = min(m_pMovePow.x, 200);
-        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        m_pMovePow.x = max(m_pMovePow.x, -500);
-        m_vBeforePos = GetTransform();
+        //m_pMovePow.x = min(m_pMovePow.x, 200);
+        //m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        //m_pMovePow.x = max(m_pMovePow.x, -500);
+        //m_vBeforePos = GetTransform();
         m_bIsJump = true;
         m_bIsFalling = false;
         m_dwCurrentAction = m_dwActionInput;
@@ -289,10 +276,10 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVERIGHT_JUMP == m_dwActionInput)
     {
-        m_pMovePow.x = max(m_pMovePow.x, -200);
-        m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        m_pMovePow.x = min(m_pMovePow.x, 500);
-        m_vBeforePos = GetTransform();
+        //m_pMovePow.x = max(m_pMovePow.x, -200);
+        //m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+        //m_pMovePow.x = min(m_pMovePow.x, 500);
+        //m_vBeforePos = GetTransform();
         m_bIsJump = true;
         m_bIsFalling = false;
         m_dwCurrentAction = m_dwActionInput;
@@ -300,27 +287,27 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVELEFT_FALL == m_dwActionInput)
     {
-        m_pMovePow.x = min(m_pMovePow.x, 200);
-        m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        m_pMovePow.x = max(m_pMovePow.x, -500);
+       //m_pMovePow.x = min(m_pMovePow.x, 200);
+       //m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
+       //m_pMovePow.x = max(m_pMovePow.x, -500);
           m_bIsFalling = true;
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
     if (ACTION_MOVERIGHT_FALL == m_dwActionInput)
     {
-        m_pMovePow.x = max(m_pMovePow.x, -200);
-        m_pMovePow.x += static_cast<float>(1000 * static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
-        m_pMovePow.x = min(m_pMovePow.x, 500);
+       // m_pMovePow.x = max(m_pMovePow.x, -200);
+       // m_pMovePow.x += static_cast<float>(1000 * static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
+       // m_pMovePow.x = min(m_pMovePow.x, 500);
         m_bIsFalling = true;
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
 
     
-    TVector3 pos = GetTransform();
-    pos = TVector3::Lerp(pos , pos + m_pMovePow , static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
-    SetTransform(pos);
+   // TVector3 pos = GetTransform();
+   // pos = TVector3::Lerp(pos , pos + m_pMovePow , static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
+   // SetTransform(pos);
 }
 
 

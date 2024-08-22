@@ -7,6 +7,7 @@
 #include"PacketProc.h"
 #include"StreamPacket.h"
 #include"ServerScene.h"
+
 std::mutex m;
 
 int SessionMgr::m_iSessionCount = 0;
@@ -24,6 +25,12 @@ void User::Close()
 		}
 		else if (otherplayer->GetSessionID() == m_dwSessionID)
 		{
+			
+			if (ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()] != nullptr)
+			{
+
+				ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()]->DeleteScenePlayer(otherplayer);
+			}
 			PlayerDataMgr::GetInstance().DeletePlayerData(m_dwSessionID);
 			break;
 		}
@@ -203,7 +210,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		IOCPServer::GetInstance().Broadcasting(pack2);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
-		data->Init(true, user->GetSessionId(),0,0,x,y,100);
+		data->Init(true, user->GetSessionId(),PLAYER_STATE::PS_STAND,0,x,y,100);
  		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(),data);
 		data->SetCurrentScene((SceneNum)CurrentScene);
 		auto scene = ServerSceneMgr::GetInstance().InsertScene(CurrentScene);

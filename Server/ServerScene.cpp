@@ -6,7 +6,7 @@
 #include"IOCPServer.h"
 #include"Timer.h"
 #include"Packet.h"
-
+#include"Collision.h"
 std::mutex sceneMutex;
 
 void ServerScene::AddScenePlayer(std::shared_ptr<PlayerData> data)
@@ -91,12 +91,50 @@ void ServerScene::LoadSceneData(int Scenenum)
 
 void ServerScene::Update()
 {
+	for (auto& player : m_vScenePlayerList) 
+	{
+		player->SetCollisionPoint();
+		for (auto& line : m_LineColliderList)
+		{
+			if (Collision::PointToLine(player->GetCollisionPoint(), line) && !player->GetIsJumping())
+			{
+				auto ret = Collision::ClosestPoint(player->GetCollisionPoint(), line);
+				auto p = player->GetPos();
+				p.y = ret.y + player->GetHeight();
+				player->SetPos(p);
+				player->SetIsFalling(false);
+				
+				break;
+			}
+			player->SetIsFalling(true);
+		}
+		player->Update();
+		if (player->GetIsMove())
+		{
+			std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+			MoveStartPacket(pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
+				player->GetPos().y,
+				player->GetAction(),
+				player->GetIsFalling(),
+				player->GetIsJumping());
+			IOCPServer::GetInstance().AddPacket(pack, player->GetCurrentScene());
+		}
+		else
+		{
+			std::shared_ptr<Packet> Pack = std::make_shared<Packet>();
+			MoveStopPacket(Pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
+				player->GetPos().y,
+				player->GetAction(),
+				player->GetIsFalling(),
+				player->GetIsJumping());
+			IOCPServer::GetInstance().AddPacket(Pack, player->GetCurrentScene());
+		}
 
+	}
 	for (auto& mon : m_vSceneMonsterList)
 	{
 		mon->Update();
-	
-	
+
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 		MonsterStateUpdatePacket(pack, *mon);
 		IOCPServer::GetInstance().AddPacket(pack, mon->GetCurrentScene());
