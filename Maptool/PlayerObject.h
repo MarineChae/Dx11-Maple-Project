@@ -20,6 +20,8 @@ public:
 	virtual bool Render() override;
 	virtual bool Release() override;
 	bool	     m_bIsFalling;
+	bool         m_testlope = false;
+	bool		 m_testfloor = false;
 public:
 
 	void InputAction();

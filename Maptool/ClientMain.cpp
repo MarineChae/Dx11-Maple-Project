@@ -10,7 +10,7 @@
 #include"Scene.h"
 #include"SaveLoader.h"
 #include"Texture.h"
-
+static bool testlope;
 
 const int mapXsize = 5830;
 const int mapYsize = 1764;
@@ -257,7 +257,7 @@ bool ClientMain::Frame()
 		pos.x -= 500 * Timer::GetInstance().GetSecPerFrame();
 		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 	}
-	else if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH)
+	else if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH )
 	{
 		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
 		pos.y -= 500 * Timer::GetInstance().GetSecPerFrame();
@@ -280,21 +280,90 @@ bool ClientMain::Frame()
 
 	if (test2 != nullptr)
 	{
+		auto testbeforepos = test2->GetTransform();
 		test2->Frame();
 		test2->m_bIsFalling = true;
+		bool collision = false;
 		for (auto& line : m_testscene->GetLineColliderList())
 		{
-
-			if (Collision::PointToLine(test2->GetCollider()->GetCollisionPoint(), line))
+			if (test2->m_testlope)	
 			{
-				auto ret = Collision::ClosestPoint(test2->GetCollider()->GetCollisionPoint(), line);
-				auto p = test2->GetTransform();
-				p.y = ret.y + test2->GetCollider()->GetHeight();
-				test2->SetTransform(p);
 				test2->m_bIsFalling = false;
-
-				
 			}
+			if (line->type == COLLISION_TYPE::CT_WALL)
+			{
+				if (Collision::isLineIntersectingOBB(line, test2->GetCollider(), 0))
+				{
+					test2->SetTransform(testbeforepos);
+
+				}
+			}
+			if (line->type == COLLISION_TYPE::CT_LOPE)
+			{
+				
+				float t = test2->GetCollider()->GetCollisionPoint().y;
+
+				if (Collision::isLineIntersectingOBB(line, test2->GetCollider(),0))
+				{
+					float tempmax = max(line->To.y, line->From.y);
+					collision = true;
+					if (t < tempmax)
+					{
+						if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH)
+						{
+							if (!test2->m_testlope && test2->m_testfloor)
+							{
+								test2->SetTransform(test2->GetTransform() + TVector3(0, 20, 0));
+								
+							}
+							test2->SetTransform({ line->To.x ,test2->GetTransform().y,0 });
+							test2->m_bIsFalling = false;
+							test2->m_testlope = true;
+							test2->m_testfloor = false;
+						}
+
+					}
+
+				}
+				if (Collision::isLineIntersectingOBB(line, test2->GetCollider(), 30.f))
+				{
+					float tempmin = min(line->To.y, line->From.y);
+					collision = true;
+					if (t >= tempmin)
+					{
+						if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
+						{
+							if (!test2->m_testlope)
+								test2->SetTransform(test2->GetTransform() + TVector3(0, -20, 0));
+							test2->m_bIsFalling = false;
+							test2->m_testlope = true;
+							test2->SetTransform({ line->To.x ,test2->GetTransform().y,0 });
+						}
+					}
+				}
+				if(!collision)
+				{
+					test2->m_bIsFalling = true;
+				}
+
+			}
+			if (line->type == COLLISION_TYPE::CT_FLOOR)
+			{
+				if (Collision::PointToLine(test2->GetCollider()->GetCollisionPoint(), line) )
+				{
+
+					auto ret = Collision::ClosestPoint(test2->GetCollider()->GetCollisionPoint(), line);
+					auto p = test2->GetTransform();
+					p.y = ret.y + test2->GetCollider()->GetHeight();
+					test2->SetTransform(p);
+					test2->m_bIsFalling = false;
+					test2->m_testlope = false;
+					test2->m_testfloor = true;
+
+				}
+			}
+
+			
 		}
 		if (test2->m_bIsFalling)
 		{
@@ -318,6 +387,9 @@ bool ClientMain::Render()
 	{
 		test2->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 		test2->Render();
+		test2->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());;
+		test2->GetCollider()->Render();
+
 	}	
 	if (m_CreateMonster != nullptr)
 	{
@@ -519,6 +591,7 @@ void ClientMain::SelectMenu()
 	}
 	if (m_ClickAction == CLICK_ACTION::DRAW_LINE_COLLISION)
 	{
+		static int type = 0;
 		ImGui::NewLine();
 		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1), "Collision Line List");
 		if (ImGui::BeginListBox("## ", { 250,100 }))
@@ -540,11 +613,10 @@ void ClientMain::SelectMenu()
 					selectLine = line;
 					tempx = selectLine->From.x;
 					tempy = selectLine->From.y;
-
+					type = selectLine->type;
 				}
 
-
-
+				
 			}
 
 			ImGui::EndListBox();
@@ -555,10 +627,16 @@ void ClientMain::SelectMenu()
 		{
 			if (ImGui::BeginListBox("From"))
 			{
-			
-				ImGui::InputFloat("X : ##", &tempx);
-				ImGui::InputFloat("Y : ##", &tempy);
+				if (selectLine != nullptr)
+				{
 
+					ImGui::InputFloat("X : ##", &tempx);
+					ImGui::InputFloat("Y : ##", &tempy);
+					const char* itme[] = { "CT_FLOOR","CT_LOPE","CT_WALL","CT_DEFAULT" };
+					ImGui::Combo("ObjectType ", &type, itme, IM_ARRAYSIZE(itme));
+
+				
+				}
 				ImGui::EndListBox();
 			}
 
@@ -567,8 +645,12 @@ void ClientMain::SelectMenu()
 		}
 		if (ImGui::Button("Conform", ImVec2(60, 30)))
 		{
-			selectLine->From.x = tempx;
-			selectLine->From.y = tempy;
+			if (selectLine != nullptr)
+			{
+				selectLine->From.x = tempx;
+				selectLine->From.y = tempy;
+				selectLine->type = (COLLISION_TYPE)type;
+			}
 		}
 	}
 	if (m_ClickAction == CLICK_ACTION::MONSTER_PLACE)

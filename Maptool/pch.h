@@ -85,17 +85,6 @@ struct PNCT_VERTEX
 
 };
 
-struct UVRect
-{
-    TVector2 m_vMin;
-    TVector2 m_vMax;
-};
-struct Line
-{
-    TVector3 From;
-    TVector3 To;
-};
-
 enum PLAYER_STATE
 {
     PS_STAND,
@@ -120,10 +109,21 @@ enum COLLISION_TYPE
 {
     CT_FLOOR,
     CT_LOPE,
-    CT_POTAL,
-    CT_ATTACK,
-    CT_DEFAULT
+    CT_WALL,
+    CT_DEFAULT,
 };
+struct UVRect
+{
+    TVector2 m_vMin;
+    TVector2 m_vMax;
+};
+struct Line
+{
+    TVector3 From;
+    TVector3 To;
+    COLLISION_TYPE type;
+};
+
 
 
 struct MyOV 

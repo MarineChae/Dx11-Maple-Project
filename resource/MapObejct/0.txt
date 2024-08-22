@@ -1,20 +1,14 @@
 #MapName
-../resource/MapObejct/Phase1.png
+../resource/MapObejct/20240720120407278_100000000.png
 #SceneNum
 0
 #LineCollider
-1
--1370.000000	-471.999969	1366.000000	-475.999969
+2
+-1125.488281	-559.241577	104.511826	-727.241577
+-1121.488281	0.000000	192.511734	-223.241638
 #ObjectList
 0
 #MonsterList
-7
-../resource/Monster/Mush_Main.png
--976.000061	-42.000019	../resource/Monster/Mush_Main.png
--299.999969	-59.999989	../resource/Monster/Mush_Main.png
--618.000000	348.000000	../resource/Monster/Mush_Main.png
-19.999949	389.999969	../resource/Monster/Mush_Main.png
-387.999939	382.000031	../resource/Monster/Mush_Main.png
--700.000000	-36.000031	../resource/Monster/Mush_Main.png
--1336.000000	746.000000	#PotalList
+0
+#PotalList
 0

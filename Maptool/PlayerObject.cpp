@@ -171,7 +171,7 @@ void PlayerObject::InputAction()
     m_dwBeforeAction = m_dwCurrentAction;
 
 
-    if (ACTION_MOVELEFT == m_dwActionInput)
+    if (ACTION_MOVELEFT == m_dwActionInput )
     {
         TVector3 pos = GetTransform();
         pos.x -= 500 * Timer::GetInstance().GetSecPerFrame();
@@ -179,7 +179,7 @@ void PlayerObject::InputAction()
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
-    if (ACTION_MOVERIGHT == m_dwActionInput)
+    if (ACTION_MOVERIGHT == m_dwActionInput )
     {
         TVector3 pos = GetTransform();
         pos.x += 500 * Timer::GetInstance().GetSecPerFrame();
@@ -187,14 +187,14 @@ void PlayerObject::InputAction()
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
-    if (ACTION_MOVEUP == m_dwActionInput)
+    if (ACTION_MOVEUP == m_dwActionInput&& m_testlope)
     {
         TVector3 pos = GetTransform();
         pos.y += 500 * Timer::GetInstance().GetSecPerFrame();
         SetTransform(pos);
         m_dwCurrentAction = m_dwActionInput;
     }
-    if (ACTION_MOVEDOWN == m_dwActionInput)
+    if (ACTION_MOVEDOWN == m_dwActionInput&& m_testlope)
     {
         TVector3 pos = GetTransform();
         pos.y -= 500 * Timer::GetInstance().GetSecPerFrame();
