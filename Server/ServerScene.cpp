@@ -74,7 +74,7 @@ void ServerScene::LoadSceneData(int Scenenum)
 				{
 					_fgetts(buffer, _countof(buffer), fpRead);
 					std::shared_ptr<Line> line = std::make_shared<Line>();
-					_stscanf_s(buffer, _T("%f %f %f %f \n"), &line->From.x, &line->From.y, &line->To.x, &line->To.y);
+					_stscanf_s(buffer, _T("%d %f %f %f %f \n"),&line->type ,&line->From.x, &line->From.y, &line->To.x, &line->To.y);
 
 					PushLineCollider(line);
 				}
@@ -93,22 +93,34 @@ void ServerScene::Update()
 {
 	for (auto& player : m_vScenePlayerList) 
 	{
-		player->SetCollisionPoint();
+		player->Update();
+		bool collision = false;
 		for (auto& line : m_LineColliderList)
 		{
-			if (Collision::PointToLine(player->GetCollisionPoint(), line) && !player->GetIsJumping())
+			if (line->type == COLLISION_TYPE::CT_FLOOR)
 			{
-				auto ret = Collision::ClosestPoint(player->GetCollisionPoint(), line);
-				auto p = player->GetPos();
-				p.y = ret.y + player->GetHeight();
-				player->SetPos(p);
-				player->SetIsFalling(false);
-				
-				break;
+				if (Collision::PointToLine(player->GetCollisionData().GetCollisionPoint(), line) && !player->GetIsJumping())
+				{
+					auto ret = Collision::ClosestPoint(player->GetCollisionPoint(), line);
+					auto p = player->GetPos();
+					p.y = ret.y + player->GetCollisionData().GetHeight();
+					player->SetPos(p);
+					player->SetIsFalling(false);
+					player->SetOnLope(false);
+					collision = true;
+				}
 			}
-			player->SetIsFalling(true);
+
+
 		}
-		player->Update();
+		if(!collision)
+			player->SetIsFalling(true);
+
+
+
+
+
+
 		if (player->GetIsMove())
 		{
 			std::shared_ptr<Packet> pack = std::make_shared<Packet>();

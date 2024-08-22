@@ -152,7 +152,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 				{
 					_fgetts(buffer, _countof(buffer), fpRead);
 					std::shared_ptr<Line> line = std::make_shared<Line>();
-					_stscanf_s(buffer, _T("%f %f %f %f \n"), &line->From.x, &line->From.y, &line->To.x, &line->To.y);
+					_stscanf_s(buffer, _T("%d %f %f %f %f \n"), &line->type, &line->From.x, &line->From.y, &line->To.x, &line->To.y);
 					v.push_back({});
 					v[v.size() - 1].Pos = line->From;
 					v.push_back({});

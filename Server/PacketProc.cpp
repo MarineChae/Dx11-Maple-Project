@@ -14,6 +14,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     float fY;
     BYTE isFalling;
     BYTE isJump;
+    BYTE onLope;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
@@ -22,6 +23,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
+    *pack >> onLope;
     *pack >> state;
 
 
@@ -40,7 +42,11 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetIsMove(true);
     player->SetAction(state);
     player->SetDirection(byDirection);
-
+    if (onLope)
+    {
+        int test = 0;
+    }
+    player->SetOnLope(onLope);
     return 0; 
 }
 
@@ -52,6 +58,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     float fY; 
     BYTE isFalling;
     BYTE isJump;
+    BYTE onLope;
     PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
 
     *pack >> byDirection;
@@ -60,14 +67,15 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     *pack >> fY;
     *pack >> isFalling;
     *pack >> isJump;
+    *pack >> onLope;
     *pack >> state;
 
     auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
 
     if (player == nullptr)
         return FALSE;
-    
-    
+
+    OutputDebugString(std::to_wstring((int)isFalling).c_str());
     player->SetIsFalling(isFalling);
     player->SetIsMove(false);
     player->SetAction(state);
@@ -78,6 +86,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
         player->SetBeforePos(player->GetPos());
     }
     player->SetIsJumping(isJump);
+    player->SetOnLope(onLope);
     return 0;
 }
 

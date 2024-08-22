@@ -2,12 +2,12 @@
 #include "MakePacket.h"
 
 void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction,DWORD SessionID ,float X, float Y,
-					PLAYER_STATE state, BYTE isFalling, BYTE isJump)
+					PLAYER_STATE state, BYTE isFalling, BYTE isJump,BYTE onLope)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 16 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -18,18 +18,19 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction,DWORD SessionI
 	*pack << Y;
 	*pack << isFalling;
 	*pack << isJump;
+	*pack << onLope;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 
 }
 
 void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y,
-					PLAYER_STATE state, BYTE isFalling,BYTE isJump)
+					PLAYER_STATE state, BYTE isFalling,BYTE isJump,BYTE onLope)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 16 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -40,6 +41,7 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 	*pack << Y;
 	*pack << isFalling;
 	*pack << isJump;
+	*pack << onLope;
 	*pack << state;
 	*pack << (BYTE)NETWORK_PACKET_END;
 

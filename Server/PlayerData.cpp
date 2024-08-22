@@ -2,6 +2,7 @@
 #include "PlayerData.h"
 #include"Collision.h"
 #include"Timer.h"
+
 void PlayerData::Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Direction, float X, float Y, int HP)
 {
 	m_bFlag = Flag;
@@ -10,16 +11,18 @@ void PlayerData::Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Dire
 	m_byDirection = Direction;
 	m_vPos = { X,Y,0 };
 	m_iHP = HP;
-	
+	m_colliderData.Init();
 }
 
 void PlayerData::Update()
 {
+	m_colliderData.SetPos(m_vPos);
+	m_colliderData.Update();
 
 	int coefficient = 0;
 
 	//¿ÞÂÊ
-	if (m_bisMove)
+	if (m_bisMove&&!m_bOnLope)
 	{
 		if (m_byDirection == 0)
 		{
@@ -44,6 +47,10 @@ void PlayerData::Update()
 	{
 		m_vPos.y -= static_cast<float>(800 * 0.0625);
 	}
+	if (!m_bIsFalling)
+	{
+		int a = 0;
+	}
 	if (m_bIsJumping)
 	{
 		
@@ -54,13 +61,16 @@ void PlayerData::Update()
 			m_bIsFalling = true;
 		}
 	}
-
+	OnLopeProc();
 	m_vPos = m_vPos + (m_vMovePow* 0.0625);// (m_vMovePow * Timer::GetInstance().GetSecPerFrame());//TVector3::Lerp(m_vPos, m_vPos + m_vMovePow, Timer::GetInstance().GetSecPerFrame());
 }
 
-void PlayerData::SetCollisionPoint()
+void PlayerData::OnLopeProc()
 {
-	m_vCollisionPoint = { m_vPos.x,m_vPos.y - m_fHeight,0 };
-}
+	if (m_bOnLope)
+	{
+		m_vMovePow.x = 0;
 
+	}
+}
 

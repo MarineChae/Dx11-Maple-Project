@@ -280,8 +280,9 @@ bool ClientMain::Frame()
 
 	if (test2 != nullptr)
 	{
-		auto testbeforepos = test2->GetTransform();
+		
 		test2->Frame();
+		auto testbeforepos = test2->GetTransform();
 		test2->m_bIsFalling = true;
 		bool collision = false;
 		for (auto& line : m_testscene->GetLineColliderList())

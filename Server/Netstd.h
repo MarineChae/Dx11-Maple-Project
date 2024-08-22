@@ -41,8 +41,16 @@ enum MONSTER_STATE
     MS_SKILL2,
     MS_SKILL3,
 };
+enum COLLISION_TYPE
+{
+    CT_FLOOR,
+    CT_LOPE,
+    CT_WALL,
+    CT_DEFAULT,
+};
 struct Line
 {
     TVector3 From;
     TVector3 To;
+    COLLISION_TYPE type;
 };

@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="BehaviorTree.cpp" />
     <ClCompile Include="BehaviorTreeNode.cpp" />
+    <ClCompile Include="ColliderData.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="MakePacket.cpp" />
     <ClCompile Include="MonsterData.cpp" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="BehaviorTree.h" />
     <ClInclude Include="BehaviorTreeNode.h" />
+    <ClInclude Include="ColliderData.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="MakePacket.h" />
     <ClInclude Include="MonsterData.h" />

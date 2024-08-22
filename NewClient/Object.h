@@ -69,7 +69,8 @@ public:
 	virtual std::shared_ptr<SpriteData> GetSpriteInfo() { return nullptr; };
 	virtual int GetNextSceneNum()const { return -1; }
 	virtual void SetNextSceneNum(int num) {}
-
+	virtual void SetOnLope(bool onLope){}
+	virtual bool GetOnLope() { return false; }
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

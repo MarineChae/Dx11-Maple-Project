@@ -1,6 +1,6 @@
 #pragma once
 #include"Singleton.h"
-
+#include"ColliderData.h"
 enum SceneNum
 {
 	Lobby,
@@ -31,13 +31,16 @@ private:
 	bool m_bIsFalling;
 	bool m_bIsJumping;
 	TVector3 m_vCollisionPoint;
-	float m_fHeight = 68.0f;
+
 	TVector3 m_vMovePow;
 	TVector3 m_vBeforePos;
+	bool m_bOnLope;
+	ColliderData m_colliderData;
 public:
 
 	void Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Direction, float X, float Y, int HP);
 	void Update();
+	void OnLopeProc();
 	//getter
 	DWORD GetSessionID() const { return m_dwSessionID; };
 	PLAYER_STATE GetAction() const { return m_dwAction; };
@@ -49,19 +52,20 @@ public:
 	TVector3 GetCollisionPoint()const { return m_vCollisionPoint; };
 	bool  GetIsFalling()const { return m_bIsFalling; }
 	bool  GetIsJumping()const { return m_bIsJumping; }
-	float GetHeight()const { return m_fHeight; };
 	bool GetIsMove()const { return m_bisMove; };
+	bool GetOnLope()const { return m_bOnLope; };
+	ColliderData GetCollisionData()const { return m_colliderData; };
 	//setter
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 	void SetHP(int HP) { m_iHP = HP; };
 	void SetCurrentScene(SceneNum currentScene) { m_PlaceScene = currentScene; };
 	void SetIsFalling(bool falling) { m_bIsFalling = falling; }
 	void SetIsJumping(bool Jump) { m_bIsJumping = Jump; }
-	void SetCollisionPoint();
 	void SetIsMove(bool move) { m_bisMove = move; };
 	void SetAction(PLAYER_STATE action)  {  m_dwAction= action; };
 	void SetDirection(BYTE dir) {  m_byDirection =dir; };
 	void SetBeforePos(TVector3 pos) { m_vBeforePos = pos; }
+	void SetOnLope(bool onlope) { m_bOnLope = onlope; }
 };
 
 class PlayerDataMgr : public Singleton< PlayerDataMgr>

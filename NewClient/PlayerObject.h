@@ -16,6 +16,7 @@ private:
 	PLAYER_STATE m_PlayerState;
 	TVector3     m_pMovePow;
 	int			 m_CurrentScene;
+	bool		 m_bOnLope;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -41,7 +42,8 @@ public:
 	virtual bool GetFalling() { return m_bIsFalling; };
 	virtual void SetCurrentScene(int  currentScene) { m_CurrentScene = currentScene; };
 	virtual int GetCurrentScene() const { return m_CurrentScene; };
-
+	virtual void SetOnLope(bool onLope) { m_bOnLope = onLope; };
+	virtual bool GetOnLope() { return m_bOnLope; }
 public:
 	PlayerObject();
 	virtual ~PlayerObject();
