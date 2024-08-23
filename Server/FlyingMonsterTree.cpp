@@ -44,13 +44,28 @@ ReturnCode FlyingMonsterTree::ChasePlayer()
 	}
 	
 }
-
+ 
 ReturnCode FlyingMonsterTree::AttackPlayer()
 {
 
 
 	GetMonsterData().SetIsDead(true);
 	GetMonsterData().SetPos(GetMonsterData().GetResponPos());
+	std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+
+	GetMonsterData().GetTargetPlayer()->SetCurrentScene((SceneNum)3);
+
+	SceneChangePacket(SendPack, GetMonsterData().GetTargetPlayer()->GetSessionID(), 3);
+	IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()].get(), SendPack);
+	auto BeforeScene = ServerSceneMgr::GetInstance().InsertScene(2);
+	auto curScene = ServerSceneMgr::GetInstance().InsertScene(3);
+
+	BeforeScene->DeleteScenePlayer(GetMonsterData().GetTargetPlayer());
+	curScene->AddScenePlayer(GetMonsterData().GetTargetPlayer());
+
+	
+	IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
+	IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
 
 
 	return ReturnCode::SUCCESS;

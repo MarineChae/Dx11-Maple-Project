@@ -295,7 +295,7 @@ BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
         PacketProc_CreateMonster(pack);
         break;
     case PACKET_CS_UPDATE_MONSTER_STATE:
-        PacketProc_UpdateMonster(pack);
+         PacketProc_UpdateMonster(pack);
         break;
 
 
