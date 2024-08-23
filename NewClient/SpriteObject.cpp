@@ -95,7 +95,7 @@ bool SpriteObject::Frame()
     if (m_AccumulatedTime >= m_pSpriteInfo->m_fDelay)
     {
         m_iTexIndex++;
-        if (m_iTexIndex >= m_pSpriteInfo->m_UVList.size())
+        if (m_iTexIndex >= m_pSpriteInfo-> iMaxImageCount)
         {
 
             m_iTexIndex = 0;

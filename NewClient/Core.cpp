@@ -46,7 +46,7 @@ bool Core::EngineInit()
 bool Core::EngineFrame()
 {
     Device::Frame();
-    CameraMgr::GetInstance().GetCamera().Frame();
+
     Input::GetInstance().Frame();
     Timer::GetInstance().Frame();
 
@@ -56,6 +56,7 @@ bool Core::EngineFrame()
 
 
     Frame();
+    CameraMgr::GetInstance().GetCamera().Frame();
     return true;
 }
 

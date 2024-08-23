@@ -206,20 +206,16 @@ bool ClientMain::Frame()
 		}
 		if (Input::GetInstance().GetKeyState(VK_LBUTTON) == KEY_HOLD && !draw)
 		{
-			for (auto& obj : m_testscene->GetObjectList())
-			{
-				if (mousePosX >= obj->GetCollider()->GetTransform().x - obj->GetCollider()->GetWidth()
-					&& mousePosX <= obj->GetCollider()->GetTransform().x + obj->GetCollider()->GetWidth()
-					&& mousePosY >= obj->GetCollider()->GetTransform().y - obj->GetCollider()->GetHeight()
-					&& mousePosY <= obj->GetCollider()->GetTransform().y + obj->GetCollider()->GetHeight())
+			if(m_pPlacedObject != nullptr)
+				if (mousePosX >= m_pPlacedObject->GetCollider()->GetTransform().x - m_pPlacedObject->GetCollider()->GetWidth()
+					&& mousePosX <= m_pPlacedObject->GetCollider()->GetTransform().x + m_pPlacedObject->GetCollider()->GetWidth()
+					&& mousePosY >= m_pPlacedObject->GetCollider()->GetTransform().y - m_pPlacedObject->GetCollider()->GetHeight()
+					&& mousePosY <= m_pPlacedObject->GetCollider()->GetTransform().y + m_pPlacedObject->GetCollider()->GetHeight())
 				{
-					obj->SetTransform({ mousePosX ,mousePosY,0 });
-					obj->GetCollider()->SetTransform({ mousePosX ,mousePosY,0 });
-					break;
+					m_pPlacedObject->SetTransform({ mousePosX ,mousePosY,m_pPlacedObject->GetTransform().z});
+					m_pPlacedObject->GetCollider()->SetTransform({ mousePosX ,mousePosY,m_pPlacedObject->GetTransform().z });
+					
 				}
-
-			}
-
 
 		}
 	}
@@ -229,13 +225,17 @@ bool ClientMain::Frame()
 	if (Input::GetInstance().GetKeyState(VK_HOME) >= KEY_PUSH)
 	{
 
-		CameraMgr::GetInstance().GetCamera().AddZoom(Timer::GetInstance().GetSecPerFrame());
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
+		pos.z += 5 * Timer::GetInstance().GetSecPerFrame();
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 
 	}
 	if (Input::GetInstance().GetKeyState(VK_END) >= KEY_PUSH)
 	{
 
-		CameraMgr::GetInstance().GetCamera().AddZoom(-Timer::GetInstance().GetSecPerFrame());
+		TVector3 pos = CameraMgr::GetInstance().GetCamera().GetCameraPos();
+		pos.z -= 5 * Timer::GetInstance().GetSecPerFrame();
+		CameraMgr::GetInstance().GetCamera().SetCameraPos(pos);
 
 	}
 	if (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH)
@@ -764,8 +764,17 @@ void ClientMain::SelectMenu()
 				TVector3 tempPos = m_pPlacedObject->GetTransform();
 				ImGui::InputFloat("X : ", &tempPos.x);
 				ImGui::InputFloat("Y : ", &tempPos.y);
+				ImGui::InputFloat("Z : ", &tempPos.z);
+				TVector3 tempScale = m_pPlacedObject->GetScale();
+
+				ImGui::InputFloat("scaleX : ", &tempScale.x);
+				ImGui::InputFloat("scaleY : ", &tempScale.y);
+
 
 				m_pPlacedObject->SetTransform(tempPos);
+				m_pPlacedObject->GetCollider()->SetTransform(tempPos);
+				m_pPlacedObject->SetScale(tempScale);
+				m_pPlacedObject->GetCollider()->SetScale(tempScale);
 			}
 			ImGui::EndListBox();
 		}

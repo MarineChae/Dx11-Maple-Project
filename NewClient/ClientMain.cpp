@@ -30,8 +30,8 @@ bool ClientMain::Frame()
 
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
 	CameraMgr::GetInstance().GetCamera().ControlAngle(1388, 766
-													, MapSizeX* CameraMgr::GetInstance().GetCamera().GetZoomScale()
-													, MapSizeY * CameraMgr::GetInstance().GetCamera().GetZoomScale());
+													, MapSizeX
+													, MapSizeY);
 
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{

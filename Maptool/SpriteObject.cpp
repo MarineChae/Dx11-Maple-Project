@@ -9,7 +9,7 @@ bool SpriteObject::Create(std::wstring FileName, std::wstring ShaderFileName)
     if (m_pSpriteInfo != nullptr)
     {
         //m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
-        SetScale(m_pSpriteInfo->m_vScale);
+        SetScale({ static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 });
         SetUVData(m_pSpriteInfo->m_UVList, m_pSpriteInfo->iRow, m_pSpriteInfo->iCol);
         m_pSpriteInfo->m_pTexture = TextureMgr::GetInstance().Load(FileName);
         m_vSpriteList.push_back(m_pSpriteInfo);
@@ -111,7 +111,7 @@ bool SpriteObject::Frame()
     if (m_AccumulatedTime >= m_pSpriteInfo->m_fDelay)
     {
         m_iTexIndex++;
-        if (m_iTexIndex >= m_pSpriteInfo->m_UVList.size())
+        if (m_iTexIndex >= m_pSpriteInfo->iMaxImageCount)
         {
 
             m_iTexIndex = 0;

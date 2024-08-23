@@ -1,13 +1,17 @@
 #MapName
-../resource/MapObejct/20240720120407278_100000000.png
+../resource/MapObejct/1PhaseBack1.png
 #SceneNum
 0
 #LineCollider
-2
--1125.488281	-559.241577	104.511826	-727.241577
--1121.488281	0.000000	192.511734	-223.241638
-#ObjectList
 0
+#ObjectList
+3
+../resource/MapObejct/1PhaseBack2.png
+0	0.000000	0.000000	1	1	1	0.180000
+../resource/MapObejct/1PhaseFootHold.png
+0	0.000000	-812.122437	1	1	1	0.180000
+../resource/MapObejct/1PhaseFootHold.png
+0	166.000076	-1180.122437	1	1	1	0.180000
 #MonsterList
 0
 #PotalList

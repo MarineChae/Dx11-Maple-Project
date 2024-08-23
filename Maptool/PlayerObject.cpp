@@ -20,18 +20,6 @@ bool PlayerObject::Frame()
     SpriteObject::Frame();
 
 
-    if ()
-    {
-
-        m_vPos.y += static_cast<float>(0.0625 * 800);
-        if (m_vPos.y - m_vBeforePos.y > fabs(200.0f))
-        {
-            //m_bIsJumping = false;
-            //m_bIsFalling = true;
-        }
-    }
-
-
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
     {
         InputKey();
