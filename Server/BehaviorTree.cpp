@@ -11,18 +11,28 @@ void BehaviorTree::RunTree()
 
 ReturnCode BehaviorTree::ChasePlayer()
 {
-	if (TVector3::Distance(m_Monster.GetPos(), m_Monster.GetTargetPlayer()->GetPos()) >= 0)
-	{
-		m_Monster.MoveTo(m_Monster.GetTargetPlayer()->GetPos());
-		return ReturnCode::SUCCESS;
-	}
-	else
-	{
-	
-		return ReturnCode::RUNNING;
-	}
-	
+	 return ReturnCode::SUCCESS; 
 }
+
+ReturnCode BehaviorTree::AttackPlayer()
+{
+	return ReturnCode::SUCCESS;
+}
+
+//ReturnCode BehaviorTree::ChasePlayer()
+//{
+//	if (TVector3::Distance(m_Monster.GetPos(), m_Monster.GetTargetPlayer()->GetPos()) >= 0)
+//	{
+//		m_Monster.MoveTo(m_Monster.GetTargetPlayer()->GetPos());
+//		return ReturnCode::SUCCESS;
+//	}
+//	else
+//	{
+//	
+//		return ReturnCode::RUNNING;
+//	}
+//	
+//}
 
 BehaviorTree::BehaviorTree(MonsterData& Monster)
 	:m_pRootNode()

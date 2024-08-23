@@ -93,6 +93,9 @@
     <ClCompile Include="ColliderData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="FlyingMonsterTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCPServer.h">
@@ -166,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="ColliderData.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyingMonsterTree.h">
+      <Filter>BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

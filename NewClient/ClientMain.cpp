@@ -10,6 +10,8 @@
 #include"Scene.h"
 #include"SaveLoader.h"
 #include"Texture.h"
+extern float MapSizeX = 0;
+extern float MapSizeY = 0;
 bool ClientMain::Init()
 {
 	saveload = std::make_shared<SaveLoader>();
@@ -111,16 +113,16 @@ bool ClientMain::Frame()
 				for (auto& potal : testScene->GetPotalList())
 				{
 					if (Collider::CheckOBBCollision(potal->GetCollider(), obj->GetCollider())
-						&& (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH))
+						&& (Input::GetInstance().GetKeyState(VK_UP) == KEY_PUSH))
 					{
-						std::string st = "../resource/MapObejct/";
-						st += std::to_string(potal->GetNextSceneNum());
-						st += ".txt";
-						saveload->LoadData(testScene, st);
-						MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
-						MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
-						obj->SetTransform({0,0,0});
-						obj->SetCurrentScene(potal->GetNextSceneNum());
+						//std::string st = "../resource/MapObejct/";
+						//st += std::to_string(potal->GetNextSceneNum());
+						//st += ".txt";
+						//saveload->LoadData(testScene, st);
+						//MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
+						//MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
+						//obj->SetTransform({0,0,0});
+						//obj->SetCurrentScene(potal->GetNextSceneNum());
 						CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
 						std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 						SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(), potal->GetNextSceneNum());

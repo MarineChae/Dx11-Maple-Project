@@ -18,8 +18,8 @@ public:
 	MonsterData& GetMonsterData() {return m_Monster;}
 
 public:
-	ReturnCode ChasePlayer();
-
+	virtual ReturnCode ChasePlayer();
+	virtual ReturnCode AttackPlayer();
 
 
 public:

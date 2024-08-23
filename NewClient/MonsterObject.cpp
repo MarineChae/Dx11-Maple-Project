@@ -10,8 +10,22 @@ bool MonsterObject::Init()
 
 bool MonsterObject::Frame()
 {
+	//if (!m_IsDead)
+	//	return true;
 	SpriteObject::Frame();
 	
+
+	if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+	{
+		auto tr = GetTransform();
+		auto des = GetDestination();
+		SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
+		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
+
+	}
+
+
+
 	////debug
 	static float testtime;
 	testtime += Timer::GetInstance().GetSecPerFrame();
@@ -38,6 +52,8 @@ bool MonsterObject::Frame()
 
 bool MonsterObject::Render()
 {
+	//if (!m_IsDead)
+	//	return true;
 	SpriteObject::Render();
 	return true;
 }

@@ -11,7 +11,7 @@ public:
 
 public:
 
-	ReturnCode ChasePlayer();
+
 
 
 public:

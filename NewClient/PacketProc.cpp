@@ -6,6 +6,9 @@
 #include"texture.h"
 #include"Scene.h"
 #include"SaveLoader.h"
+
+extern float MapSizeX;
+extern float MapSizeY;
 BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
@@ -79,13 +82,23 @@ BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
 
     *pack >> dwSessionID;
     *pack >> Scenenum;
-
+     
     std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
 
-    if (obj == nullptr || obj == ObejctMgr::GetInstance().GetPlayerObject())
+    if (obj == nullptr)
         return FALSE;
 
-
+    if (obj == ObejctMgr::GetInstance().GetPlayerObject())
+    {
+        std::string st = "../resource/MapObejct/";
+        st += std::to_string(Scenenum);
+        st += ".txt";
+        SaveLoadMgr::GetInstance().GetSaveLoader().LoadData(SceneMgr::GetInstance().GetCurrentScene(), st);
+        MapSizeX = SceneMgr::GetInstance().GetCurrentScene()->GetMap()->GetTexture()->GetWidth();
+        MapSizeY = SceneMgr::GetInstance().GetCurrentScene()->GetMap()->GetTexture()->GetHeight();
+    }
+ 
+    obj->SetTransform({ 0,0,0 });
     obj->SetCurrentScene((SceneNum)Scenenum);
 
 
@@ -138,6 +151,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     float fY;
     int HP;
     BYTE CurrentScene;
+    BYTE isdead;
 
     *pack >> ID;
     *pack >> byDirection;
@@ -145,13 +159,14 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     *pack >> fY;
     *pack >> HP;
     *pack >> CurrentScene;
+    *pack >> isdead;
 
     auto list = SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList();
     auto& monster = list[ID];
     monster->SetDirection(byDirection);
-    monster->SetTransform({ fX,fY,0 });
+    monster->SetDestination({ fX,fY,0 });
     monster->SetCurrentScene(CurrentScene);
-
+    monster->SetIsDead(isdead);
     return 0;
 }
 

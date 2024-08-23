@@ -11,12 +11,14 @@
 0	386.611115	-139.812515	901.637939	-139.812515
 1	-820.952026	-159.812546	-824.951904	-467.812531
 1	-618.951965	256.187439	-620.951965	-70.812531
-1	475.896484	255.187469	477.896606	-53.812515
+1	475.896484	250.187469	477.896606	-53.812515
 1	756.976562	-129.812546	758.976685	-449.812561
 #ObjectList
-28
-../resource/MapObejct/idle.png
+33
+../resource/MapObejct/swoocore.png
 0	4.039417	181.999985	5	3	12	0.120000
+../resource/MapObejct/tv.png
+0	-32.000034	584.000000	5	2	6	0.180000
 ../resource/MapObejct/1PhaseFootHold.png
 0	-2.413910	-711.771362	1	1	0	0.180000
 ../resource/MapObejct/1PhaseBack2.png
@@ -71,7 +73,17 @@
 0	759.716248	-417.036774	1	1	0	0.180000
 ../resource/MapObejct/ladder.82.2.0.png
 0	-959.658569	769.217041	1	1	0	0.180000
+../resource/MapObejct/RBSpawn.png
+0	1135.509277	11.999979	5	1	5	0.180000
+../resource/MapObejct/RTSpawn.png
+0	961.509216	408.000031	5	1	5	0.180000
+../resource/MapObejct/LTSpawn.png
+0	-958.271912	394.098480	5	1	5	0.180000
+../resource/MapObejct/LBSpawn.png
+0	-1135.470581	40.098434	5	1	5	0.180000
 #MonsterList
-0
+1
+../resource/MonsterData/mush.txt
+-2.000028	-276.000000
 #PotalList
 0

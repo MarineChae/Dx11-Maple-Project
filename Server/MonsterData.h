@@ -10,12 +10,13 @@ private:
 	char	m_csMonsterName[80];
 	bool	m_bIsDead;
 	float   m_fResponTime;
+	float   m_fRemainResponTime;
 
 	DWORD	m_dwAction;
 	BYTE	m_byDirection;
 
 	TVector3 m_vPos;
-
+	TVector3 m_vResponPos;
 	int 	m_iHP;
 	//behaviortree 추가해야함
 
@@ -33,6 +34,7 @@ public:
 	int   GetHP() const { return m_iHP; };
 	BYTE   GetCurrentScene()const { return m_iCurrentScene; }
 	int	  GetId()const { return m_iId; };
+	bool  GetIsDead()const { return m_bIsDead; };
 
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 
@@ -41,9 +43,11 @@ public:
 	void SetAction(DWORD action)  { m_dwAction = action; };
 	void SetDirection(BYTE dir) { m_byDirection = dir; };
 
-	void MoveTo(TVector3 dest);
-	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
+	void SetIsDead(bool dead) { m_bIsDead = dead; };
 
+	void MoveTo(TVector3 dest,float speed);
+	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
+	TVector3 GetResponPos() const { return m_vResponPos; };
 
 
 public:

@@ -117,6 +117,8 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetPos({ 0,0,0 });
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
+    IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), SendPack);
+
     //현재씬과 이전씬에서 플레이어 목록삭제 및 추가
     auto BeforeScene = ServerSceneMgr::GetInstance().InsertScene(beforeScenenum);
     auto curScene = ServerSceneMgr::GetInstance().InsertScene(Scenenum);
@@ -124,8 +126,10 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     BeforeScene->DeleteScenePlayer(player);
     curScene->AddScenePlayer(player);
 
-    IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
-    IOCPServer::GetInstance().AddPacket(SendPack, Scenenum);
+    IOCPServer::GetInstance().Broadcasting({ SendPack,Scenenum }, SessionMgr::GetInstance().GetUserList()[dwSessionID]);
+    IOCPServer::GetInstance().Broadcasting({ SendPack,beforeScenenum }, SessionMgr::GetInstance().GetUserList()[dwSessionID]);
+    //IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
+    //IOCPServer::GetInstance().AddPacket(SendPack, Scenenum);
 
     int iId = 0;
     for (auto& monster : curScene->GetSceneMonsterList())

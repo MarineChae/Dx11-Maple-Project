@@ -1,0 +1,15 @@
+#MapName
+../resource/MapObejct/testestestestes.png
+#SceneNum
+3
+#LineCollider
+1
+0	-1408.526978	-542.287964	1402.142334	-544.288025
+#ObjectList
+1
+../resource/MapObejct/2Phase FootHold.png
+0	0.000000	-714.287964	1	1	1	0.180000
+#MonsterList
+0
+#PotalList
+0

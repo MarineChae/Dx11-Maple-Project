@@ -72,6 +72,9 @@ public:
 	virtual void SetOnLope(bool onLope){}
 	virtual bool GetOnLope() { return false; }
 	virtual void SetBeforePos(TVector3 before) {};
+	virtual bool GetIsDead() { return false; }
+	virtual void SetIsDead(bool dead) {};
+
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

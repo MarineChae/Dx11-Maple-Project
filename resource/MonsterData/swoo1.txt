@@ -1,0 +1,6 @@
+#MonsterName
+swoo1
+#MonsterState
+1
+../resource/Monster/swoo1/idle.png
+0	1	1	1	0.180000

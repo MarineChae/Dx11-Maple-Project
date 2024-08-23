@@ -157,6 +157,11 @@ bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, st
 
 		if (iterSend->IsConnected() == false || iterSend == pUser) continue;
 
+		int curScene = PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene();
+
+		if (packet.second != curScene && packet.second != -1)
+			continue;
+
 		int iSendByte = SendPacket(iterSend.get(), packet.first);
 
 		if (iSendByte == SOCKET_ERROR)
