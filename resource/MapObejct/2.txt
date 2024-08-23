@@ -82,8 +82,14 @@
 ../resource/MapObejct/LBSpawn.png
 0	-1135.470581	40.098434	5	1	5	0.180000
 #MonsterList
-1
-../resource/MonsterData/mush.txt
--2.000028	-276.000000
+4
+../resource/MonsterData/FlyRed.txt
+-904.000061	405.999969
+../resource/MonsterData/FlyYellow.txt
+-1042.000000	-1.999966
+../resource/MonsterData/FlyGreen.txt
+913.999939	359.999969
+../resource/MonsterData/FlyBlue.txt
+1048.000000	-64.000015
 #PotalList
 0

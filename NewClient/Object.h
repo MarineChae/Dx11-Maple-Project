@@ -58,6 +58,7 @@ public:
 	TVector3 m_vRotate;
 
 	//virtual
+	virtual void ChangeMonsterState(MONSTER_STATE state) {};
 	virtual void ChangeState(PLAYER_STATE state) {};
 	virtual TVector3 GetCollisionPoint() const { return TVector3(); };
 	virtual void SetFalling(bool state) {};
@@ -74,6 +75,7 @@ public:
 	virtual void SetBeforePos(TVector3 before) {};
 	virtual bool GetIsDead() { return false; }
 	virtual void SetIsDead(bool dead) {};
+	virtual TVector3 GetResponPos() const{ return TVector3(); }
 
 public:
 	virtual bool CreateVertexData();

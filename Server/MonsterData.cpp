@@ -49,6 +49,11 @@ void MonsterData::MoveTo(TVector3 dest,float speed)
 	//몬스터 정보 패킷만들어서 보내라
 	TVector3 dir =  dest- m_vPos;
 	dir.Normalize();
+	if (dir.x < 0)
+		m_byDirection = 0;
+	else
+		m_byDirection = 1;
+
 	auto t =0.0625* speed;
 	m_vPos += dir * t;
 
@@ -65,6 +70,7 @@ MonsterData::MonsterData()
 	, m_vPos()
 	, m_iHP(0)
 	, m_pBehaviorTree()
+	, m_MonsterState(MONSTER_STATE::MS_IDLE)
 {
 	//temp 추후 어떤 트리를 할당할지 파일에서 불러올예정
 	m_pBehaviorTree = std::make_shared<FlyingMonsterTree>(*this);

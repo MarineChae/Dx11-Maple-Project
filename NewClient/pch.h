@@ -105,6 +105,7 @@ enum MONSTER_STATE
     MS_HIT,
     MS_DIE,
     MS_ATTACK,
+    MS_RESPAWN,
     MS_SKILL1,
     MS_SKILL2,
     MS_SKILL3,

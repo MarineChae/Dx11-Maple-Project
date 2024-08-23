@@ -28,8 +28,11 @@ public:
 
 	Packet operator = (Packet& Packet);
 
-	Packet& operator<<(PLAYER_STATE statevalue);
-	Packet& operator>>(PLAYER_STATE& statevalue);
+	Packet& operator << (PLAYER_STATE statevalue);
+	Packet& operator >> (PLAYER_STATE& statevalue);
+					    
+	Packet& operator << (MONSTER_STATE statevalue);
+	Packet& operator >> (MONSTER_STATE& statevalue);
 
 	Packet& operator << (BYTE bytevalue);
 	Packet& operator << (char charvalue);

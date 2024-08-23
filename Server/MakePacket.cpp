@@ -140,7 +140,7 @@ void MonsterStateUpdatePacket(std::shared_ptr<Packet> pack, MonsterData monster)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 19;
+	PacketHeader.PacketSize = 19 + sizeof(MONSTER_STATE);
 	PacketHeader.PacketType = PACKET_CS_UPDATE_MONSTER_STATE;
 
 	//위치 스테이트 체력 씬위치
@@ -155,6 +155,7 @@ void MonsterStateUpdatePacket(std::shared_ptr<Packet> pack, MonsterData monster)
 	*pack << monster.GetHP();//4
 	*pack << monster.GetCurrentScene();//1
 	*pack << (BYTE)monster.GetIsDead();//1
+	*pack << monster.GetMonsterState();
 	*pack << (BYTE)NETWORK_PACKET_END;
 }
 

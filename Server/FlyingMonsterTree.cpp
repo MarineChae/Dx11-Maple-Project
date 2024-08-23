@@ -32,8 +32,9 @@ void FlyingMonsterTree::Init()
 }
 ReturnCode FlyingMonsterTree::ChasePlayer()
 {
-	if (TVector3::Distance(GetMonsterData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 20)
+	if (TVector3::Distance(GetMonsterData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 50)
 	{
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_WALK);
 		GetMonsterData().MoveTo(GetMonsterData().GetTargetPlayer()->GetPos(),400);
 		return ReturnCode::RUNNING;
 	}
@@ -47,11 +48,23 @@ ReturnCode FlyingMonsterTree::ChasePlayer()
  
 ReturnCode FlyingMonsterTree::AttackPlayer()
 {
+	if (m_fWaitTime >= 1.3f)
+	{
+		m_fWaitTime = 0.0f;
+		GetMonsterData().SetIsDead(true);
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
+		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
+		return ReturnCode::SUCCESS;
+	}
+	else
+	{
+		m_fWaitTime += 0.0625f;
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
+		return ReturnCode::RUNNING;
+	}
 
-
-	GetMonsterData().SetIsDead(true);
-	GetMonsterData().SetPos(GetMonsterData().GetResponPos());
-	std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+	/////////degub///////////
+	/*std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
 
 	GetMonsterData().GetTargetPlayer()->SetCurrentScene((SceneNum)3);
 
@@ -66,15 +79,16 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 	
 	IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
 	IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
+*/
 
 
-	return ReturnCode::SUCCESS;
 }
 
 
 
 FlyingMonsterTree::FlyingMonsterTree(MonsterData& data)
 	:BehaviorTree(data)
+	, m_fWaitTime(0.0f)
 {
 }
 

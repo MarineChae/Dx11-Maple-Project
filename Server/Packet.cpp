@@ -23,6 +23,18 @@ Packet& Packet::operator>>(PLAYER_STATE& statevalue)
 	return *this;
 }
 
+Packet& Packet::operator<<(MONSTER_STATE statevalue)
+{
+	PutData(reinterpret_cast<char*>(&statevalue), sizeof(MONSTER_STATE));
+	return *this;
+}
+
+Packet& Packet::operator>>(MONSTER_STATE& statevalue)
+{
+	GetData(reinterpret_cast<char*>(&statevalue), sizeof(MONSTER_STATE));
+	return *this;
+}
+
 Packet& Packet::operator<<(BYTE bytevalue)
 {
 	PutData(reinterpret_cast<char*>(&bytevalue), sizeof(BYTE));

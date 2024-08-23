@@ -133,6 +133,7 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
 
     SaveLoadMgr::GetInstance().GetSaveLoader().LoadMonsterData(obj,wtm(ws));
     obj->SetTransform({X,Y,0 });
+    obj->SetResponPos({ X,Y,0 });
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
@@ -152,7 +153,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     int HP;
     BYTE CurrentScene;
     BYTE isdead;
-
+    MONSTER_STATE state;
     *pack >> ID;
     *pack >> byDirection;
     *pack >> fX;
@@ -160,13 +161,21 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     *pack >> HP;
     *pack >> CurrentScene;
     *pack >> isdead;
+    *pack >> state;
 
     auto list = SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList();
     auto& monster = list[ID];
     monster->SetDirection(byDirection);
     monster->SetDestination({ fX,fY,0 });
     monster->SetCurrentScene(CurrentScene);
+    if (monster->GetIsDead() && !isdead)
+    {
+        monster->SetTransform(monster->GetResponPos());
+    }
+
     monster->SetIsDead(isdead);
+    monster->ChangeMonsterState(state);
+
     return 0;
 }
 

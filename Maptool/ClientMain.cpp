@@ -24,6 +24,7 @@ std::unordered_map< MONSTER_STATE, std::string> monsterStateMap =
 	{MONSTER_STATE::MS_HIT ,"MS_HIT"},
 	{MONSTER_STATE::MS_DIE ,"MS_DIE"},
 	{MONSTER_STATE::MS_ATTACK ,"MS_ATTACK"},
+	{MONSTER_STATE::MS_RESPAWN ,"MS_RESPAWN"},
 	{MONSTER_STATE::MS_SKILL1 ,"MS_SKILL1"},
 	{MONSTER_STATE::MS_SKILL2 ,"MS_SKILL2"},
 	{ MONSTER_STATE::MS_SKILL3 ,"MS_SKILL3" }
@@ -982,18 +983,25 @@ void ClientMain::SelectMenu()
 			{
 				std::string s;
 
-				ImGui::InputInt("Col : #", &sprite->iCol);
-				ImGui::InputInt("Row : ##", &sprite->iRow);
-				ImGui::InputInt("MaxImageCount : ##@", &sprite->iMaxImageCount);
-				ImGui::InputDouble("Delay : ####", &sprite->m_fDelay);
+				static int tempcol = sprite->iCol;
+				static int temprow = sprite->iRow;
+				static int temocnt = sprite->iMaxImageCount;
+				static double tempdelay = sprite->m_fDelay;
 
-				const char* itme[] = { "Defalut","Portal", };
-				static int ttemp = 0;
-				ImGui::Combo("ObjectType ", &ttemp, itme, IM_ARRAYSIZE(itme));
 
+				ImGui::InputInt("Col : #", &tempcol);
+				ImGui::InputInt("Row : ##", &temprow);
+				ImGui::InputInt("MaxImageCount : ##@", &temocnt);
+				ImGui::InputDouble("Delay : ####", &tempdelay);
 
 				if (ImGui::Button("Conform", ImVec2(60, 30)))
 				{
+					sprite->iCol = tempcol;
+					sprite->iRow = temprow;
+					sprite->iMaxImageCount = temocnt;
+					sprite->m_fDelay = tempdelay;
+
+
 					/////이미지 불러오기는 다했음 세이브 로드 만들어라
 					m_CreateMonster->GetSpriteInfo()->m_vScale = { static_cast<float>(m_CreateMonster->GetTexture()->GetWidth() / m_CreateMonster->GetSpriteInfo()->iCol),
 																static_cast<float>(m_CreateMonster->GetTexture()->GetHeight() / m_CreateMonster->GetSpriteInfo()->iRow),
@@ -1002,7 +1010,6 @@ void ClientMain::SelectMenu()
 					m_CreateMonster->SetScale(t);
 					m_CreateMonster->GetSpriteInfo()->m_UVList.clear();
 					m_CreateMonster->SetUVData(m_CreateMonster->GetSpriteInfo()->m_UVList, m_CreateMonster->GetSpriteInfo()->iRow, m_CreateMonster->GetSpriteInfo()->iCol);
-					m_CreateMonster->SetObejctType((ObejctType)ttemp);
 					m_CreateMonster->InitTexIndex();
 				}
 

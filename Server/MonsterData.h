@@ -18,6 +18,9 @@ private:
 	TVector3 m_vPos;
 	TVector3 m_vResponPos;
 	int 	m_iHP;
+
+	MONSTER_STATE m_MonsterState;
+
 	//behaviortree 추가해야함
 
 	std::shared_ptr<BehaviorTree> m_pBehaviorTree;
@@ -44,10 +47,12 @@ public:
 	void SetDirection(BYTE dir) { m_byDirection = dir; };
 
 	void SetIsDead(bool dead) { m_bIsDead = dead; };
+	void SetMonsterState(MONSTER_STATE state) { m_MonsterState = state; };
 
 	void MoveTo(TVector3 dest,float speed);
 	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
 	TVector3 GetResponPos() const { return m_vResponPos; };
+	MONSTER_STATE GetMonsterState()const { return m_MonsterState; }
 
 
 public:

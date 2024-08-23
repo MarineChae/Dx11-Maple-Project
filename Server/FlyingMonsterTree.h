@@ -5,7 +5,8 @@ class MonsterData;
 enum ReturnCode;
 class FlyingMonsterTree :public BehaviorTree
 {
-
+private:
+	float m_fWaitTime;
 
 public:
 	virtual void Init();

@@ -25,8 +25,8 @@ public:
 	std::string GetMonsterName() const { return m_csMonsteName; };
 	void SetMonsterName(std::string name) { m_csMonsteName = name; };
 	void SetResponPos(TVector3 pos) { m_ResponPosision = pos; };
-
-
+	virtual TVector3 GetResponPos() const override { return m_ResponPosision; };
+	virtual void ChangeMonsterState(MONSTER_STATE state)override;
 public:
 	virtual bool GetIsDead() { return m_IsDead; }
 	virtual void SetIsDead(bool dead) { m_IsDead = dead; };

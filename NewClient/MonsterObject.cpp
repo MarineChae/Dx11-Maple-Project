@@ -10,8 +10,8 @@ bool MonsterObject::Init()
 
 bool MonsterObject::Frame()
 {
-	//if (!m_IsDead)
-	//	return true;
+	if (m_IsDead)
+		return true;
 	SpriteObject::Frame();
 	
 
@@ -26,24 +26,24 @@ bool MonsterObject::Frame()
 
 
 
-	////debug
-	static float testtime;
-	testtime += Timer::GetInstance().GetSecPerFrame();
-	static int size = GetSpriteList().size();
-	static int num=0;
-	if (testtime >= 2.0)
-	{
-		testtime = 0;
-		if (num >= size)
-			num = 0;
-		m_MonsterState = (MONSTER_STATE)num++;
-		InitTexIndex();
-		auto data = GetSpriteData(m_MonsterState);
-		SetSpriteInfo(data);
-		auto tete = GetCurrentSpriteInfo();
-		SetScale(tete->m_vScale);
-		SetTexture(tete->m_pTexture);
-	}
+	//////debug
+	//static float testtime;
+	//testtime += Timer::GetInstance().GetSecPerFrame();
+	//static int size = GetSpriteList().size();
+	//static int num=0;
+	//if (testtime >= 2.0)
+	//{
+	//	testtime = 0;
+	//	if (num >= size)
+	//		num = 0;
+	//	m_MonsterState = (MONSTER_STATE)num++;
+	//	InitTexIndex();
+	//	auto data = GetSpriteData(m_MonsterState);
+	//	SetSpriteInfo(data);
+	//	auto tete = GetCurrentSpriteInfo();
+	//	SetScale(tete->m_vScale);
+	//	SetTexture(tete->m_pTexture);
+	//}
 
 	GetCollider()->Frame();
 
@@ -52,8 +52,8 @@ bool MonsterObject::Frame()
 
 bool MonsterObject::Render()
 {
-	//if (!m_IsDead)
-	//	return true;
+	if (m_IsDead)
+		return true;
 	SpriteObject::Render();
 	return true;
 }
@@ -67,7 +67,17 @@ void MonsterObject::AddSpriteData(std::shared_ptr<SpriteData> data , std::wstrin
 {
 	Create(textureName, L"../Shader/Defalutshader.hlsl");
 }
+void MonsterObject::ChangeMonsterState(MONSTER_STATE state)
+{
+	if (m_MonsterState == state)
+		return;
 
+	m_MonsterState = state;
+	InitTexIndex();
+	SetSpriteInfo(GetSpriteData(state));
+	SetScale(GetCurrentSpriteInfo()->m_vScale);
+	SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+}
 MonsterObject::MonsterObject()
 	:SpriteObject()
 	, m_IsDead()
