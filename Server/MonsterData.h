@@ -27,7 +27,7 @@ private:
 	std::shared_ptr<PlayerData> m_pTargetPlayer;
 public:
 	void Create(char* name, int Id, DWORD Action, BYTE Direction, float X, float Y, int HP, BYTE icurrentScene);
-
+	std::shared_ptr<BehaviorTree> CreateTree(std::string treename);
 	void Update();
 
 	DWORD GetAction() const { return m_dwAction; };
@@ -57,6 +57,7 @@ public:
 
 public:
 	MonsterData();
+	MonsterData(std::string treename);
 	~MonsterData();
 
 };

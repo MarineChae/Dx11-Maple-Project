@@ -75,6 +75,8 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 
 			std::string path = "../resource/MonsterData/" + obj->GetMonsterName() + ".txt";
 			bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
+			path = obj->GetTreeName();
+			bRet = fprintf_s(fpWrite, "%s\n", path.c_str());
 			bRet = fprintf_s(fpWrite, "%f\t", obj->GetTransform().x);
 			bRet = fprintf_s(fpWrite, "%f\n", obj->GetTransform().y);
 
@@ -308,6 +310,7 @@ bool SaveLoader::SaveMonsterData(std::shared_ptr<MonsterObject> monster)
 
 		header = "#MonsterState";
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
+		bRet = fprintf_s(fpWrite, "%s\n", monster->GetTreeName().c_str());
 		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(monster->GetSpriteList().size()));
 		int i = 0;
 		for (auto& sprite : monster->GetSpriteList())
@@ -360,6 +363,15 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 			}
 			else if (_tcscmp(type, L"#MonsterState") == 0)
 			{
+				TCHAR tree[80] = { 0, };
+				_fgetts(buffer, _countof(buffer), fpRead);
+				_stscanf_s(buffer, _T("%s\n"), tree, (unsigned int)_countof(tree));
+
+				char treename[80];
+				WideCharToMultiByte(CP_ACP, 0, tree, sizeof(tree), treename, sizeof(treename), NULL, NULL);
+
+				monster->SetTreeName(treename);
+
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);

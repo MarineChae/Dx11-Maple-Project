@@ -1,0 +1,7 @@
+#MonsterName
+ddd2
+#MonsterState
+FlyingMonsterTree
+1
+../resource/Monster/ddd2/Defalut.png
+0	1	1	1	0.180000

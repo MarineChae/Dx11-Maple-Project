@@ -13,6 +13,7 @@ private:
 	BYTE		  m_CurrentiDirection;
 	BYTE		  m_BeforeDirection;
 	MONSTER_STATE m_MonsterState;
+	std::string m_treename;
 
 public:
 	virtual bool Init() override;
@@ -25,6 +26,8 @@ public:
 
 	std::string GetMonsterName() const { return m_csMonsteName; };
 	void SetMonsterName(std::string name) { m_csMonsteName = name; };
+	void SetTreeName(std::string name) { m_treename = name; };
+	std::string GetTreeName() { return m_treename; };
 
 public:
 	MonsterObject();

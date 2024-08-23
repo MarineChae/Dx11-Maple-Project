@@ -39,5 +39,5 @@ BehaviorTree::BehaviorTree(MonsterData& Monster)
 	, isRun(true)
 	, m_Monster(Monster)
 {
-	Init();
+	
 };

@@ -363,6 +363,10 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 			}
 			else if (_tcscmp(type, L"#MonsterState") == 0)
 			{
+				TCHAR tex2[80] = { 0, };
+				_fgetts(buffer, _countof(buffer), fpRead);
+				_stscanf_s(buffer, _T("%s\n"), tex2, (unsigned int)_countof(tex2));
+
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);

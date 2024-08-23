@@ -1,0 +1,7 @@
+#MonsterName
+22
+#MonsterState
+1
+../resource/Monster/22/Defalut.png
+
+0	1	1	1	0.180000

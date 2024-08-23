@@ -49,7 +49,14 @@ void ServerScene::LoadSceneData(int Scenenum)
 					TCHAR tex[80] = { 0, };
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
-					std::shared_ptr<MonsterData> Monster = std::make_shared<MonsterData>();
+
+					TCHAR wtreename[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), wtreename, (unsigned int)_countof(wtreename));
+					char treename[80];
+					WideCharToMultiByte(CP_ACP, 0, wtreename, sizeof(wtreename), treename, sizeof(treename), NULL, NULL);
+
+					std::shared_ptr<MonsterData> Monster = std::make_shared<MonsterData>(treename);
 
 					float x;
 					float y;
@@ -57,6 +64,7 @@ void ServerScene::LoadSceneData(int Scenenum)
 					_stscanf_s(buffer, _T("%f %f\n"), &x, &y);
 					char name[80];
 					WideCharToMultiByte(CP_ACP, 0, tex, sizeof(tex), name, sizeof(name), NULL, NULL);
+
 
 
 					Monster->Create(name, i, 0, 0, x, y, 100, Scenenum);

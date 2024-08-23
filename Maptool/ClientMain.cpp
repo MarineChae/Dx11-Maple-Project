@@ -29,6 +29,10 @@ std::unordered_map< MONSTER_STATE, std::string> monsterStateMap =
 	{MONSTER_STATE::MS_SKILL2 ,"MS_SKILL2"},
 	{ MONSTER_STATE::MS_SKILL3 ,"MS_SKILL3" }
 };
+
+
+
+
 bool ClientMain::Init()
 {
 	
@@ -987,21 +991,26 @@ void ClientMain::SelectMenu()
 				static int temprow = sprite->iRow;
 				static int temocnt = sprite->iMaxImageCount;
 				static double tempdelay = sprite->m_fDelay;
-
+				static std::string treename;
 
 				ImGui::InputInt("Col : #", &tempcol);
 				ImGui::InputInt("Row : ##", &temprow);
 				ImGui::InputInt("MaxImageCount : ##@", &temocnt);
 				ImGui::InputDouble("Delay : ####", &tempdelay);
 
+				const char* itme[] = { "NormalMonsterTree","FlyingMonsterTree","Swoo1PhaseTree"};
+				static int treetemp = 0;
+				ImGui::Combo("ObjectType ", &treetemp, itme, IM_ARRAYSIZE(itme));
+
+				treename = itme[treetemp];
 				if (ImGui::Button("Conform", ImVec2(60, 30)))
 				{
 					sprite->iCol = tempcol;
 					sprite->iRow = temprow;
 					sprite->iMaxImageCount = temocnt;
 					sprite->m_fDelay = tempdelay;
-
-
+					m_CreateMonster->SetTreeName(treename);
+				
 					/////이미지 불러오기는 다했음 세이브 로드 만들어라
 					m_CreateMonster->GetSpriteInfo()->m_vScale = { static_cast<float>(m_CreateMonster->GetTexture()->GetWidth() / m_CreateMonster->GetSpriteInfo()->iCol),
 																static_cast<float>(m_CreateMonster->GetTexture()->GetHeight() / m_CreateMonster->GetSpriteInfo()->iRow),

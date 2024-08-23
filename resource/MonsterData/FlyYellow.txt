@@ -1,6 +1,7 @@
 #MonsterName
 FlyYellow
 #MonsterState
+FlyingMonsterTree
 6
 ../resource/Monster/FlyYellow/flyy.png
 0	4	1	4	0.100000

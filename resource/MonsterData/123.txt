@@ -1,0 +1,7 @@
+#MonsterName
+123
+#MonsterState
+1
+../resource/Monster/123/Defalut.png
+FlyingMonsterTree
+0	1	1	1	0.180000

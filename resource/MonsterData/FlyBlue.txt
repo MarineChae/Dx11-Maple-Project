@@ -1,6 +1,7 @@
 #MonsterName
 FlyBlue
 #MonsterState
+FlyingMonsterTree
 6
 ../resource/Monster/FlyBlue/flyb.png
 0	4	1	4	0.100000

@@ -84,12 +84,16 @@
 #MonsterList
 4
 ../resource/MonsterData/FlyRed.txt
+FlyingMonsterTree
 -904.000061	405.999969
 ../resource/MonsterData/FlyYellow.txt
+FlyingMonsterTree
 -1042.000000	-1.999966
 ../resource/MonsterData/FlyGreen.txt
+FlyingMonsterTree
 913.999939	359.999969
 ../resource/MonsterData/FlyBlue.txt
+FlyingMonsterTree
 1048.000000	-64.000015
 #PotalList
 0

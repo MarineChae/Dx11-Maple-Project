@@ -96,6 +96,9 @@
     <ClCompile Include="FlyingMonsterTree.cpp">
       <Filter>BehaviorTree</Filter>
     </ClCompile>
+    <ClCompile Include="Swoo1PhaseTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCPServer.h">
@@ -171,6 +174,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FlyingMonsterTree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Swoo1PhaseTree.h">
       <Filter>BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>

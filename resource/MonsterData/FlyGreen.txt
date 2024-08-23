@@ -1,6 +1,7 @@
 #MonsterName
 FlyGreen
 #MonsterState
+FlyingMonsterTree
 6
 ../resource/Monster/FlyGreen/flyg.png
 0	4	1	4	0.100000
