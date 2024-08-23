@@ -71,6 +71,7 @@ public:
 	virtual void SetNextSceneNum(int num) {}
 	virtual void SetOnLope(bool onLope){}
 	virtual bool GetOnLope() { return false; }
+	virtual void SetBeforePos(TVector3 before) {};
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();

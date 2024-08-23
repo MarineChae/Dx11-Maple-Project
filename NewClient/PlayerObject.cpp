@@ -32,6 +32,15 @@ bool PlayerObject::Frame()
        SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
       
    }
+   if (GetJumping())
+   {
+       if (GetTransform().y - m_vBeforePos.y > fabs(200.0f))
+       {
+           m_vBeforePos = TVector3::Zero;
+           SetJumping(false);
+           SetFalling(true);
+       }
+   }
 
 
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
@@ -106,8 +115,9 @@ void PlayerObject::InputKey()
     {
         dwAction += ACTION_FALL;
     }
-    else if (Input::GetInstance().GetKeyState(VK_SPACE) >= KEY_PUSH && !m_bIsJump)
+    else if (Input::GetInstance().GetKeyState(VK_SPACE) >= KEY_PUSH || m_bIsJump)
     {
+        m_vBeforePos = GetTransform();
         dwAction += ACTION_JUMP;
     }
     m_dwActionInput = dwAction;
@@ -122,12 +132,13 @@ void PlayerObject::PacketSendProc()
     {
 
     case ACTION_STAND:
+
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
-            GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump,(BYTE)m_bOnLope);
+            GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_STAND);
-        OutputDebugString(L"stop\n");
+
         break;
 
 
@@ -136,20 +147,32 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
-            GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump,(BYTE)m_bOnLope);
+            GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_WALK);
-        OutputDebugString(L"start\n");
+
         break;
     case ACTION_MOVEUP:
+        MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
+            GetTransform().x,
+            GetTransform().y,
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope,(BYTE)1);
+        ChangeState(PLAYER_STATE::PS_ONLOPE);
+        break;
     case ACTION_MOVEDOWN:
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
-            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope);
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)0);
         ChangeState(PLAYER_STATE::PS_ONLOPE);
-
         break;
     case ACTION_STANDJUMP:
+        MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
+            GetTransform().x,
+            GetTransform().y,
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
+        ChangeState(PLAYER_STATE::PS_JUMP);
+
+        break;
     case ACTION_MOVELEFT_JUMP:
     case ACTION_MOVERIGHT_JUMP:
     case ACTION_MOVELEFT_FALL:
@@ -157,10 +180,14 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             (short)GetTransform().x,
             (short)GetTransform().y,
-            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope);
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_JUMP);
         break;
     
+    }
+    if (m_bOnLope)
+    {
+        ChangeState(PLAYER_STATE::PS_ONLOPE);
     }
 
     static double sendtime = 0;

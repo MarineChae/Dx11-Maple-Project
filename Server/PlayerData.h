@@ -36,6 +36,7 @@ private:
 	TVector3 m_vBeforePos;
 	bool m_bOnLope;
 	ColliderData m_colliderData;
+	BYTE m_byLopeUp;
 public:
 
 	void Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Direction, float X, float Y, int HP);
@@ -55,6 +56,7 @@ public:
 	bool GetIsMove()const { return m_bisMove; };
 	bool GetOnLope()const { return m_bOnLope; };
 	ColliderData GetCollisionData()const { return m_colliderData; };
+	BYTE GetLopeUp()const { return m_byLopeUp; };
 	//setter
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 	void SetHP(int HP) { m_iHP = HP; };
@@ -66,6 +68,8 @@ public:
 	void SetDirection(BYTE dir) {  m_byDirection =dir; };
 	void SetBeforePos(TVector3 pos) { m_vBeforePos = pos; }
 	void SetOnLope(bool onlope) { m_bOnLope = onlope; }
+	void SetLopeUp(BYTE lopeUP) { m_byLopeUp = lopeUP; };
+	void SetMovePow(TVector3 pow) { m_vMovePow = pow; };
 };
 
 class PlayerDataMgr : public Singleton< PlayerDataMgr>

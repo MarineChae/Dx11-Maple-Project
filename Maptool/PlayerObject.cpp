@@ -20,30 +20,16 @@ bool PlayerObject::Frame()
     SpriteObject::Frame();
 
 
-  // for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
-  // {
-  //     if (obj != nullptr && (obj.get() != this))
-  //     {
-  // 
-  //         if (Collider::CheckOBBCollision(GetCollider(), obj->GetCollider()))
-  //         {
-  //             if (COLLISION_TYPE::CT_FLOOR == obj->GetCollider()->GetCollisionType())
-  //             {
-  //                 m_bIsFalling = false;
-  //             }
-  //             OutputDebugString(L"collision\n");
-  //         }
-  // 
-  //     }
-  // 
-  // }
+    if ()
+    {
 
-
-
-
-
-
-
+        m_vPos.y += static_cast<float>(0.0625 * 800);
+        if (m_vPos.y - m_vBeforePos.y > fabs(200.0f))
+        {
+            //m_bIsJumping = false;
+            //m_bIsFalling = true;
+        }
+    }
 
 
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
@@ -59,16 +45,7 @@ bool PlayerObject::Frame()
         SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.05f));
        
     }
-    //for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
-    //{
-    //    if (obj != nullptr && ObejctMgr::GetInstance().GetPlayerObject() != obj)
-    //    {
-    //        obj->m_vRotate.z += Timer::GetInstance().GetSecPerFrame();
-    //        obj->GetCollider()->m_vRotate.z = obj->m_vRotate.z;
-    //    }
-    //       
-    //}
-    //구조정리
+
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
 

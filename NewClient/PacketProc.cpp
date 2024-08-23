@@ -34,6 +34,7 @@ BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
     obj->SetDirection(byDirection);
     obj->ChangeState(state);
     obj->SetFalling(isFalling);
+
     obj->SetJumping(isJump);
     
     return TRUE;

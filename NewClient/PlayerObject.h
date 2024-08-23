@@ -44,6 +44,7 @@ public:
 	virtual int GetCurrentScene() const { return m_CurrentScene; };
 	virtual void SetOnLope(bool onLope) { m_bOnLope = onLope; };
 	virtual bool GetOnLope() { return m_bOnLope; }
+	virtual void SetBeforePos(TVector3 before) { m_vBeforePos = before; };
 public:
 	PlayerObject();
 	virtual ~PlayerObject();

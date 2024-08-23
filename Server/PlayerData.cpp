@@ -11,6 +11,7 @@ void PlayerData::Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Dire
 	m_byDirection = Direction;
 	m_vPos = { X,Y,0 };
 	m_iHP = HP;
+	m_bIsFalling = false;
 	m_colliderData.Init();
 }
 
@@ -37,39 +38,50 @@ void PlayerData::Update()
 			m_vMovePow.x += static_cast<float>(1000 *0.0625);
 			m_vMovePow.x = min(m_vMovePow.x, 500);
 		}
+		//예상수정위치
 
 	}
 	else
 	{
-		m_vMovePow = m_vMovePow.Lerp(m_vMovePow, TVector3::Zero, 0.0625);
+		m_vMovePow.x = m_vMovePow.x * (1 - 1) + 0 * 1;
 	}
 	if (m_bIsFalling && !m_bIsJumping)
 	{
-		m_vPos.y -= static_cast<float>(800 * 0.0625);
-	}
-	if (!m_bIsFalling)
-	{
-		int a = 0;
+		m_vPos.y -= static_cast<float>(700 * 0.0625);
 	}
 	if (m_bIsJumping)
 	{
-		
-		m_vPos.y += static_cast<float>(0.0625 * 800);
 		if (m_vPos.y - m_vBeforePos.y > fabs(200.0f))
 		{
 			m_bIsJumping = false;
 			m_bIsFalling = true;
 		}
+		m_vPos.y += static_cast<float>(0.0625 * 700);
+
 	}
-	OnLopeProc();
+
 	m_vPos = m_vPos + (m_vMovePow* 0.0625);// (m_vMovePow * Timer::GetInstance().GetSecPerFrame());//TVector3::Lerp(m_vPos, m_vPos + m_vMovePow, Timer::GetInstance().GetSecPerFrame());
 }
 
 void PlayerData::OnLopeProc()
 {
+	
 	if (m_bOnLope)
 	{
+		m_bIsJumping = false;
+
 		m_vMovePow.x = 0;
+
+		if (m_byLopeUp == 1)
+		{
+
+			m_vPos.y += static_cast<float>(300 * 0.0625);
+		}
+		else if (m_byLopeUp == 0 )
+		{
+			m_vPos.y -= static_cast<float>(300 * 0.0625);
+		}
+
 
 	}
 }

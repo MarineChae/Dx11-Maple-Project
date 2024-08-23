@@ -39,6 +39,74 @@ bool ClientMain::Frame()
 		{
 			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
+				bool collision = false;
+				for (auto& line : testScene->GetLineColliderList())
+				{
+					if (obj->GetOnLope())
+					{
+						obj->SetFalling(false);
+					}
+					if (line->type == COLLISION_TYPE::CT_WALL)
+					{
+						if (Collision::isLineIntersectingOBB(line, obj->GetCollider(), 0))
+						{
+							
+						}
+					}
+					if (line->type == COLLISION_TYPE::CT_LOPE)
+					{
+
+						float t = obj->GetCollider()->GetCollisionPoint().y;
+
+						if (Collision::isLineIntersectingOBB(line, obj->GetCollider(), 0))
+						{
+							collision = true;
+							float tempmax = max(line->To.y, line->From.y);
+							if (t < tempmax)
+							{
+								if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH)
+								{
+							
+									obj->SetFalling(false);
+									obj->SetOnLope(true);
+								}
+							}
+
+						}
+						if (Collision::isLineIntersectingOBB(line, obj->GetCollider(), 30.f))
+						{
+							collision = true;
+							float tempmin = min(line->To.y, line->From.y);
+							if (t >= tempmin)
+							{
+								if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
+								{
+							
+									obj->SetFalling(false);
+									obj->SetOnLope(true);
+								}
+							}
+							
+						}
+
+					}
+					if (!collision)
+					{
+						obj->SetFalling(true);
+					}
+					if (line->type == COLLISION_TYPE::CT_FLOOR)
+					{
+						if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line))
+						{
+							obj->SetFalling(false);
+							obj->SetOnLope(false);
+							collision = true;
+						}
+					}
+
+
+				}
+
 
 				for (auto& potal : testScene->GetPotalList())
 				{

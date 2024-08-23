@@ -312,7 +312,7 @@ bool ClientMain::Frame()
 					{
 						if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH)
 						{
-							if (!test2->m_testlope && test2->m_testfloor)
+							if (!test2->m_testlope)// && test2->m_testfloor)
 							{
 								test2->SetTransform(test2->GetTransform() + TVector3(0, 20, 0));
 								

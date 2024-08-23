@@ -95,27 +95,67 @@ void ServerScene::Update()
 	{
 		player->Update();
 		bool collision = false;
+		static bool once = false;
 		for (auto& line : m_LineColliderList)
 		{
+
+			if (line->type == COLLISION_TYPE::CT_LOPE)
+			{
+				if (Collision::isLineIntersectingOBB(line, player->GetCollisionData(), 30))
+				{
+					if (player->GetLopeUp() == 1 && !once)
+					{
+						once = true;
+						auto t = player->GetPos();
+						t.x = line->From.x;
+						t.y += 30;
+						player->SetPos(t);
+
+
+					}
+					else if (player->GetLopeUp() == 0 && !once) 
+					{
+						once = true;
+						auto t = player->GetPos();
+						t.x = line->From.x;
+						t.y -= 30;
+						player->SetPos(t);
+
+					}
+					
+					collision = true;
+				}
+
+
+			}
 			if (line->type == COLLISION_TYPE::CT_FLOOR)
 			{
 				if (Collision::PointToLine(player->GetCollisionData().GetCollisionPoint(), line) && !player->GetIsJumping())
 				{
 					auto ret = Collision::ClosestPoint(player->GetCollisionPoint(), line);
 					auto p = player->GetPos();
-					p.y = ret.y + player->GetCollisionData().GetHeight();
+					p.y = ret.y + player->GetCollisionData().GetHeight()+1; 
 					player->SetPos(p);
-					player->SetIsFalling(false);
-					player->SetOnLope(false);
+					
 					collision = true;
 				}
 			}
 
+		
+		}
+		if (player->GetOnLope())
+			player->OnLopeProc();
+		else
+			once=false;
+
+
+		if (player->GetIsFalling())
+			OutputDebugString(L"Falling\n");
+		else
+		{
+			OutputDebugString(L"stand\n");
 
 		}
-		if(!collision)
-			player->SetIsFalling(true);
-
 
 
 

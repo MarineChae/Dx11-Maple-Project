@@ -260,7 +260,7 @@ bool IOCPServer::ThreadRun()
 			
 		}
 
-		OutputDebugString(L"send\n");
+		//OutputDebugString(L"send\n");
 	}
 
 	m_BroadcastPacketPool.GetPacketList().clear();
