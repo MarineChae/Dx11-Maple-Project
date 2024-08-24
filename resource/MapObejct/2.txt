@@ -96,4 +96,8 @@ FlyingMonsterTree
 FlyingMonsterTree
 1048.000000	-64.000015
 #PotalList
-0
+2
+../resource/MapObejct/potal.png
+1	1	1244.000000	-294.000031	8	1	8	0.180000
+../resource/MapObejct/potal.png
+3	1	-1258.000000	-292.000000	8	1	8	0.180000

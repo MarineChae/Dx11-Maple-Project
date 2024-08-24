@@ -225,8 +225,12 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					TCHAR tex[80] = { 0, };
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
-
 					LoadMonsterData(obj, wtm(tex));
+
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+					obj->SetTreeName(wtm(tex));
+
 					_fgetts(buffer, _countof(buffer), fpRead);
 					float tempx;
 					float tempy;

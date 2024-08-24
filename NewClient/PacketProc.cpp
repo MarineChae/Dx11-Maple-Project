@@ -6,6 +6,7 @@
 #include"texture.h"
 #include"Scene.h"
 #include"SaveLoader.h"
+#include"SKill.h"
 
 extern float MapSizeX;
 extern float MapSizeY;
@@ -32,10 +33,14 @@ BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
     if (obj == nullptr)//|| obj == ObejctMgr::GetInstance().GetPlayerObject())
         return FALSE;
 
+    if (obj != ObejctMgr::GetInstance().GetPlayerObject())
+    {
+        obj->ChangeState(state);
+    }
     //obj->SetTransform((TVector3(fX, fY, 1)));
     obj->SetDestination(TVector3(fX, fY, 0.0f));
     obj->SetDirection(byDirection);
-    obj->ChangeState(state);
+
     obj->SetFalling(isFalling);
 
     obj->SetJumping(isJump);
@@ -64,13 +69,79 @@ BOOL PacketProc_MoveEnd(std::shared_ptr<Packet> pack)
 
     if (obj == nullptr )//|| obj == ObejctMgr::GetInstance().GetPlayerObject())
         return FALSE;
+
+    if (obj != ObejctMgr::GetInstance().GetPlayerObject())
+    {
+        obj->ChangeState(state);
+    }
     //obj->SetTransform((TVector3(fX, fY, 1)));
     obj->SetDestination(TVector3(fX, fY, 0));
     obj->SetDirection(byDirection);
-    obj->ChangeState(state);
+    //obj->ChangeState(state);
     obj->SetFalling(isFalling);
     obj->SetJumping(isJump);
     return TRUE;
+}
+
+BOOL PacketProc_Attack(std::shared_ptr<Packet> pack)
+{
+    DWORD dwSessionID;
+    int namelen;
+    char name[80] = { 0, };
+    int Skillnumlen;
+    char Skillnum[80] = { 0, };
+    float fX;
+    float fY;
+    BYTE isFalling;
+    BYTE isJump;
+    PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
+
+    *pack >> namelen;
+    pack->GetData(name, namelen);
+    *pack >> Skillnumlen;
+    pack->GetData(Skillnum, Skillnumlen);
+    *pack >> dwSessionID;
+    *pack >> fX;
+    *pack >> fY;
+    *pack >> isFalling;
+    *pack >> isJump;
+    *pack >> state;
+
+    std::shared_ptr<PlayerObject> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
+    
+    if (obj == nullptr)
+        return FALSE;
+    if (obj != ObejctMgr::GetInstance().GetPlayerObject())
+    {
+        obj->ChangeState(state);
+    }
+
+    obj->SetFalling(isFalling);
+
+    obj->SetJumping(isJump);
+
+    auto skill = obj->FindSkillMap(Skillnum);
+    if (skill == nullptr)
+    {
+        skill = SkillMgr::GetInstance().LoadSkill(Skillnum);
+        obj->InsertSkill(skill);
+    }
+    skill->SetEnable(true);
+    skill->SetDirection(obj->GetDirection());
+    if (obj->GetDirection() > 0)
+    {
+        skill->SetTransform(obj->GetTransform() + (skill->GetOffset() * 1));
+
+    }
+    else
+    {
+        TVector3 temp{ skill->GetOffset().x * -1 , skill->GetOffset().y ,1 };
+        skill->SetTransform(obj->GetTransform() + temp);
+
+    }
+    obj->SetActivateSkill(skill);
+
+    return 0;
 }
 
 BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
@@ -175,7 +246,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
 
     monster->SetIsDead(isdead);
     monster->ChangeMonsterState(state);
-
+    monster->SetID(ID);
     return 0;
 }
 
@@ -196,7 +267,7 @@ BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack)
     *pack >> CurrentScene;
 
 
-    std::shared_ptr<Object> player = std::make_shared<PlayerObject>();
+    std::shared_ptr<PlayerObject> player = std::make_shared<PlayerObject>();
     player->Init();
     player->SetPlayerSprite();
     player->SetTransform(TVector3(fX,fY,0));
@@ -231,7 +302,7 @@ BOOL PacketProc_CreateOtherCharacter(std::shared_ptr<Packet> pack)
         return 0;
 
 
-    std::shared_ptr<Object> other = std::make_shared<PlayerObject>();
+    std::shared_ptr<PlayerObject> other = std::make_shared<PlayerObject>();
 
     other->Init();
     other->SetPlayerSprite();

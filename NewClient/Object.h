@@ -76,7 +76,10 @@ public:
 	virtual bool GetIsDead() { return false; }
 	virtual void SetIsDead(bool dead) {};
 	virtual TVector3 GetResponPos() const{ return TVector3(); }
-
+	virtual bool GetIsHit() const { return false; };
+	virtual void SetIsHit(bool hit) { };
+	virtual int GetID() const  { return -1; }
+	virtual void SetID(int ID)   {  };
 public:
 	virtual bool CreateVertexData();
 	virtual bool CreateIndexData();
@@ -103,28 +106,3 @@ public:
 
 };
 
-
-
-class ObejctMgr : public Singleton<ObejctMgr>
-{
-	friend class Singleton<ObejctMgr>;
-
-private:
-	std::vector<std::shared_ptr<Object>> m_lObjectList;
-	std::shared_ptr<Object>			   m_pPlayerObject;
-public:
-	std::vector<std::shared_ptr<Object>> GetObjectList() { return m_lObjectList; };
-	void                    PushObject(std::shared_ptr<Object> obj,DWORD sessionId) { m_lObjectList[sessionId] = obj; };
-	std::shared_ptr<Object> GetOtherObject(DWORD SessionID) { return m_lObjectList[SessionID];};
-	void					DisconnectCharacter(DWORD SessionID);
-	std::shared_ptr<Object> GetPlayerObject() { return m_pPlayerObject; };
-	void					SetPlayerObject(std::shared_ptr<Object> obj) { m_pPlayerObject = obj; };
-
-public:
-	ObejctMgr()
-		:m_lObjectList()
-		, m_pPlayerObject()
-	{
-		m_lObjectList.resize(MAX_USER_SIZE);
-	}
-};

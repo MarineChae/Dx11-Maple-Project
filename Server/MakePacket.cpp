@@ -85,6 +85,32 @@ void CreateOtherCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Di
 
 }
 
+void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump, char* skillname, char* skillNum)
+{
+	int namelen = strlen(skillname);
+	int skillnamelen = strlen(skillNum);
+
+	PACKET_HEADER PacketHeader;
+
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 22 + sizeof(PLAYER_STATE) + namelen + skillnamelen;
+	PacketHeader.PacketType = PACKET_CS_CHRACTER_ATTACK;
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << namelen;//4
+	pack->PutData(skillname, namelen);
+	*pack << skillnamelen;
+	pack->PutData(skillNum, skillnamelen);
+	*pack << SessionID;//4
+	*pack << X;//4
+	*pack << Y;//4
+	*pack << isFalling;//1
+	*pack << isJump;//1
+	*pack << state;
+	*pack << (BYTE)NETWORK_PACKET_END;
+
+}
+
 void CreateMonster(std::shared_ptr<Packet> pack, int ID,char* name, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	int namelen = strlen(name);

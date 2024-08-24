@@ -157,6 +157,12 @@ BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, std::shared_ptr<Packet> 
 	case PACKET_CS_SCENE_CHANGE:
 		return PacketProc_SceneChange(SessionId, pack);
 		break;
+	case PACKET_CS_CHRACTER_ATTACK:
+		return PacketProc_Attack(SessionId, pack);
+		break;
+	case PACKET_CS_MONSTER_GET_DAMAGE:
+		return PacketProc_MonsterGetDamage(SessionId, pack);
+		break; 
 	}
 
 	return FALSE;

@@ -98,6 +98,83 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     return 0;
 }
 
+BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
+{
+    DWORD dwSessionID;
+    int namelen;
+    char name[80]{0,};
+    int SkillNumLen;
+    char SkillNum[80]{ 0, };
+    float fX;
+    float fY;
+    BYTE isFalling;
+    BYTE isJump;
+    PLAYER_STATE state = PLAYER_STATE::PS_DEFAULT;
+
+    *pack >> namelen;
+    pack->GetData(name, namelen);
+    *pack >> SkillNumLen;
+    pack->GetData(SkillNum, SkillNumLen);
+    *pack >> dwSessionID;
+    *pack >> fX;
+    *pack >> fY;
+    *pack >> isFalling;
+    *pack >> isJump;
+    *pack >> state;
+
+    auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
+
+    if (player == nullptr)
+        return FALSE;
+
+
+    player->SetIsFalling(isFalling);
+    player->SetIsMove(false);
+    player->SetAction(state);
+    if (player->GetIsJumping() != isJump)
+    {
+        player->SetBeforePos(player->GetPos());
+    }
+    player->SetIsJumping(isJump);
+    player->SetActiveSkillName(name);
+
+
+    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+
+    AttackPacket(SendPack, dwSessionID, fX, fY, state, isFalling, isJump, name, SkillNum);
+
+    IOCPServer::GetInstance().Broadcasting({ SendPack,player->GetCurrentScene()});
+
+    return 0;
+}
+
+BOOL PacketProc_MonsterGetDamage(DWORD Sessionid, std::shared_ptr<Packet> pack)
+{
+    DWORD sessionID;
+    int monsterid;
+    int damage;
+    BYTE currentScene;
+
+
+    *pack >> sessionID;
+    *pack >> monsterid;
+    *pack >> damage;
+    *pack >> currentScene;
+
+    auto scene = ServerSceneMgr::GetInstance().InsertScene(currentScene);
+
+    auto monster = scene->GetMonsterData(monsterid);
+
+    monster->SetHP(monster->GetHP() - damage);
+
+    if (monster->GetHP() <= 0)
+    {
+        monster->SetIsDead(true);
+    }
+
+    return 0;
+}
+
 BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
 {
 

@@ -10,6 +10,11 @@
 ../resource/MapObejct/2PhaseFootHold.png
 0	0.000000	-714.287964	1	1	1	0.180000
 #MonsterList
-0
+1
+../resource/MonsterData/FlyGreen.txt
+
+-123.999992	129.999985
 #PotalList
-0
+1
+../resource/MapObejct/potal.png
+1	1	-833.999939	-306.000031	8	1	8	0.180000

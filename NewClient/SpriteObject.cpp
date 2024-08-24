@@ -90,6 +90,7 @@ bool SpriteObject::TextureChangeProc()
         m_iTexIndex++;
         if (m_iTexIndex >= m_pSpriteInfo->iMaxImageCount)
         {
+            m_AccumulatedTime = 0;
             ret = false;
             m_iTexIndex = 0;
         }

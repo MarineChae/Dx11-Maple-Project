@@ -35,7 +35,10 @@ public:
 	void PacketSendProc();
 	void ChangeState(PLAYER_STATE state);
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
-	void testfunc();
+	void InsertSkill(std::shared_ptr<Skill> skill); 
+	void SetActivateSkill(std::shared_ptr<Skill> skill);
+	std::shared_ptr<Skill> FindSkillMap(std::string num);
+	std::map<std::string, std::shared_ptr<Skill>> GetSkillList() { return m_vSkillList; }
 public:
 	virtual void  SetPlayerSprite() override;
 	virtual void SetState(PLAYER_STATE state) override;
@@ -54,3 +57,28 @@ public:
 
 };
 
+
+
+class ObejctMgr : public Singleton<ObejctMgr>
+{
+	friend class Singleton<ObejctMgr>;
+
+private:
+	std::vector<std::shared_ptr<PlayerObject>> m_lObjectList;
+	std::shared_ptr<PlayerObject>			   m_pPlayerObject;
+public:
+	std::vector<std::shared_ptr<PlayerObject>> GetObjectList() { return m_lObjectList; };
+	void                    PushObject(std::shared_ptr<PlayerObject> obj, DWORD sessionId) { m_lObjectList[sessionId] = obj; };
+	std::shared_ptr<PlayerObject> GetOtherObject(DWORD SessionID) { return m_lObjectList[SessionID]; };
+	void					DisconnectCharacter(DWORD SessionID);
+	std::shared_ptr<PlayerObject> GetPlayerObject() { return m_pPlayerObject; };
+	void					SetPlayerObject(std::shared_ptr<PlayerObject> obj) { m_pPlayerObject = obj; };
+
+public:
+	ObejctMgr()
+		:m_lObjectList()
+		, m_pPlayerObject()
+	{
+		m_lObjectList.resize(MAX_USER_SIZE);
+	}
+};

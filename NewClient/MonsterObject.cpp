@@ -23,30 +23,7 @@ bool MonsterObject::Frame()
 		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
 
 	}
-
-
-
-	//////debug
-	//static float testtime;
-	//testtime += Timer::GetInstance().GetSecPerFrame();
-	//static int size = GetSpriteList().size();
-	//static int num=0;
-	//if (testtime >= 2.0)
-	//{
-	//	testtime = 0;
-	//	if (num >= size)
-	//		num = 0;
-	//	m_MonsterState = (MONSTER_STATE)num++;
-	//	InitTexIndex();
-	//	auto data = GetSpriteData(m_MonsterState);
-	//	SetSpriteInfo(data);
-	//	auto tete = GetCurrentSpriteInfo();
-	//	SetScale(tete->m_vScale);
-	//	SetTexture(tete->m_pTexture);
-	//}
-
-	GetCollider()->Frame();
-
+	GetCollider()->SetTransform(GetTransform());
 	return true;
 }
 
@@ -80,13 +57,14 @@ void MonsterObject::ChangeMonsterState(MONSTER_STATE state)
 }
 MonsterObject::MonsterObject()
 	:SpriteObject()
-	, m_IsDead()
+	, m_IsDead(false)
 	, m_fResponTime()
 	, m_dwCurrentAction()
 	, m_iHP()
 	, m_CurrentiDirection()
 	, m_BeforeDirection()
 	, m_MonsterState(MS_IDLE)
+	, m_bIsHit(false)
 {
 
 }

@@ -19,7 +19,7 @@ private:
 	TVector3	   m_Axis[3];
 	COLLISION_TYPE m_CollisionType;
 	TVector3       m_vCollisionPoint;
-
+	bool		   m_bEnable;
 public:
 	//getter
 	int			   GetHeight() const { return m_iHeight; }
@@ -27,14 +27,14 @@ public:
 	TVector3	   GetAxis(int num) const { return m_Axis[num]; };
 	COLLISION_TYPE GetCollisionType() const { return m_CollisionType; };
 	TVector3       GetCollisionPoint()const  override { return m_vCollisionPoint; };
-
+	bool		   GetEnable() const { return m_bEnable; };
 	//setter
 	virtual void SetScale(TVector3 scale) override;
 	void		 SetColliderHeight(int height) { m_iHeight = height; };
 	void		 SetCollisionBox();
 	void		 SetCollsionType(COLLISION_TYPE type) { m_CollisionType = type; };
 	void         SetCollisionPoint();
-
+	void	     SetEnable(bool enable) { m_bEnable = enable; };
 public:
 	virtual bool Init()override;
 	virtual bool Frame()override;

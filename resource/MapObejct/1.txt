@@ -7,6 +7,8 @@
 0	-1830.540771	-710.959351	1830.486816	-714.959351
 #ObjectList
 0
+#MonsterList
+0
 #PotalList
 2
 ../resource/MapObejct/potal.png

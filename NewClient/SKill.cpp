@@ -30,7 +30,7 @@ std::shared_ptr<Skill> SkillMgr::LoadSkill(std::string num)
 	LoadPath += num;
 	LoadPath += ".txt";
 	std::shared_ptr<Skill> retSkill = std::make_shared<Skill>();
-
+	retSkill->SetSkillNum(num);
 	if (fopen_s(&fpRead, LoadPath.c_str(), "rt") == 0)
 	{
 
@@ -112,8 +112,23 @@ std::shared_ptr<Skill> SkillMgr::LoadSkill(std::string num)
 		fclose(fpRead);
 	}
 
-	m_SkillMap.insert({ num,retSkill });
 	return retSkill;
+}
+
+void Skill::CopySkill(std::shared_ptr<Skill> skill)
+{
+	Init();
+	SetSpriteInfo(skill->GetSpriteInfo());
+	Create(skill->GetTexture()->GetName(), L"../Shader/Defalutshader.hlsl");
+	SetOffset({ skill->m_vOffset.x, skill->m_vOffset.y ,1 });
+
+	SetScale({ static_cast<float>(skill->GetTexture()->GetWidth() / skill->GetSpriteInfo()->iCol),
+	   static_cast<float>(skill->GetTexture()->GetHeight() / skill->GetSpriteInfo()->iRow),
+		1 });
+	GetCollider()->SetTransform(skill->GetTransform());
+	GetCollider()->SetScale(skill->GetCollider()->GetScale());
+	GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+
 }
 
 bool Skill::Frame()

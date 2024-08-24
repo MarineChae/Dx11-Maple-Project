@@ -141,6 +141,7 @@ Collider::Collider()
     ,m_Origin()
     ,m_Axis()
     ,m_CollisionType(COLLISION_TYPE::CT_DEFAULT)
+    ,m_bEnable(true)
 {
 
 }

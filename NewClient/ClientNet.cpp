@@ -275,10 +275,8 @@ BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
         break;
 
     case PACKET_CS_MOVE_END :
-
         PacketProc_MoveEnd(pack);
         break;
-
     case PACKET_CS_CREATE_MY_CHARACTER:
         PacketProc_CreateMyCharacter(pack);
         break;
@@ -297,8 +295,10 @@ BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
     case PACKET_CS_UPDATE_MONSTER_STATE:
          PacketProc_UpdateMonster(pack);
         break;
-
-
+    case PACKET_CS_CHRACTER_ATTACK:
+        PacketProc_Attack(pack);
+        break;
+        
 
     }
 

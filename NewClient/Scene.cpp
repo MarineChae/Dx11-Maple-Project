@@ -67,6 +67,9 @@ bool Scene::Render()
 		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		m->Render();
+		m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		m->GetCollider()->Render();
 	}
 
 	//디버그용

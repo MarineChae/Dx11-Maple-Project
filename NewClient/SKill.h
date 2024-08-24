@@ -7,17 +7,28 @@ class Skill : public SpriteObject
 {
 private:
 	std::string m_csSkillName;
+	std::string m_csSkillNum;
 	TVector3    m_vOffset;
 	bool		m_bEnable;
 
 	//히트이펙트도
 public:
-	void SetSkillName(std::string st) { m_csSkillName = st; };
-	void SetOffset(TVector3 offset) { m_vOffset = offset; };
+	//getter
 	TVector3 GetOffset() const { return m_vOffset; }
-	void SetEnable(bool enable) { m_bEnable = enable; };
 	bool GetEnable()const { return m_bEnable; };
 	std::string GetSkillName() { return m_csSkillName; }
+	std::string GetSkillNum() { return m_csSkillNum; }
+
+	//setter
+	void SetEnable(bool enable) { m_bEnable = enable; };
+	void SetSkillName(std::string st) { m_csSkillName = st; };
+	void SetSkillNum(std::string st) { m_csSkillNum = st; };
+	void SetOffset(TVector3 offset) { m_vOffset = offset; };
+public:
+	void CopySkill(std::shared_ptr<Skill> skill);
+
+
+
 public:
 	virtual bool Frame()override;
 	virtual bool Render()override;

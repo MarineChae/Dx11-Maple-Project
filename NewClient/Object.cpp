@@ -151,9 +151,3 @@ Object::Object()
    
 }
 
-
-
-void ObejctMgr::DisconnectCharacter(DWORD SessionID)
-{
-    m_lObjectList[SessionID].reset();
-}

@@ -8,6 +8,7 @@
 #include "Collision.h"
 #include"SKill.h"
 #include"Camera.h"
+#include"Scene.h"
 
 std::vector<std::shared_ptr<Packet>> SendPacketList;
 
@@ -24,6 +25,12 @@ bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
 
+    if (nullptr != m_pActivateSkill && !m_pActivateSkill->GetEnable())
+    {
+        m_pActivateSkill = nullptr;
+        ChangeState(PS_STAND);
+    }
+  
 
    if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
    {
@@ -69,11 +76,30 @@ bool PlayerObject::Frame()
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
 
-    for (auto& skill : m_vSkillList)
+    if(m_pActivateSkill!=nullptr)
     {
-        skill.second->Frame();
-        skill.second->GetCollider()->SetTransform(skill.second->GetTransform());
-        skill.second->GetCollider()->Frame();
+        m_pActivateSkill->Frame();
+        m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
+        m_pActivateSkill->GetCollider()->Frame();
+
+        for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
+        {
+            auto coll = monster->GetCollider();
+            if (!monster->GetIsDead() && !monster->GetIsHit())
+            {
+                if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
+                {
+                    monster->SetIsDead(true);
+                    monster->SetIsHit(true);
+                    std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+                    MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 100,(BYTE)GetCurrentScene());
+                    NetSendPacket(pack);
+                }
+
+            }
+
+        }
+
     }
 
     return true;
@@ -83,12 +109,13 @@ bool PlayerObject::Render()
 {
     SpriteObject::Render();
 
-    for (auto& skill : m_vSkillList)
+
+    if (m_pActivateSkill != nullptr)
     {
-        skill.second->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
-        skill.second->Render();
-        skill.second->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
-        skill.second->GetCollider()->Render();
+        m_pActivateSkill->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
+        m_pActivateSkill->Render();
+        m_pActivateSkill->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
+        m_pActivateSkill->GetCollider()->Render();
     }
 
   
@@ -105,19 +132,19 @@ void PlayerObject::InputKey()
 {
     DWORD dwAction = ACTION_STAND;
 
-    if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH && m_bOnLope)
+    if (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH && m_bOnLope)
     {
         dwAction = ACTION_MOVEUP;
     }
-    else if (Input::GetInstance().GetKeyState('D') >= KEY_PUSH)
+    else if (Input::GetInstance().GetKeyState(VK_RIGHT) >= KEY_PUSH)
     {
         dwAction = ACTION_MOVERIGHT;
     }
-    else if (Input::GetInstance().GetKeyState('A') >= KEY_PUSH)
+    else if (Input::GetInstance().GetKeyState(VK_LEFT) >= KEY_PUSH)
     {
         dwAction = ACTION_MOVELEFT;
     }
-    else if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH && m_bOnLope)
+    else if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH && m_bOnLope)
     {
         dwAction = ACTION_MOVEDOWN;
     }
@@ -137,24 +164,12 @@ void PlayerObject::InputKey()
 
     if (Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
     {
+         ChangeState(PLAYER_STATE::PS_ATTACK);
 
-        m_pActivateSkill = SkillMgr::GetInstance().GetSkill("00001");
-        m_vSkillList.insert({ m_pActivateSkill->GetSkillName(), m_pActivateSkill });
-        if(GetDirection()>0)
-            m_pActivateSkill->SetTransform(GetTransform() + (m_pActivateSkill->GetOffset() * 1));
-        else
-        {
-            TVector3 temp{ m_pActivateSkill->GetOffset().x * -1 ,m_pActivateSkill->GetOffset().y ,1 };
-            m_pActivateSkill->SetTransform(GetTransform() + temp);
-
-        }
-        ChangeState(PLAYER_STATE::PS_ATTACK);
-        m_pActivateSkill->SetDirection(GetDirection());
-        m_pActivateSkill->SetEnable(true);
         dwAction = ACTION_ATTACK;
     }
-
-
+    if(nullptr != m_pActivateSkill && m_pActivateSkill->GetEnable())
+        dwAction = ACTION_ATTACK;
 
 
     m_dwActionInput = dwAction;
@@ -163,6 +178,7 @@ void PlayerObject::InputKey()
 
 void PlayerObject::PacketSendProc()
 {
+    static auto temp = SkillMgr::GetInstance().GetSkill("00001");
     std::shared_ptr<Packet> SendPacket = std::make_shared<Packet>();
 
     switch (m_dwCurrentAction)
@@ -222,11 +238,11 @@ void PlayerObject::PacketSendProc()
         break;
     
     case ACTION_ATTACK:
-        MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
+        AttackPacket(SendPacket, GetObejctID(),
             GetTransform().x,
             GetTransform().y,
-            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
-        ChangeState(PLAYER_STATE::PS_ATTACK);
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, temp->GetSkillName().data(), temp->GetSkillNum().data());
+
         break;
     }
     if (m_bOnLope)
@@ -287,7 +303,7 @@ void PlayerObject::SetPlayerSprite()
     fist->iCol = 5;
     fist->iRow = 2;
     fist->iMaxImageCount = 10;
-    fist->m_fDelay = 0.07f;
+    fist->m_fDelay = 0.065f;
     fist->m_vScale = { 78,68,1 };
     SetSpriteInfo(fist);
     Create(L"../resource/Player/PFistEnrange.png", L"../Shader/Defalutshader.hlsl");
@@ -302,7 +318,7 @@ void PlayerObject::SetPlayerSprite()
 
 void PlayerObject::ChangeState(PLAYER_STATE state)
 {
-    if (m_PlayerState == state)
+     if (m_PlayerState == state)
         return;
     if (m_pActivateSkill!=nullptr && m_pActivateSkill->GetEnable())
         return;
@@ -314,9 +330,29 @@ void PlayerObject::ChangeState(PLAYER_STATE state)
     SetTexture(GetCurrentSpriteInfo()->m_pTexture);
 }
 
-void PlayerObject::testfunc()
+void PlayerObject::InsertSkill(std::shared_ptr<Skill> skill)
 {
-    int a = 0;
+    m_vSkillList.insert({ skill->GetSkillNum() ,skill });
+}
+
+void PlayerObject::SetActivateSkill(std::shared_ptr<Skill> skill)
+{
+    m_pActivateSkill = skill;
+}
+
+std::shared_ptr<Skill> PlayerObject::FindSkillMap(std::string num)
+{
+    auto it = m_vSkillList.find(num);
+    if (it != m_vSkillList.end())
+    {
+        return it->second;
+    }
+    else
+    {
+        return nullptr;
+    }
+
+     
 }
 
 void PlayerObject::SetState(PLAYER_STATE state)
@@ -405,7 +441,7 @@ PlayerObject::PlayerObject()
     , m_BeforeDirection(0)
     , m_bIsPlayable(true)
     , m_dwActionInput(0)
-    , m_PlayerState(PS_DEFAULT)
+    , m_PlayerState(PS_STAND)
     , m_bIsFalling(true)
     , m_bIsJump(false)
     , m_vBeforePos()
@@ -418,4 +454,10 @@ PlayerObject::PlayerObject()
 
 PlayerObject::~PlayerObject()
 {
+}
+
+
+void ObejctMgr::DisconnectCharacter(DWORD SessionID)
+{
+    m_lObjectList[SessionID].reset();
 }

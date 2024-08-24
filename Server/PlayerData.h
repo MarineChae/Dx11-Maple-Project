@@ -25,6 +25,7 @@ private:
 			
 	int 	m_iHP;
 
+	char* m_csActiveSkillName;
 private:
 	//패킷에 보낼필요없음 "아마도?"
 	bool    m_bisMove;
@@ -37,6 +38,8 @@ private:
 	bool m_bOnLope;
 	ColliderData m_colliderData;
 	BYTE m_byLopeUp;
+
+
 public:
 
 	void Init(BOOL	Flag, DWORD SessionID, PLAYER_STATE Action, BYTE Direction, float X, float Y, int HP);
@@ -57,6 +60,9 @@ public:
 	bool GetOnLope()const { return m_bOnLope; };
 	ColliderData GetCollisionData()const { return m_colliderData; };
 	BYTE GetLopeUp()const { return m_byLopeUp; };
+
+	char* GetActiveSkillName() { return m_csActiveSkillName; };
+
 	//setter
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 	void SetHP(int HP) { m_iHP = HP; };
@@ -70,6 +76,9 @@ public:
 	void SetOnLope(bool onlope) { m_bOnLope = onlope; }
 	void SetLopeUp(BYTE lopeUP) { m_byLopeUp = lopeUP; };
 	void SetMovePow(TVector3 pow) { m_vMovePow = pow; };
+
+	void SetActiveSkillName(char* name) { m_csActiveSkillName = name; }
+
 };
 
 class PlayerDataMgr : public Singleton< PlayerDataMgr>

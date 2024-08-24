@@ -20,6 +20,10 @@
 #define	PACKET_CS_MOVE_END 11
 #define	PACKET_CS_SCENE_CHANGE 12
 
+
+
+#define	PACKET_CS_CHRACTER_ATTACK 40
+#define	PACKET_CS_MONSTER_GET_DAMAGE 100
 #define	PACKET_CS_DISCONNECT_CHARACTER 255;
 //////////////////////////////////////////
 

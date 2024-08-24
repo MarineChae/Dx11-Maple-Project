@@ -8,6 +8,8 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 
 void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump);
 
+void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump, char* skillname, char* skillNum);
+
 void SceneChangePacket(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE SceneNum);
 
 void MonsterStateUpdatePacket(std::shared_ptr<Packet> pack, MonsterData monster);
