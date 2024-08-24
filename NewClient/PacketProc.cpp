@@ -205,6 +205,8 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
     SaveLoadMgr::GetInstance().GetSaveLoader().LoadMonsterData(obj,wtm(ws));
     obj->SetTransform({X,Y,0 });
     obj->SetResponPos({ X,Y,0 });
+    obj->SetMaxHp(HP);
+    obj->SetHp(HP);
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
@@ -243,7 +245,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     {
         monster->SetTransform(monster->GetResponPos());
     }
-
+    monster->SetHp(HP);
     monster->SetIsDead(isdead);
     monster->ChangeMonsterState(state);
     monster->SetID(ID);

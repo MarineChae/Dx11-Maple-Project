@@ -1,6 +1,6 @@
 #pragma once
 #include"SpriteObject.h"
-
+class DamageIndicator;
 class MonsterObject :public SpriteObject
 {
 private:
@@ -10,11 +10,13 @@ private:
 	TVector3	  m_ResponPosision;
 	DWORD	      m_dwCurrentAction;
 	int		      m_iHP;
+	int			  m_iMaxHP;
 	BYTE		  m_CurrentiDirection;
 	BYTE		  m_BeforeDirection;
 	MONSTER_STATE m_MonsterState;
 	bool		  m_bIsHit;
 	int			  m_iID;
+	std::shared_ptr<DamageIndicator> m_pDamageIndicator;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -28,8 +30,11 @@ public:
 	void SetResponPos(TVector3 pos) { m_ResponPosision = pos; };
 	virtual TVector3 GetResponPos() const override { return m_ResponPosision; };
 	virtual void ChangeMonsterState(MONSTER_STATE state)override;
-
-	 
+	void SetMaxHp(int hp) { m_iMaxHP = hp; };
+	int  GetMaxHp()const { return m_iMaxHP; };
+	void SetHp(int hp) { m_iHP = hp; };
+	int  GetHp()const { return m_iHP; };
+	std::shared_ptr<DamageIndicator> GetDamageIndicator()const { return m_pDamageIndicator; }
 
 public:
 	virtual bool GetIsDead() override { return m_IsDead; }

@@ -1,19 +1,30 @@
 #include "MonsterObject.h"
 #include"Collider.h"
 #include"Timer.h"
+#include"DamageIndicator.h"
 
 bool MonsterObject::Init()
 {
 	SpriteObject::Init();
+	m_pDamageIndicator = std::make_shared<DamageIndicator>();
+	m_pDamageIndicator->Init();
 	return true;
 }
 
 bool MonsterObject::Frame()
 {
+	m_pDamageIndicator->Frame(GetTransform(), 50);
 	if (m_IsDead)
 		return true;
 	SpriteObject::Frame();
 	
+	if (m_bIsHit)
+	{
+		m_pDamageIndicator->SetIsValid(true);
+		m_bIsHit = false;
+	}
+
+
 
 	if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
 	{
@@ -28,10 +39,16 @@ bool MonsterObject::Frame()
 }
 
 bool MonsterObject::Render()
-{
+{	
 	if (m_IsDead)
-		return true;
-	SpriteObject::Render();
+	{
+		m_pDamageIndicator->Render();
+	}
+	else
+	{
+		SpriteObject::Render();
+		m_pDamageIndicator->Render();
+	}
 	return true;
 }
 

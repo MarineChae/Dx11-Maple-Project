@@ -10,7 +10,7 @@ private:
 	std::string m_csSkillNum;
 	TVector3    m_vOffset;
 	bool		m_bEnable;
-
+	bool		m_bCanHit;
 	//히트이펙트도
 public:
 	//getter
@@ -18,12 +18,13 @@ public:
 	bool GetEnable()const { return m_bEnable; };
 	std::string GetSkillName() { return m_csSkillName; }
 	std::string GetSkillNum() { return m_csSkillNum; }
-
+	bool GetCanHit()const { return m_bCanHit; };
 	//setter
 	void SetEnable(bool enable) { m_bEnable = enable; };
 	void SetSkillName(std::string st) { m_csSkillName = st; };
 	void SetSkillNum(std::string st) { m_csSkillNum = st; };
 	void SetOffset(TVector3 offset) { m_vOffset = offset; };
+	void SetCanHit(bool canHit) {  m_bCanHit = canHit; };
 public:
 	void CopySkill(std::shared_ptr<Skill> skill);
 

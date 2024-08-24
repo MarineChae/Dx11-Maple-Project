@@ -20,6 +20,7 @@ private:
 	bool		 m_bOnLope;
 	std::map<std::string ,std::shared_ptr<Skill>> m_vSkillList;
 	std::shared_ptr<Skill>	m_pActivateSkill;
+
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;

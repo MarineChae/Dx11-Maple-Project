@@ -145,6 +145,8 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="DamageIndicator.cpp" />
+    <ClCompile Include="DamageObject.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DxRenderer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -177,6 +179,8 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="DamageIndicator.h" />
+    <ClInclude Include="DamageObject.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DxRenderer.h" />
     <ClInclude Include="Input.h" />

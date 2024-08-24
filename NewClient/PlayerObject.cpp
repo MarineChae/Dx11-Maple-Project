@@ -9,6 +9,7 @@
 #include"SKill.h"
 #include"Camera.h"
 #include"Scene.h"
+#include"DamageIndicator.h"
 
 std::vector<std::shared_ptr<Packet>> SendPacketList;
 
@@ -17,7 +18,7 @@ bool PlayerObject::Init()
     SpriteObject::Init();
     GetCollider()->Init();
     m_bIsFalling = false;
-    
+
     return true;
 }
 
@@ -27,6 +28,7 @@ bool PlayerObject::Frame()
 
     if (nullptr != m_pActivateSkill && !m_pActivateSkill->GetEnable())
     {
+        m_pActivateSkill->SetCanHit(true);
         m_pActivateSkill = nullptr;
         ChangeState(PS_STAND);
     }
@@ -60,6 +62,37 @@ bool PlayerObject::Frame()
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
         PacketSendProc();
+
+
+        if (m_pActivateSkill != nullptr)
+        {
+            m_pActivateSkill->Frame();
+            m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
+            m_pActivateSkill->GetCollider()->Frame();
+
+            if (m_pActivateSkill->GetCanHit())
+            {
+                for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
+                {
+                    auto coll = monster->GetCollider();
+                    if (!monster->GetIsDead())
+                    {
+                        if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
+                        {
+                            monster->SetIsHit(true);
+                            monster->GetDamageIndicator()->StartPrintDamage();
+                            std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 50, (BYTE)GetCurrentScene());
+                            NetSendPacket(pack);
+                        }
+
+                    }
+
+                }
+            }
+
+            m_pActivateSkill->SetCanHit(false);
+        }
     }
 
    
@@ -76,31 +109,6 @@ bool PlayerObject::Frame()
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
 
-    if(m_pActivateSkill!=nullptr)
-    {
-        m_pActivateSkill->Frame();
-        m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
-        m_pActivateSkill->GetCollider()->Frame();
-
-        for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
-        {
-            auto coll = monster->GetCollider();
-            if (!monster->GetIsDead() && !monster->GetIsHit())
-            {
-                if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
-                {
-                    monster->SetIsDead(true);
-                    monster->SetIsHit(true);
-                    std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-                    MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 100,(BYTE)GetCurrentScene());
-                    NetSendPacket(pack);
-                }
-
-            }
-
-        }
-
-    }
 
     return true;
 }

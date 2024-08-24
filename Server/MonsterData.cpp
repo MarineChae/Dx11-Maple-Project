@@ -20,7 +20,8 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_dwAction = Action;
 	m_byDirection = Direction;
 	m_vPos = { X,Y,0 };
-	m_iHP = HP;
+	m_iMaxHp = HP;
+	m_iHP = m_iMaxHp;
 	m_iCurrentScene = icurrentScene;
 	m_vResponPos = { X,Y,0 };
 	m_bIsDead = true;
@@ -63,6 +64,8 @@ void MonsterData::Update()
 		m_fRemainResponTime += 0.0625f;
 		if (m_fRemainResponTime >= m_fResponTime)
 		{
+			
+			m_iHP = m_iMaxHp;
 			m_bIsDead = false;
 			m_fRemainResponTime =0;
 		}

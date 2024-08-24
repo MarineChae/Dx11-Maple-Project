@@ -17,7 +17,9 @@ private:
 
 	TVector3 m_vPos;
 	TVector3 m_vResponPos;
+	int     m_iMaxHp;
 	int 	m_iHP;
+
 
 	MONSTER_STATE m_MonsterState;
 
@@ -34,13 +36,14 @@ public:
 	BYTE  GetDirection()const { return m_byDirection; };
 	char* GetName()  {return m_csMonsterName;}
 	TVector3 GetPos() const { return m_vPos; };
+	int   GetMaxHP() const { return m_iMaxHp; };
 	int   GetHP() const { return m_iHP; };
 	BYTE   GetCurrentScene()const { return m_iCurrentScene; }
 	int	  GetId()const { return m_iId; };
 	bool  GetIsDead()const { return m_bIsDead; };
 
 	void SetPos(TVector3 pos) { m_vPos = pos; };
-
+	void SetMaxHP(int HP) { m_iMaxHp = HP; };
 	void SetHP(int HP) { m_iHP = HP; };
 
 	void SetAction(DWORD action)  { m_dwAction = action; };
