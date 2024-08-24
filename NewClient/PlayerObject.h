@@ -2,6 +2,7 @@
 #include"SpriteObject.h"
 
 
+class Skill;
 class PlayerObject :public SpriteObject
 {
 
@@ -17,6 +18,8 @@ private:
 	TVector3     m_pMovePow;
 	int			 m_CurrentScene;
 	bool		 m_bOnLope;
+	std::map<std::string ,std::shared_ptr<Skill>> m_vSkillList;
+	std::shared_ptr<Skill>	m_pActivateSkill;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -32,7 +35,7 @@ public:
 	void PacketSendProc();
 	void ChangeState(PLAYER_STATE state);
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
-
+	void testfunc();
 public:
 	virtual void  SetPlayerSprite() override;
 	virtual void SetState(PLAYER_STATE state) override;

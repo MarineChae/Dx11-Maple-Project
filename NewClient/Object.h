@@ -45,7 +45,7 @@ public:
 	TMatrix& GetWorldMat() { return m_WolrdMatrix; }
 	TMatrix& GetViewMat() { return m_ViewMatrix; }
 	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
-	std::shared_ptr<Collider> GetCollider() const;
+	std::shared_ptr<Collider> GetCollider() const; 
 	ObejctType	GetObjectType() const { return m_ObjectType; };
 
 	//setter

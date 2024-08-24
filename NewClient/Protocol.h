@@ -19,6 +19,10 @@
 #define	PACKET_CS_MOVE_END 11
 #define	PACKET_CS_SCENE_CHANGE 12
 
+#define	PACKET_CS_CHRACTER_ATTACK 40
+
+
+
 #define	PACKET_CS_DISCONNECT_CHARACTER 255
 //////////////////////////////////////////
 
@@ -32,6 +36,8 @@
 #define ACTION_MOVERIGHT	1
 #define ACTION_MOVEUP		2
 #define ACTION_MOVEDOWN		3
+#define ACTION_ATTACK		4
+
 
 #define ACTION_STAND			10
 #define ACTION_FALL				11

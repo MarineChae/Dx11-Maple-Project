@@ -6,7 +6,8 @@
 #include "MakePacket.h"
 #include "Collider.h"
 #include "Collision.h"
-
+#include"SKill.h"
+#include"Camera.h"
 
 std::vector<std::shared_ptr<Packet>> SendPacketList;
 
@@ -68,6 +69,12 @@ bool PlayerObject::Frame()
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
 
+    for (auto& skill : m_vSkillList)
+    {
+        skill.second->Frame();
+        skill.second->GetCollider()->SetTransform(skill.second->GetTransform());
+        skill.second->GetCollider()->Frame();
+    }
 
     return true;
 }
@@ -76,6 +83,13 @@ bool PlayerObject::Render()
 {
     SpriteObject::Render();
 
+    for (auto& skill : m_vSkillList)
+    {
+        skill.second->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
+        skill.second->Render();
+        skill.second->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
+        skill.second->GetCollider()->Render();
+    }
 
   
     return true;
@@ -120,6 +134,29 @@ void PlayerObject::InputKey()
         m_vBeforePos = GetTransform();
         dwAction += ACTION_JUMP;
     }
+
+    if (Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
+    {
+
+        m_pActivateSkill = SkillMgr::GetInstance().GetSkill("00001");
+        m_vSkillList.insert({ m_pActivateSkill->GetSkillName(), m_pActivateSkill });
+        if(GetDirection()>0)
+            m_pActivateSkill->SetTransform(GetTransform() + (m_pActivateSkill->GetOffset() * 1));
+        else
+        {
+            TVector3 temp{ m_pActivateSkill->GetOffset().x * -1 ,m_pActivateSkill->GetOffset().y ,1 };
+            m_pActivateSkill->SetTransform(GetTransform() + temp);
+
+        }
+        ChangeState(PLAYER_STATE::PS_ATTACK);
+        m_pActivateSkill->SetDirection(GetDirection());
+        m_pActivateSkill->SetEnable(true);
+        dwAction = ACTION_ATTACK;
+    }
+
+
+
+
     m_dwActionInput = dwAction;
 
 }
@@ -184,6 +221,13 @@ void PlayerObject::PacketSendProc()
         ChangeState(PLAYER_STATE::PS_JUMP);
         break;
     
+    case ACTION_ATTACK:
+        MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
+            GetTransform().x,
+            GetTransform().y,
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
+        ChangeState(PLAYER_STATE::PS_ATTACK);
+        break;
     }
     if (m_bOnLope)
     {
@@ -231,13 +275,22 @@ void PlayerObject::SetPlayerSprite()
     Create(L"../resource/Player/PJump.png", L"../Shader/Defalutshader.hlsl");
 
     std::shared_ptr<SpriteData> lope = std::make_shared<SpriteData>();
-    lope->iCol = 1;
+    lope->iCol = 2;
     lope->iRow = 1;
-    lope->iMaxImageCount = 1;
-    lope->m_fDelay = 0.18f;
-    lope->m_vScale = { 46,68,1 };
+    lope->iMaxImageCount = 2;
+    lope->m_fDelay = 0.25f;
+    lope->m_vScale = { 46,68,1 }; 
     SetSpriteInfo(lope);
-    Create(L"../resource/Player/PProne.png", L"../Shader/Defalutshader.hlsl");
+    Create(L"../resource/Player/POnLope.png", L"../Shader/Defalutshader.hlsl");
+
+    std::shared_ptr<SpriteData> fist = std::make_shared<SpriteData>();
+    fist->iCol = 5;
+    fist->iRow = 2;
+    fist->iMaxImageCount = 10;
+    fist->m_fDelay = 0.07f;
+    fist->m_vScale = { 78,68,1 };
+    SetSpriteInfo(fist);
+    Create(L"../resource/Player/PFistEnrange.png", L"../Shader/Defalutshader.hlsl");
 
 
 
@@ -251,12 +304,19 @@ void PlayerObject::ChangeState(PLAYER_STATE state)
 {
     if (m_PlayerState == state)
         return;
+    if (m_pActivateSkill!=nullptr && m_pActivateSkill->GetEnable())
+        return;
 
     m_PlayerState = state;
     InitTexIndex();
     SetSpriteInfo(GetSpriteData(state));
     SetScale(GetCurrentSpriteInfo()->m_vScale);
     SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+}
+
+void PlayerObject::testfunc()
+{
+    int a = 0;
 }
 
 void PlayerObject::SetState(PLAYER_STATE state)
@@ -271,17 +331,11 @@ void PlayerObject::InputAction()
 
     if (ACTION_MOVELEFT == m_dwActionInput)
     {
-       // m_pMovePow.x = min(m_pMovePow.x, 200);
-       // m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-       // m_pMovePow.x = max(m_pMovePow.x, -500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
     if (ACTION_MOVERIGHT == m_dwActionInput)
     {
-        //m_pMovePow.x = max(m_pMovePow.x, -200);
-        //m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        //m_pMovePow.x = min(m_pMovePow.x, 500);
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
@@ -295,7 +349,6 @@ void PlayerObject::InputAction()
     }
     if (ACTION_STAND == m_dwActionInput)
     {
-        //m_pMovePow = m_pMovePow.Lerp(m_pMovePow, TVector3::Zero, 0.005f);
         m_dwCurrentAction = m_dwActionInput;
     }
     if (ACTION_STANDJUMP == m_dwActionInput)
@@ -307,10 +360,6 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVELEFT_JUMP == m_dwActionInput)
     {
-        //m_pMovePow.x = min(m_pMovePow.x, 200);
-        //m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        //m_pMovePow.x = max(m_pMovePow.x, -500);
-        //m_vBeforePos = GetTransform();
         m_bIsJump = true;
         m_bIsFalling = false;
         m_dwCurrentAction = m_dwActionInput;
@@ -318,10 +367,6 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVERIGHT_JUMP == m_dwActionInput)
     {
-        //m_pMovePow.x = max(m_pMovePow.x, -200);
-        //m_pMovePow.x += static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-        //m_pMovePow.x = min(m_pMovePow.x, 500);
-        //m_vBeforePos = GetTransform();
         m_bIsJump = true;
         m_bIsFalling = false;
         m_dwCurrentAction = m_dwActionInput;
@@ -329,27 +374,25 @@ void PlayerObject::InputAction()
     }
     if (ACTION_MOVELEFT_FALL == m_dwActionInput)
     {
-       //m_pMovePow.x = min(m_pMovePow.x, 200);
-       //m_pMovePow.x -= static_cast<float>(1000 * Timer::GetInstance().GetSecPerFrame());
-       //m_pMovePow.x = max(m_pMovePow.x, -500);
           m_bIsFalling = true;
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(0);
     }
     if (ACTION_MOVERIGHT_FALL == m_dwActionInput)
     {
-       // m_pMovePow.x = max(m_pMovePow.x, -200);
-       // m_pMovePow.x += static_cast<float>(1000 * static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
-       // m_pMovePow.x = min(m_pMovePow.x, 500);
         m_bIsFalling = true;
         m_dwCurrentAction = m_dwActionInput;
         SetDirection(1);
     }
+    if (ACTION_ATTACK == m_dwActionInput)
+    {
+        m_dwCurrentAction = m_dwActionInput;
 
-    
-   // TVector3 pos = GetTransform();
-   // pos = TVector3::Lerp(pos , pos + m_pMovePow , static_cast<float>(Timer::GetInstance().GetSecPerFrame()));
-   // SetTransform(pos);
+
+
+    }
+
+
 }
 
 

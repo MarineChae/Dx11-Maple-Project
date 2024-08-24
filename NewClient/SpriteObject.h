@@ -30,6 +30,7 @@ public:
 	virtual void SetDirection(BYTE dir) { m_byDirection = dir; };
 	BYTE GetDirection()const { return m_byDirection; };
 	
+	bool TextureChangeProc();
 public:
 	virtual bool Init()override;
 	virtual bool Frame()override;

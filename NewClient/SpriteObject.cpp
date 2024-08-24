@@ -80,6 +80,27 @@ bool SpriteObject::SetUVData(std::vector<UVRect>& rectlist, int iRow, int iCol)
 
 
 
+bool SpriteObject::TextureChangeProc()
+{
+    bool ret = true;
+    m_AccumulatedTime += Timer::GetInstance().GetSecPerFrame();
+
+    if (m_AccumulatedTime >= m_pSpriteInfo->m_fDelay)
+    {
+        m_iTexIndex++;
+        if (m_iTexIndex >= m_pSpriteInfo->iMaxImageCount)
+        {
+            ret = false;
+            m_iTexIndex = 0;
+        }
+        m_AccumulatedTime -= m_pSpriteInfo->m_fDelay;
+    }
+
+
+
+    return ret;
+}
+
 bool SpriteObject::Init()
 {
     Object::Init();
@@ -90,21 +111,7 @@ bool SpriteObject::Frame()
 {
     Object::Frame();
 
-    m_AccumulatedTime += Timer::GetInstance().GetSecPerFrame();
-
-    if (m_AccumulatedTime >= m_pSpriteInfo->m_fDelay)
-    {
-        m_iTexIndex++;
-        if (m_iTexIndex >= m_pSpriteInfo-> iMaxImageCount)
-        {
-
-            m_iTexIndex = 0;
-        }
-        m_AccumulatedTime -= m_pSpriteInfo->m_fDelay;
-    }
-
-
-
+    TextureChangeProc();
 
     return true;
 }

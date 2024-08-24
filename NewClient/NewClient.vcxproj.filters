@@ -111,6 +111,9 @@
     <ClCompile Include="MonsterObject.cpp">
       <Filter>Core\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="SKill.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TMath.h">
@@ -199,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="MonsterObject.h">
       <Filter>Core\header</Filter>
+    </ClInclude>
+    <ClInclude Include="SKill.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ ReturnCode FlyingMonsterTree::ChasePlayer()
 	if (TVector3::Distance(GetMonsterData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 50)
 	{
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_WALK);
-		GetMonsterData().MoveTo(GetMonsterData().GetTargetPlayer()->GetPos(),400);
+		GetMonsterData().MoveTo(GetMonsterData().GetTargetPlayer()->GetPos(),250);
 		return ReturnCode::RUNNING;
 	}
 	else

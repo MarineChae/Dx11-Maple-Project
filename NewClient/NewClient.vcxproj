@@ -163,6 +163,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="SKill.cpp" />
     <ClCompile Include="SpriteObject.cpp" />
     <ClCompile Include="StreamPacket.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SKill.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="StreamPacket.h" />
     <ClInclude Include="Texture.h" />

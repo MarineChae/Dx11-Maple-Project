@@ -49,6 +49,28 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 
 }
 
+void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump,char* skillname)
+{
+	int namelen = strlen(skillname);
+	PACKET_HEADER PacketHeader;
+
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 18 + sizeof(PLAYER_STATE) + namelen;
+	PacketHeader.PacketType = PACKET_CS_CHRACTER_ATTACK;
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << namelen;//4
+	pack->PutData(skillname, namelen);
+	*pack << SessionID;//4
+	*pack << X;//4
+	*pack << Y;//4
+	*pack << isFalling;//1
+	*pack << isJump;//1
+	*pack << state;
+	*pack << (BYTE)NETWORK_PACKET_END;
+
+}
+
 void SceneChangePacket(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE SceneNum)
 {
 	PACKET_HEADER PacketHeader;
