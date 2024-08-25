@@ -6,21 +6,37 @@
 bool MonsterObject::Init()
 {
 	SpriteObject::Init();
-	m_pDamageIndicator = std::make_shared<DamageIndicator>();
-	m_pDamageIndicator->Init();
+	for (int i = 0; i < 3; ++i)
+	{
+		m_pDamageIndicatorList.push_back(std::make_shared<DamageIndicator>());
+		m_pDamageIndicatorList[i]->Init();
+	}
+
 	return true;
 }
 
 bool MonsterObject::Frame()
 {
-	m_pDamageIndicator->Frame(GetTransform(), 50);
+	for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
+	{
+		if(m_pDamageIndicatorList[i]->GetIsValid())
+			m_pDamageIndicatorList[i]->Frame(GetTransform(), 1111111);
+	}
+
 	if (m_IsDead)
 		return true;
 	SpriteObject::Frame();
 	
 	if (m_bIsHit)
 	{
-		m_pDamageIndicator->SetIsValid(true);
+		for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
+		{
+			if (!m_pDamageIndicatorList[i]->GetIsValid())
+			{
+				m_pDamageIndicatorList[i]->SetIsValid(true);
+				break;
+			}
+		}
 		m_bIsHit = false;
 	}
 
@@ -31,7 +47,7 @@ bool MonsterObject::Frame()
 		auto tr = GetTransform();
 		auto des = GetDestination();
 		SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
+		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.1f));
 
 	}
 	GetCollider()->SetTransform(GetTransform());
@@ -42,12 +58,20 @@ bool MonsterObject::Render()
 {	
 	if (m_IsDead)
 	{
-		m_pDamageIndicator->Render();
+		for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
+		{
+			if (m_pDamageIndicatorList[i]->GetIsValid())
+				m_pDamageIndicatorList[i]->Render();
+		}
 	}
 	else
 	{
 		SpriteObject::Render();
-		m_pDamageIndicator->Render();
+		for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
+		{
+			if (m_pDamageIndicatorList[i]->GetIsValid())
+				m_pDamageIndicatorList[i]->Render();
+		}
 	}
 	return true;
 }

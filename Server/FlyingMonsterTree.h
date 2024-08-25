@@ -15,6 +15,7 @@ public:
 
 	virtual ReturnCode ChasePlayer() override;
 	virtual ReturnCode AttackPlayer() override;
+	virtual ReturnCode Respon()override;
 public:
 	FlyingMonsterTree(MonsterData& data);
 	virtual ~FlyingMonsterTree();

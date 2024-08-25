@@ -115,7 +115,7 @@ BOOL PacketProc_Attack(std::shared_ptr<Packet> pack)
     {
         obj->ChangeState(state);
     }
-
+    obj->SetDestination(TVector3(fX, fY, 0));
     obj->SetFalling(isFalling);
 
     obj->SetJumping(isJump);

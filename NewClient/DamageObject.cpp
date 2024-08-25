@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "Timer.h"
 #include "Camera.h"
+#include<algorithm>
 bool DamageObject::Init()
 {
 	for (int i = 0; i < 10; ++i)
@@ -41,13 +42,17 @@ bool DamageObject::Frame(TVector3 pos, int damage)
 	m_iNumSize = 0;
 	if (damage > 0)
 	{
+		std::vector<int> vdamage;
 		int Temp = damage;
 		while (Temp > 0)
 		{
 			int damageNum = Temp % 10;
 			Temp /= 10;
-			m_vDamageList[m_iNumSize++]->SetTexture(m_vTextureList[damageNum]);
-			
+			vdamage.push_back(damageNum);
+		}
+		for (auto it = vdamage.rbegin(); it != vdamage.rend(); ++it)
+		{
+			m_vDamageList[m_iNumSize++]->SetTexture(m_vTextureList[*it]);
 		}
 	}
 

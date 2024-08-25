@@ -23,7 +23,7 @@ void PlayerData::Update()
 	int coefficient = 0;
 
 	//왼쪽
-	if (m_bisMove&&!m_bOnLope)
+	if (m_bisMove && !m_bOnLope &&(!m_bIsFalling || !m_bIsJumping))
 	{
 		if (m_byDirection == 0)
 		{
@@ -35,7 +35,7 @@ void PlayerData::Update()
 		else
 		{
 			m_vMovePow.x = max(m_vMovePow.x, -200);
-			m_vMovePow.x += static_cast<float>(1000 *0.0625);
+			m_vMovePow.x += static_cast<float>(1000 * 0.0625);
 			m_vMovePow.x = min(m_vMovePow.x, 500);
 		}
 		//예상수정위치
@@ -43,7 +43,9 @@ void PlayerData::Update()
 	}
 	else
 	{
-		m_vMovePow.x = m_vMovePow.x * (1 - 1) + 0 * 1;
+		if (!m_bIsFalling && !m_bIsJumping)
+			m_vMovePow.x = m_vMovePow.x * (1 - 1) + 0 * 1;
+
 	}
 	if (m_bIsFalling && !m_bIsJumping)
 	{

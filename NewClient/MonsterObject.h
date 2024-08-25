@@ -16,7 +16,7 @@ private:
 	MONSTER_STATE m_MonsterState;
 	bool		  m_bIsHit;
 	int			  m_iID;
-	std::shared_ptr<DamageIndicator> m_pDamageIndicator;
+	std::vector<std::shared_ptr<DamageIndicator>> m_pDamageIndicatorList;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -34,7 +34,7 @@ public:
 	int  GetMaxHp()const { return m_iMaxHP; };
 	void SetHp(int hp) { m_iHP = hp; };
 	int  GetHp()const { return m_iHP; };
-	std::shared_ptr<DamageIndicator> GetDamageIndicator()const { return m_pDamageIndicator; }
+	std::vector<std::shared_ptr<DamageIndicator>> GetDamageIndicatorList()const { return m_pDamageIndicatorList; }
 
 public:
 	virtual bool GetIsDead() override { return m_IsDead; }

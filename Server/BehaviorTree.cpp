@@ -19,6 +19,11 @@ ReturnCode BehaviorTree::AttackPlayer()
 	return ReturnCode::SUCCESS;
 }
 
+ReturnCode BehaviorTree::Respon()
+{
+	return ReturnCode::SUCCESS; return ReturnCode();
+}	
+
 //ReturnCode BehaviorTree::ChasePlayer()
 //{
 //	if (TVector3::Distance(m_Monster.GetPos(), m_Monster.GetTargetPlayer()->GetPos()) >= 0)

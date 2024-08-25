@@ -20,6 +20,9 @@ void FlyingMonsterTree::Init()
 	std::shared_ptr<SequenceNode> testnode = std::make_shared<SequenceNode>(*this);
 	SetRootNode(testnode);
 
+	std::shared_ptr<ActionNode> respon = std::make_shared<ActionNode>(*this, &BehaviorTree::Respon);
+	testnode->PushChild(respon);
+
 	std::shared_ptr<ActionNode> acttest = std::make_shared<ActionNode>(*this, &BehaviorTree::ChasePlayer);
 	testnode->PushChild(acttest);
 
@@ -81,6 +84,30 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 	IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
 */
 
+
+}
+
+ReturnCode FlyingMonsterTree::Respon()
+{
+	if (!GetMonsterData().GetIsDead())
+	{
+		m_fWaitTime += 0.0625f;
+		if (m_fWaitTime >= 0.6f)
+		{
+			
+			m_fWaitTime = 0.0f;
+			return ReturnCode::SUCCESS;
+		}
+		else
+		{
+			GetMonsterData().SetMonsterState(MONSTER_STATE::MS_RESPAWN);
+			return ReturnCode::RUNNING;
+		}
+	}
+	else
+	{
+		return ReturnCode::SUCCESS;
+	}
 
 }
 

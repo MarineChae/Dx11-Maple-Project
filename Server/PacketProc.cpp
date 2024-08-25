@@ -141,7 +141,7 @@ BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
 
-    AttackPacket(SendPack, dwSessionID, fX, fY, state, isFalling, isJump, name, SkillNum);
+    AttackPacket(SendPack, dwSessionID, player->GetPos().x, player->GetPos().y, state, player->GetIsFalling(), player->GetIsJumping(), name, SkillNum);
 
     IOCPServer::GetInstance().Broadcasting({ SendPack,player->GetCurrentScene()});
 

@@ -39,10 +39,10 @@ bool PlayerObject::Frame()
        auto tr = GetTransform();
        auto des = GetDestination();
        SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-       SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.08f));
+       SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.10f));
       
    }
-   if (GetJumping())
+   if (GetJumping()) 
    {
        if (GetTransform().y - m_vBeforePos.y > fabs(200.0f))
        {
@@ -62,40 +62,9 @@ bool PlayerObject::Frame()
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
         PacketSendProc();
-
-
-        if (m_pActivateSkill != nullptr)
-        {
-            m_pActivateSkill->Frame();
-            m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
-            m_pActivateSkill->GetCollider()->Frame();
-
-            if (m_pActivateSkill->GetCanHit())
-            {
-                for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
-                {
-                    auto coll = monster->GetCollider();
-                    if (!monster->GetIsDead())
-                    {
-                        if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
-                        {
-                            monster->SetIsHit(true);
-                            monster->GetDamageIndicator()->StartPrintDamage();
-                            std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 50, (BYTE)GetCurrentScene());
-                            NetSendPacket(pack);
-                        }
-
-                    }
-
-                }
-            }
-
-            m_pActivateSkill->SetCanHit(false);
-        }
+ 
     }
 
-   
     //for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
     //{
     //    if (obj != nullptr && ObejctMgr::GetInstance().GetPlayerObject() != obj)
@@ -108,7 +77,39 @@ bool PlayerObject::Frame()
     //구조정리
     GetCollider()->SetTransform(GetTransform());
     GetCollider()->Frame();
+    if (m_pActivateSkill != nullptr)
+    {
+        m_pActivateSkill->Frame();
+        m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
+        m_pActivateSkill->GetCollider()->Frame();
 
+        if (m_pActivateSkill->GetCanHit())
+        {
+            for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
+            {
+                auto coll = monster->GetCollider();
+                if (!monster->GetIsDead())
+                {
+                    if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
+                    {
+                        //monster->SetIsHit(true);
+                        if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
+                        {
+                            std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 50, (BYTE)GetCurrentScene());
+                            NetSendPacket(pack);
+
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+        m_pActivateSkill->SetCanHit(false);
+    }
 
     return true;
 }
@@ -239,8 +240,8 @@ void PlayerObject::PacketSendProc()
     case ACTION_MOVELEFT_FALL:
     case ACTION_MOVERIGHT_FALL:
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
-            (short)GetTransform().x,
-            (short)GetTransform().y,
+            GetTransform().x,
+            GetTransform().y,
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_JUMP);
         break;

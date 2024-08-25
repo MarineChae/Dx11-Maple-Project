@@ -20,7 +20,7 @@ public:
 public:
 	virtual ReturnCode ChasePlayer();
 	virtual ReturnCode AttackPlayer();
-
+	virtual ReturnCode Respon();
 
 public:
 	virtual void Init() {};

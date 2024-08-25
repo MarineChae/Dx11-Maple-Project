@@ -25,7 +25,7 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_iCurrentScene = icurrentScene;
 	m_vResponPos = { X,Y,0 };
 	m_bIsDead = true;
-	m_fResponTime = 5.0f;
+	m_fResponTime = 7.0f;
 }
 
 std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
