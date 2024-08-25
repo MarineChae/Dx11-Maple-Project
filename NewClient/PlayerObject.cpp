@@ -10,7 +10,7 @@
 #include"Camera.h"
 #include"Scene.h"
 #include"DamageIndicator.h"
-
+#include"UI.h"
 std::vector<std::shared_ptr<Packet>> SendPacketList;
 
 bool PlayerObject::Init()
@@ -32,7 +32,7 @@ bool PlayerObject::Frame()
         m_pActivateSkill = nullptr;
         ChangeState(PS_STAND);
     }
-  
+   
 
    if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
    {
@@ -52,7 +52,6 @@ bool PlayerObject::Frame()
        }
    }
 
-
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
     {
         InputKey();
@@ -61,6 +60,7 @@ bool PlayerObject::Frame()
     }
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
+        SetProgressBar();
         PacketSendProc();
  
     }
@@ -96,7 +96,7 @@ bool PlayerObject::Frame()
                         if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
                         {
                             std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 50, (BYTE)GetCurrentScene());
+                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 1000000, (BYTE)GetCurrentScene());
                             NetSendPacket(pack);
 
                         }
@@ -337,6 +337,22 @@ void PlayerObject::ChangeState(PLAYER_STATE state)
     SetSpriteInfo(GetSpriteData(state));
     SetScale(GetCurrentSpriteInfo()->m_vScale);
     SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+}
+
+void PlayerObject::SetProgressBar()
+{
+    ///hp ui °ª
+    float HPinterval = static_cast<float> (m_iHP) / m_iMaxHP;
+    auto hpBar = UIMgr::GetInstance().GetUI()->GetUIObject(UI_DESC::HP);
+    hpBar->SetScale({ 171 * HPinterval,13,1 });
+    float movebar = (171 * HPinterval);
+    hpBar->SetTransform({ -158 + movebar , -700.0f, 1 });
+
+    float MPinterval = static_cast<float> (m_iHP) / m_iMaxHP;
+    auto mpBar = UIMgr::GetInstance().GetUI()->GetUIObject(UI_DESC::MP);
+    mpBar->SetScale({ 171 * MPinterval,13,1 });
+    movebar = (171 * MPinterval);
+    mpBar->SetTransform({ -158 + movebar , -730.0f, 1 });
 }
 
 void PlayerObject::InsertSkill(std::shared_ptr<Skill> skill)

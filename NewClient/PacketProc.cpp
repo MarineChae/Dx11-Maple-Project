@@ -38,10 +38,8 @@ BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
     {
         obj->ChangeState(state);
     }
-    //obj->SetTransform((TVector3(fX, fY, 1)));
     obj->SetDestination(TVector3(fX, fY, 0.0f));
     obj->SetDirection(byDirection);
-
     obj->SetFalling(isFalling);
 
     obj->SetJumping(isJump);
@@ -75,10 +73,8 @@ BOOL PacketProc_MoveEnd(std::shared_ptr<Packet> pack)
     {
         obj->ChangeState(state);
     }
-    //obj->SetTransform((TVector3(fX, fY, 1)));
     obj->SetDestination(TVector3(fX, fY, 0));
     obj->SetDirection(byDirection);
-    //obj->ChangeState(state);
     obj->SetFalling(isFalling);
     obj->SetJumping(isJump);
     return TRUE;
@@ -155,24 +151,23 @@ BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
     *pack >> dwSessionID;
     *pack >> Scenenum;
      
-    std::shared_ptr<Object> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
+    std::shared_ptr<PlayerObject> obj = ObejctMgr::GetInstance().GetOtherObject(dwSessionID);
 
     if (obj == nullptr)
         return FALSE;
 
+
+    auto scene = SceneMgr::GetInstance().GetScene(Scenenum);
     if (obj == ObejctMgr::GetInstance().GetPlayerObject())
     {
-        std::string st = "../resource/MapObejct/";
-        st += std::to_string(Scenenum);
-        st += ".txt";
-        SaveLoadMgr::GetInstance().GetSaveLoader().LoadData(SceneMgr::GetInstance().GetCurrentScene(), st);
-        MapSizeX = SceneMgr::GetInstance().GetCurrentScene()->GetMap()->GetTexture()->GetWidth();
-        MapSizeY = SceneMgr::GetInstance().GetCurrentScene()->GetMap()->GetTexture()->GetHeight();
+        SceneMgr::GetInstance().SetCurrentScene(scene);
+        MapSizeX = scene->GetMap()->GetTexture()->GetWidth();
+        MapSizeY = scene->GetMap()->GetTexture()->GetHeight();
     }
- 
+
     obj->SetTransform({ 0,0,0 });
     obj->SetCurrentScene((SceneNum)Scenenum);
-    SceneMgr::GetInstance().GetCurrentScene()->PushPlayer(obj);
+    scene->PushPlayer(obj);
 
     return 0;
 }
@@ -212,7 +207,7 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
     //id관련 추가해야함
-    SceneMgr::GetInstance().GetCurrentScene()->PushMonster(obj);
+    SceneMgr::GetInstance().GetScene(CurrentScene)->PushMonster(obj);
 
 
     return 0;
@@ -252,7 +247,7 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
     //id관련 추가해야함
-    SceneMgr::GetInstance().GetCurrentScene()->PushInteractObjectList(obj);
+    SceneMgr::GetInstance().GetScene(CurrentScene)->PushInteractObjectList(obj);
 
     return 0;
 } 
@@ -276,7 +271,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     *pack >> isdead;
     *pack >> state;
 
-    auto list = SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList();
+    auto list = SceneMgr::GetInstance().GetScene(CurrentScene)->GetMonsterList();
     auto& monster = list[ID];
     monster->SetDirection(byDirection);
     monster->SetDestination({ fX,fY,0 });
@@ -317,6 +312,8 @@ BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack)
     player->SetRenderState(true);
     player->SetObejctID(dwSessionID);
     player->SetCurrentScene((SceneNum)CurrentScene);
+    player->SetMaxHp(HP);
+    player->SetHp(HP);
     ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
    

@@ -56,6 +56,10 @@ void ServerScene::LoadSceneData(int Scenenum)
 					char treename[80];
 					WideCharToMultiByte(CP_ACP, 0, wtreename, sizeof(wtreename), treename, sizeof(treename), NULL, NULL);
 
+					int hp = 0;
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%d\n"), &hp);
+
 					std::shared_ptr<MonsterData> Monster = std::make_shared<MonsterData>(treename);
 
 					float x;
@@ -65,9 +69,9 @@ void ServerScene::LoadSceneData(int Scenenum)
 					char name[80];
 					WideCharToMultiByte(CP_ACP, 0, tex, sizeof(tex), name, sizeof(name), NULL, NULL);
 
+					 
 
-
-					Monster->Create(name, i, 0, 0, x, y, 100, Scenenum);
+					Monster->Create(name, i, 0, 0, x, y, hp, Scenenum);
 
 					m_vSceneMonsterList.push_back(Monster);
 				}
@@ -136,21 +140,23 @@ void ServerScene::Update()
 
 
 			}
-			if (line->type == COLLISION_TYPE::CT_FLOOR)
+			if (line->type == COLLISION_TYPE::CT_FLOOR || line->type == COLLISION_TYPE::CT_FINALFLOOR)
 			{
 				if (Collision::PointToLine(player->GetCollisionData().GetCollisionPoint(), line) && !player->GetIsJumping())
 				{
 					auto ret = Collision::ClosestPoint(player->GetCollisionPoint(), line);
 					auto p = player->GetPos();
-					p.y = ret.y + player->GetCollisionData().GetHeight()+1; 
+					p.y = ret.y + player->GetCollisionData().GetHeight()+10; 
 					player->SetPos(p);
-					
+					player->SetIsFalling(false);
 					collision = true;
 				}
 			}
 
 		
 		}
+		if(!collision)
+			player->SetIsFalling(true);
 		if (player->GetOnLope())
 			player->OnLopeProc();
 		else

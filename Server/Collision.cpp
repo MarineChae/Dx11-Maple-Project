@@ -41,7 +41,7 @@ bool Collision::PointToLine(TVector3 point, std::shared_ptr<Line> line)
     float C = (line->To.x * line->From.y) - (line->From.x * line->To.y);
 
     float dist = std::abs(A * point.x + B * point.y + C) / std::sqrt(A * A + B * B);
-    if (dist > 20 || dist < -20)
+    if (dist > 30 || dist < -30)
         return false;
 
     float minX = min(line->From.x, line->To.x);

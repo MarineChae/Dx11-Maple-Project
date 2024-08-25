@@ -207,16 +207,16 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		short y = rand() % 500;
 		BYTE CurrentScene = 1;
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,100, CurrentScene);
+		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,65493, CurrentScene);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
 		
 
 		std::shared_ptr<Packet> pack2 = std::make_shared<Packet>();
- 		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 100, CurrentScene);
+ 		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 65493, CurrentScene);
 		IOCPServer::GetInstance().Broadcasting(pack2);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
-		data->Init(true, user->GetSessionId(),PLAYER_STATE::PS_STAND,0,x,y,100);
+		data->Init(true, user->GetSessionId(),PLAYER_STATE::PS_STAND,0,x,y, 65493);
  		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(),data);
 		data->SetCurrentScene((SceneNum)CurrentScene);
 		auto scene = ServerSceneMgr::GetInstance().InsertScene(CurrentScene);

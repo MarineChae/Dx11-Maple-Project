@@ -3,8 +3,9 @@ FlyYellow
 #MonsterState
 FlyingMonsterTree
 6
+2000000
 ../resource/Monster/FlyYellow/flyy.png
-0	4	1	4	0.100000
+0	4	1	4	0.100000 
 ../resource/Monster/FlyYellow/flyy.png
 1	4	1	4	0.100000
 ../resource/Monster/FlyYellow/hit1.0y.png

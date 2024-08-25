@@ -19,7 +19,7 @@ bool ClientMain::Init()
 	testScene = std::make_shared<Scene>();
 	saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
 	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
-	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
+	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight(); 
 
 	SceneMgr::GetInstance().SetCurrentScene(testScene);
 	UIMgr::GetInstance().Init();
@@ -28,7 +28,7 @@ bool ClientMain::Init()
 
 bool ClientMain::Frame()
 {
-	testScene->Frame();
+	SceneMgr::GetInstance().GetCurrentScene()->Frame();
 
 
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
@@ -70,7 +70,7 @@ bool ClientMain::Frame()
 								if (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH)
 								{
 							
-									obj->SetFalling(false);
+									//obj->SetFalling(false);
 									obj->SetOnLope(true);
 								}
 							}
@@ -85,7 +85,7 @@ bool ClientMain::Frame()
 								if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH)
 								{
 							
-									obj->SetFalling(false);
+									//obj->SetFalling(false);
 									obj->SetOnLope(true);
 								}
 							}
@@ -95,13 +95,13 @@ bool ClientMain::Frame()
 					}
 					if (!collision)
 					{
-						obj->SetFalling(true);
+						//obj->SetFalling(true);
 					}
-					if (line->type == COLLISION_TYPE::CT_FLOOR)
+					if (line->type == COLLISION_TYPE::CT_FLOOR || line->type == COLLISION_TYPE::CT_FINALFLOOR)
 					{
 						if (Collision::PointToLine(obj->GetCollider()->GetCollisionPoint(), line))
 						{
-							obj->SetFalling(false);
+							//obj->SetFalling(false);
 							obj->SetOnLope(false);
 							collision = true;
 						}
@@ -136,7 +136,7 @@ bool ClientMain::Frame()
 bool ClientMain::Render()
 {
 	
-	testScene->Render();
+	SceneMgr::GetInstance().GetCurrentScene()->Render();
 	for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
 	{
 		if (obj != nullptr && obj->GetCurrentScene() == ObejctMgr::GetInstance().GetPlayerObject()->GetCurrentScene())

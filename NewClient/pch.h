@@ -121,6 +121,7 @@ enum COLLISION_TYPE
     CT_FLOOR,
     CT_LOPE,
     CT_WALL,
+    CT_FINALFLOOR,
     CT_DEFAULT,
 };
 struct Line

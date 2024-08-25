@@ -20,7 +20,7 @@ bool MonsterObject::Frame()
 	for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
 	{
 		if(m_pDamageIndicatorList[i]->GetIsValid())
-			m_pDamageIndicatorList[i]->Frame(GetTransform(), 1111111);
+			m_pDamageIndicatorList[i]->Frame(GetTransform(), 100000);
 	}
 
 	if (m_IsDead)

@@ -3,7 +3,7 @@
 #include"Scene.h"
 #include"Collision.h"
 #include"Collider.h"
-
+#include"PlayerObject.h"
 bool DropObject::Frame()
 {
 	bool chk = SpriteObject::Frame();
@@ -21,10 +21,12 @@ bool DropObject::Frame()
 		t.y -= static_cast<float>(700 *Timer::GetInstance().GetSecPerFrame());
 		SetTransform(t);
 		GetCollider()->SetTransform(t);
+		auto temp = SceneMgr::GetInstance().GetCurrentScene();
 		for (auto& player : SceneMgr::GetInstance().GetCurrentScene()->GetPlayerList())
 		{
-			if (Collider::CheckOBBCollision(player->GetCollider(), GetCollider()))
+ 			if (Collider::CheckOBBCollision(player->GetCollider(), GetCollider()))
 			{
+				player->SetHp(player->GetHp() - (player->GetMaxHp() * 0.15));
 				ChangeObjectState();
 				SetSpriteInfo(GetSpriteData(GetObjectState()));
 				SetScale(GetCurrentSpriteInfo()->m_vScale);
@@ -35,7 +37,7 @@ bool DropObject::Frame()
 		}
 		for (auto& line : SceneMgr::GetInstance().GetCurrentScene()->GetLineColliderList())
 		{
-			if (line->type == COLLISION_TYPE::CT_FLOOR)
+			if (line->type == COLLISION_TYPE::CT_FINALFLOOR)
 			{
 				if (Collision::isLineIntersectingOBB(line,GetCollider(),.5f))
 				{

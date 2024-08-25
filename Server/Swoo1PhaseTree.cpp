@@ -23,12 +23,12 @@ void Swoo1PhaseTree::Update()
 	//오브젝트 생성해서 위치 로테이션 다보내
 
 	m_fSpawnTime += 0.0625;
-	if (m_fSpawnTime >= 3.0f)
+	if (m_fSpawnTime >= 1.5f)
 	{
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 
 		std::string st = "../resource/InteractionObj/FallObj";
-		int ivalue = 0;//rand() % 2;
+		int ivalue = rand() % 2;
  		st += std::to_string(ivalue) + "/FallObj" + std::to_string(ivalue) + ".txt";
 		char c[80];
 		strcpy_s(c, st.c_str());

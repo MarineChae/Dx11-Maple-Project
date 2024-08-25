@@ -372,6 +372,12 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
 
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int hp = 0;
+				_stscanf_s(buffer, _T("%d"), &hp);
+				monster->SetMaxHp(hp);
+				monster->SetHp(hp);
+
 				for (int i = 0; i < iSize; ++i)
 				{
 					TCHAR tex[80] = { 0, };
@@ -386,7 +392,6 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 					SpriteInfo->iRow = 1;
 					SpriteInfo->iMaxImageCount = 1;
 					SpriteInfo->m_fDelay = 0.18f;
-
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%d %d %d %d %f\n"), &state,
 						&SpriteInfo->iCol,

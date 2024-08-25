@@ -231,6 +231,12 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
 					obj->SetTreeName(wtm(tex));
 
+
+					int hp = 0;
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%d\n"), &hp);
+
+
 					_fgetts(buffer, _countof(buffer), fpRead);
 					float tempx;
 					float tempy;
@@ -379,6 +385,11 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 				_fgetts(buffer, _countof(buffer), fpRead);
 				int iSize = 0;
 				_stscanf_s(buffer, _T("%d"), &iSize);
+
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int hp = 0;
+				_stscanf_s(buffer, _T("%d"), &hp);
+
 
 				for (int i = 0; i < iSize; ++i)
 				{

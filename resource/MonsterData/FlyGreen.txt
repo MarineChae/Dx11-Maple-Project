@@ -3,6 +3,7 @@ FlyGreen
 #MonsterState
 FlyingMonsterTree
 6
+2000000
 ../resource/Monster/FlyGreen/flyg.png
 0	4	1	4	0.100000
 ../resource/Monster/FlyGreen/flyg.png

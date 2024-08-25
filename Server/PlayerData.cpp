@@ -49,7 +49,7 @@ void PlayerData::Update()
 	}
 	if (m_bIsFalling && !m_bIsJumping)
 	{
-		m_vPos.y -= static_cast<float>(700 * 0.0625);
+		m_vPos.y -= static_cast<float>(900 * 0.0625);
 	}
 	if (m_bIsJumping)
 	{

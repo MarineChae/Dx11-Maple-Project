@@ -7,11 +7,12 @@ enum UI_DESC
 	HP,
 	MP,
 	STATE_BAR,
+	BOSS_HP,
 	BOSS_STATE,
 	BOSS_PORTRAIT,
-	BOSS_HP1,
-	BOSS_HP2,
-	BOSS_HP3,
+	BOSS_HPBAR1,
+	BOSS_HPBAR2,
+	BOSS_HPBAR3,
 
 
 };
@@ -29,7 +30,7 @@ public:
 	bool Init();
 	bool Frame();
 	bool Render();
-
+	std::shared_ptr<Object> GetUIObject(UI_DESC ui) { return m_vUIList[ui]; }
 
 public:
 	UI();

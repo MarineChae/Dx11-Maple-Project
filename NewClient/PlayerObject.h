@@ -9,6 +9,7 @@ class PlayerObject :public SpriteObject
 private:
 	DWORD	     m_dwCurrentAction;
 	DWORD	     m_dwBeforeAction;
+	int		     m_iMaxHP;
 	int		     m_iHP;
 	int		     m_CurrentiDirection;
 	int		     m_BeforeDirection;
@@ -30,11 +31,15 @@ public:
 	bool         m_bIsJump;
 	TVector3     m_vBeforePos;
 public:
-
+	void SetMaxHp(int hp) { m_iMaxHP = hp; };
+	int  GetMaxHp()	const{ return m_iMaxHP; };
+	void SetHp(int hp) { m_iHP = hp; };
+	int  GetHp() const { return m_iHP; };
 	void InputAction();
 	void InputKey();
 	void PacketSendProc();
 	void ChangeState(PLAYER_STATE state);
+	void SetProgressBar();
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
 	void InsertSkill(std::shared_ptr<Skill> skill); 
 	void SetActivateSkill(std::shared_ptr<Skill> skill);
