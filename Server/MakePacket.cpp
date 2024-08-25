@@ -111,6 +111,28 @@ void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float 
 
 }
 
+void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rotate,char* ObjectName, BYTE CurrentScene)
+{
+	int namelen = strlen(ObjectName);
+
+	PACKET_HEADER PacketHeader;
+
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 17 + namelen;
+	PacketHeader.PacketType = PACKET_CS_SPAWN_OBJECT;
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << namelen;//4
+	pack->PutData(ObjectName, namelen);
+	*pack << X;//4
+	*pack << Y;//4
+	*pack << rotate;//4
+	*pack << CurrentScene;
+	*pack << (BYTE)NETWORK_PACKET_END;
+
+
+}
+
 void CreateMonster(std::shared_ptr<Packet> pack, int ID,char* name, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	int namelen = strlen(name);

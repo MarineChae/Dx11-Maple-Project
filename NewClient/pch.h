@@ -110,6 +110,12 @@ enum MONSTER_STATE
     MS_SKILL2,
     MS_SKILL3,
 };
+enum OBJECT_STATE
+{
+    OB_WARNING,
+    OB_ING,
+    OB_END
+};
 enum COLLISION_TYPE
 {
     CT_FLOOR,

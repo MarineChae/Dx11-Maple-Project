@@ -58,3 +58,4 @@ struct Line
     TVector3 To;
     COLLISION_TYPE type;
 };
+#define randstep(fmin,fmax) ((float)fmin + ((float)fmax-(float)fmin) * rand()/RAND_MAX)

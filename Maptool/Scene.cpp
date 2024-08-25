@@ -47,6 +47,16 @@ bool Scene::Frame()
 			ob->GetCollider()->Frame();
 		}
 	}
+	for (auto& ob : m_InteractObjectList)
+	{
+		ob->Frame();
+		if (ob->GetCollider() != nullptr)
+		{
+			ob->GetCollider()->Frame();
+		}
+	}
+		
+
 	m_pCollider->Frame();
     return true;
 }
@@ -95,6 +105,19 @@ bool Scene::Render()
 			ob->GetCollider()->Render();
 		}
 	}
+	for (auto& ob : m_InteractObjectList)
+	{
+		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		ob->Render();
+		if (ob->GetCollider() != nullptr)
+		{
+			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->GetCollider()->Render();
+		}
+	}
+
 
 	m_pCollider->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 									&CameraMgr::GetInstance().GetCamera().GetProjection());

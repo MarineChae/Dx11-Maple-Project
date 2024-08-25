@@ -92,7 +92,7 @@ bool PlayerObject::Frame()
                 {
                     if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
                     {
-                        //monster->SetIsHit(true);
+                        monster->SetIsHit(true);
                         if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
                         {
                             std::shared_ptr<Packet> pack = std::make_shared<Packet>();

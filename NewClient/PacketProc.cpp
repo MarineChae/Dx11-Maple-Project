@@ -7,6 +7,7 @@
 #include"Scene.h"
 #include"SaveLoader.h"
 #include"SKill.h"
+#include"DropObject.h"
 
 extern float MapSizeX;
 extern float MapSizeY;
@@ -171,7 +172,7 @@ BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
  
     obj->SetTransform({ 0,0,0 });
     obj->SetCurrentScene((SceneNum)Scenenum);
-
+    SceneMgr::GetInstance().GetCurrentScene()->PushPlayer(obj);
 
     return 0;
 }
@@ -216,6 +217,45 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
 
     return 0;
 }
+BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
+{
+    char name[80];
+    int namelen;
+    float X;
+    float Y;
+    float rotate;
+    BYTE CurrentScene;
+
+    *pack >> namelen;
+    pack->GetData(name, namelen);
+    *pack >> X;
+    *pack >> Y;
+    *pack >> rotate;
+    *pack >> CurrentScene;
+
+
+    std::wstring ws(name, &name[namelen]);
+
+    std::shared_ptr<DropObject> obj = std::make_shared<DropObject>();
+
+    obj->Init();
+    SaveLoadMgr::GetInstance().GetSaveLoader().LoadObjectData(obj, wtm(ws));
+    obj->SetTransform({ X,Y,0 });
+
+    obj->SetObjectState(OB_WARNING);
+    obj->SetSpriteInfo(obj->GetSpriteData(obj->GetObjectState()));
+    obj->SetScale(obj->GetCurrentSpriteInfo()->m_vScale);
+    obj->SetTexture(obj->GetCurrentSpriteInfo()->m_pTexture);
+    obj->SetPlacedScene(CurrentScene);
+
+    obj->GetCollider()->SetTransform(obj->GetTransform());
+    obj->GetCollider()->SetScale(obj->GetScale());
+    obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+    //id관련 추가해야함
+    SceneMgr::GetInstance().GetCurrentScene()->PushInteractObjectList(obj);
+
+    return 0;
+} 
 
 BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
 {

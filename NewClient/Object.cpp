@@ -108,6 +108,24 @@ void Object::SetMatrix()
 
 }
 
+void Object::ChangeObjectState()
+{
+    switch (m_ObjectState)
+    {
+    case OBJECT_STATE::OB_WARNING:
+        m_ObjectState = OBJECT_STATE::OB_ING;
+
+        break;
+    case OBJECT_STATE::OB_ING:
+        m_ObjectState = OBJECT_STATE::OB_END;
+        break;
+    case OBJECT_STATE::OB_END:
+        m_ObjectState = OBJECT_STATE::OB_WARNING;
+        break;
+    }
+
+}
+
 bool Object::Init()
 {
     m_pCollider = std::make_shared<Collider>();
@@ -146,6 +164,7 @@ Object::Object()
     , m_dwObjectID(1)
     , m_bRender(false)
     , m_pCollider()
+    , m_ObjectState(OBJECT_STATE::OB_WARNING)
 
 {
    

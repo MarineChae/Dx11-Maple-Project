@@ -2,6 +2,7 @@
 #include"Singleton.h"
 class Scene;
 class MonsterObject;
+class SpriteObject;
 class SaveLoader
 {
 private:
@@ -14,6 +15,7 @@ public:
 
 	bool SaveMonsterData(std::shared_ptr<MonsterObject> monster);
 	bool LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::string LoadPath);
+	bool LoadObjectData(std::shared_ptr<SpriteObject> monster, std::string LoadPath);
 
 };
 

@@ -10,6 +10,7 @@
 #include"Scene.h"
 #include"SaveLoader.h"
 #include"Texture.h"
+#include"UI.h"
 extern float MapSizeX = 0;
 extern float MapSizeY = 0;
 bool ClientMain::Init()
@@ -21,7 +22,7 @@ bool ClientMain::Init()
 	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight();
 
 	SceneMgr::GetInstance().SetCurrentScene(testScene);
-
+	UIMgr::GetInstance().Init();
 	return true;
 }
 
@@ -66,7 +67,7 @@ bool ClientMain::Frame()
 							float tempmax = max(line->To.y, line->From.y);
 							if (t < tempmax)
 							{
-								if (Input::GetInstance().GetKeyState('W') >= KEY_PUSH)
+								if (Input::GetInstance().GetKeyState(VK_UP) >= KEY_PUSH)
 								{
 							
 									obj->SetFalling(false);
@@ -81,7 +82,7 @@ bool ClientMain::Frame()
 							float tempmin = min(line->To.y, line->From.y);
 							if (t >= tempmin)
 							{
-								if (Input::GetInstance().GetKeyState('S') >= KEY_PUSH)
+								if (Input::GetInstance().GetKeyState(VK_DOWN) >= KEY_PUSH)
 								{
 							
 									obj->SetFalling(false);
@@ -128,7 +129,7 @@ bool ClientMain::Frame()
 
 
 
-
+	UIMgr::GetInstance().GetUI()->Frame();
 	return true;
 }
 
@@ -150,7 +151,7 @@ bool ClientMain::Render()
 		}
 		
 	}
-
+	UIMgr::GetInstance().GetUI()->Render();
   	return true;
 }
 

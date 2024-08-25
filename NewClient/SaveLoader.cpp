@@ -5,6 +5,7 @@
 #include"PotalObject.h"
 #include"Texture.h"
 #include"MonsterObject.h"
+#include"SpriteObject.h"
 bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePath)
 {
 
@@ -418,3 +419,81 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 	}
 	return false;
 }
+bool SaveLoader::LoadObjectData(std::shared_ptr<SpriteObject> monster, std::string LoadPath)
+{
+	FILE* fpRead = nullptr;
+
+	if (fopen_s(&fpRead, LoadPath.c_str(), "rt") == 0)
+	{
+
+		TCHAR buffer[256] = { 0, };
+
+		while (_fgetts(buffer, _countof(buffer), fpRead) != 0)
+		{
+			TCHAR type[36] = { 0, };
+
+			_stscanf_s(buffer, _T("%s"), type, (unsigned int)_countof(type));
+
+			if (_tcscmp(type, L"#ObjectName") == 0)
+			{
+
+				TCHAR tex[80] = { 0, };
+				_fgetts(buffer, _countof(buffer), fpRead);
+				_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+
+				//monster->SetOb(wtm(tex));
+			}
+			else if (_tcscmp(type, L"#ObjectState") == 0)
+			{
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int iSize = 0;
+				_stscanf_s(buffer, _T("%d"), &iSize);
+
+				for (int i = 0; i < iSize; ++i)
+				{
+					TCHAR tex[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+
+					monster->Init();
+
+					OBJECT_STATE state;
+					std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+					SpriteInfo->iCol = 1;
+					SpriteInfo->iRow = 1;
+					SpriteInfo->iMaxImageCount = 1;
+					SpriteInfo->m_fDelay = 0.18f;
+
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%d %d %d %d %f\n"), &state,
+						&SpriteInfo->iCol,
+						&SpriteInfo->iRow,
+						&SpriteInfo->iMaxImageCount,
+						&SpriteInfo->m_fDelay);
+
+					monster->SetSpriteInfo(SpriteInfo);
+					monster->Create(tex, L"../Shader/Defalutshader.hlsl");
+					SpriteInfo->m_vScale = { static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
+											  static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
+											 1 };
+
+				}
+				monster->SetScale({ static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
+							   static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
+								1 });
+				monster->GetCollider()->SetTransform(monster->GetTransform());
+				monster->GetCollider()->SetScale({ static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
+												   static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
+													1 });
+				monster->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+
+
+
+			}
+
+		}
+		fclose(fpRead);
+	}
+	return false;
+}
+

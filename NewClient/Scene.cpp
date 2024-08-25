@@ -45,6 +45,20 @@ bool Scene::Frame()
 		m->Frame();
 		m->GetCollider()->Frame();
 	}
+
+ 	for (auto it = m_InteractObjectList.begin(); it != m_InteractObjectList.end();)
+	{
+		if (!it->get()->Frame())
+		{
+			it = m_InteractObjectList.erase(it);
+		}
+		else
+		{
+			it->get()->GetCollider()->Frame();
+			++it;
+		}
+		
+	}
 	m_pCollider->Frame();
 
     return true;
@@ -70,6 +84,18 @@ bool Scene::Render()
 		m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		m->GetCollider()->Render();
+	}
+	for (auto& ob : m_InteractObjectList)
+	{
+		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+			&CameraMgr::GetInstance().GetCamera().GetProjection());
+		ob->Render();
+		if (ob->GetCollider() != nullptr)
+		{
+			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->GetCollider()->Render();
+		}
 	}
 
 	//디버그용

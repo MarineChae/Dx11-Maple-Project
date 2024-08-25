@@ -298,6 +298,9 @@ BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
     case PACKET_CS_CHRACTER_ATTACK:
         PacketProc_Attack(pack);
         break;
+    case PACKET_CS_SPAWN_OBJECT:
+        PacketProc_CreateObject(pack);
+        break;
         
 
     }

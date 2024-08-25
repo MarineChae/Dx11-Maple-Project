@@ -37,6 +37,7 @@ private:
 	bool  m_bRender;
 	std::shared_ptr<Collider> m_pCollider;
 	ObejctType m_ObjectType;
+	OBJECT_STATE m_ObjectState;
 public:
 	//getter
 	DWORD	 GetObejctID() const { return m_dwObjectID; }
@@ -45,9 +46,9 @@ public:
 	TMatrix& GetWorldMat() { return m_WolrdMatrix; }
 	TMatrix& GetViewMat() { return m_ViewMatrix; }
 	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
-	std::shared_ptr<Collider> GetCollider() const; 
+	std::shared_ptr<Collider> GetCollider() const;
 	ObejctType	GetObjectType() const { return m_ObjectType; };
-
+	OBJECT_STATE	GetObjectState()const { return m_ObjectState; };
 	//setter
 	void		 SetObejctID(DWORD id) { m_dwObjectID = id; }
 	virtual void SetTransform(TVector3 transform) { m_vTransform = transform; };
@@ -56,7 +57,7 @@ public:
 	virtual void SetDirection(BYTE dir) { };
 	void SetObejctType(ObejctType type) { m_ObjectType = type; };
 	TVector3 m_vRotate;
-
+	void SetObjectState(OBJECT_STATE state) { m_ObjectState = state; }
 	//virtual
 	virtual void ChangeMonsterState(MONSTER_STATE state) {};
 	virtual void ChangeState(PLAYER_STATE state) {};
@@ -91,7 +92,8 @@ public:
 	virtual TVector3 GetScale() const { return m_vScale; };
 	virtual void SetMatrix();
 	virtual void SetRenderState(bool state) {m_bRender = state;}
-
+	bool GetRenderState()const {return m_bRender;}
+	void ChangeObjectState();
 public:
 
 

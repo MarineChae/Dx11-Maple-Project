@@ -148,6 +148,7 @@
     <ClCompile Include="DamageIndicator.cpp" />
     <ClCompile Include="DamageObject.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="DropObject.cpp" />
     <ClCompile Include="DxRenderer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TMath.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="DamageIndicator.h" />
     <ClInclude Include="DamageObject.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="DropObject.h" />
     <ClInclude Include="DxRenderer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MakePacket.h" />
@@ -205,6 +208,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TMath.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shader\CollisionMap.hlsl">

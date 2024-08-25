@@ -82,19 +82,22 @@
 ../resource/MapObejct/LBSpawn.png
 0	-1135.470581	40.098434	5	1	5	0.180000
 #MonsterList
-4
+5
 ../resource/MonsterData/FlyRed.txt
 FlyingMonsterTree
--904.000061	405.999969
+-918.000000	398.000031
 ../resource/MonsterData/FlyYellow.txt
 FlyingMonsterTree
--1042.000000	-1.999966
+-1044.000000	18.000015
 ../resource/MonsterData/FlyGreen.txt
 FlyingMonsterTree
 913.999939	359.999969
 ../resource/MonsterData/FlyBlue.txt
 FlyingMonsterTree
 1048.000000	-64.000015
+../resource/MonsterData/swoo1.txt
+Swoo1PhaseTree
+-2.000028	-100.000046
 #PotalList
 2
 ../resource/MapObejct/potal.png

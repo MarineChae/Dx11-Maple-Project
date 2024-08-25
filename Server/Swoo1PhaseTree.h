@@ -6,10 +6,20 @@ enum ReturnCode;
 
 class Swoo1PhaseTree:public BehaviorTree
 {
+	float m_fSpawnTime;
+
 public:
-	Swoo1PhaseTree(MonsterData& data)
-		:BehaviorTree(data)
-	{};
+	virtual void Init();
+	void Update();
+
+public:
+	virtual ReturnCode AttackPlayer()override;
+
+
+
+public:
+	Swoo1PhaseTree(MonsterData& data);
+
 	virtual ~Swoo1PhaseTree() {};
 };
 

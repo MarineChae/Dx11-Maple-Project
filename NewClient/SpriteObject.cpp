@@ -112,9 +112,7 @@ bool SpriteObject::Frame()
 {
     Object::Frame();
 
-    TextureChangeProc();
-
-    return true;
+    return  TextureChangeProc();
 }
 
 bool SpriteObject::Render()
