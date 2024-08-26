@@ -60,7 +60,7 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iCol);
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iRow);
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iMaxImageCount);
-				bRet = fprintf_s(fpWrite, "%lf\n", obj->GetSpriteInfo()->m_fDelay);
+				bRet = fprintf_s(fpWrite, "%f\n", obj->GetSpriteInfo()->m_fDelay);
 			}
 
 		}
@@ -95,7 +95,7 @@ bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePat
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iCol);
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iRow);
 				bRet = fprintf_s(fpWrite, "%d\t", obj->GetSpriteInfo()->iMaxImageCount);
-				bRet = fprintf_s(fpWrite, "%lf\n", obj->GetSpriteInfo()->m_fDelay);
+				bRet = fprintf_s(fpWrite, "%f\n", obj->GetSpriteInfo()->m_fDelay);
 			}
 
 		}
@@ -188,7 +188,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					int objectType;
 					TVector3 temp;
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%d %f %f %d %d %d %lf \n"), &objectType, &temp.x, &temp.y, &data->iCol, &data->iRow, &data->iMaxImageCount, &data->m_fDelay);
+					_stscanf_s(buffer, _T("%d %f %f %d %d %d %f \n"), &objectType, &temp.x, &temp.y, &data->iCol, &data->iRow, &data->iMaxImageCount, &data->m_fDelay);
 					obj->SetObejctType((ObejctType)objectType);
 					obj->SetTransform(temp);
 					obj->SetSpriteInfo(data);
@@ -262,7 +262,7 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 					int objectType;
 					TVector3 temp;
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%d %d %f %f %d %d %d %lf \n"), &nextSceneNum, &objectType, &temp.x, &temp.y, &data->iCol, &data->iRow, &data->iMaxImageCount, &data->m_fDelay);
+					_stscanf_s(buffer, _T("%d %d %f %f %d %d %d %f \n"), &nextSceneNum, &objectType, &temp.x, &temp.y, &data->iCol, &data->iRow, &data->iMaxImageCount, &data->m_fDelay);
 					obj->SetNextSceneNum(nextSceneNum);
 					obj->SetObejctType((ObejctType)objectType);
 					obj->SetTransform(temp);
@@ -393,13 +393,15 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 					SpriteInfo->iMaxImageCount = 1;
 					SpriteInfo->m_fDelay = 0.18f;
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%d %d %d %d %f\n"), &state,
+					_stscanf_s(buffer, _T("%d %f %f %d %d %d %f\n"), &state,
+						&SpriteInfo->m_vOffset.x,
+						&SpriteInfo->m_vOffset.y,
 						&SpriteInfo->iCol,
 						&SpriteInfo->iRow,
 						&SpriteInfo->iMaxImageCount,
 						&SpriteInfo->m_fDelay);
 
-					monster->SetSpriteInfo(SpriteInfo);
+ 					monster->SetSpriteInfo(SpriteInfo);
 					monster->Create(tex, L"../Shader/Defalutshader.hlsl");
 					SpriteInfo->m_vScale = { static_cast<float>(monster->GetTexture()->GetWidth() / monster->GetSpriteInfo()->iCol),
 											  static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
@@ -419,6 +421,9 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 				monster->SetSpriteInfo(monster->GetSpriteData(MS_IDLE));
 				monster->SetScale(monster->GetCurrentSpriteInfo()->m_vScale);
 				monster->SetTexture(monster->GetCurrentSpriteInfo()->m_pTexture);
+				monster->SetTransform({ monster->GetTransform().x + monster->GetCurrentSpriteInfo()->m_vOffset.x
+					   ,monster->GetTransform().y + monster->GetCurrentSpriteInfo()->m_vOffset.y
+					   ,monster->GetTransform().z });
 			}
 
 		}

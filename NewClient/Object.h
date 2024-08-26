@@ -41,7 +41,7 @@ private:
 public:
 	//getter
 	DWORD	 GetObejctID() const { return m_dwObjectID; }
-	TVector3 GetTransform() const { return m_vTransform; };
+ 	TVector3 GetTransform() const { return m_vTransform; };
 	TVector3 GetDestination() const { return m_vDestination; };
 	TMatrix& GetWorldMat() { return m_WolrdMatrix; }
 	TMatrix& GetViewMat() { return m_ViewMatrix; }

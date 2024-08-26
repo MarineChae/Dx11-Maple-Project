@@ -322,6 +322,7 @@ bool SaveLoader::SaveMonsterData(std::shared_ptr<MonsterObject> monster)
 		bRet = fprintf_s(fpWrite, "%s\n", header.c_str());
 		bRet = fprintf_s(fpWrite, "%s\n", monster->GetTreeName().c_str());
 		bRet = fprintf_s(fpWrite, "%d\n", static_cast<int>(monster->GetSpriteList().size()));
+		bRet = fprintf_s(fpWrite, "%d\n", monster->GetHP());
 		int i = 0;
 		for (auto& sprite : monster->GetSpriteList())
 		{
@@ -332,6 +333,8 @@ bool SaveLoader::SaveMonsterData(std::shared_ptr<MonsterObject> monster)
 
 			bRet = fprintf_s(fpWrite, "%s\n", spritePath.c_str());
 			bRet = fprintf_s(fpWrite, "%d\t", static_cast<int>((MONSTER_STATE)i++));
+			bRet = fprintf_s(fpWrite, "%f\t", sprite->m_vOffset.x);
+			bRet = fprintf_s(fpWrite, "%f\t", sprite->m_vOffset.y);
 			bRet = fprintf_s(fpWrite, "%d\t", sprite->iCol);
 			bRet = fprintf_s(fpWrite, "%d\t", sprite->iRow);
 			bRet = fprintf_s(fpWrite, "%d\t", sprite->iMaxImageCount);
@@ -407,7 +410,10 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 					SpriteInfo->m_fDelay = 0.18f;
 
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%d %d %d %d %f\n"), &state, 
+					_stscanf_s(buffer, _T("%d %f %f %d %d %d %f\n"), 
+						&state, 
+						&SpriteInfo->m_vOffset.x,
+						&SpriteInfo->m_vOffset.y,
 						&SpriteInfo->iCol,
 						&SpriteInfo->iRow,
 						&SpriteInfo->iMaxImageCount,
@@ -428,7 +434,10 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 												   static_cast<float>(monster->GetTexture()->GetHeight() / monster->GetSpriteInfo()->iRow),
 													1});
 				monster->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-
+				monster->InitTexIndex();
+				monster->SetSpriteInfo(monster->GetSpriteData(MS_IDLE));
+				monster->SetScale(monster->GetCurrentSpriteInfo()->m_vScale);
+				monster->SetTexture(monster->GetCurrentSpriteInfo()->m_pTexture);
 
 
 			}

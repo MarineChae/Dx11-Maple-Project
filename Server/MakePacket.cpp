@@ -198,8 +198,8 @@ void MonsterStateUpdatePacket(std::shared_ptr<Packet> pack, MonsterData monster)
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
 	*pack << monster.GetId();//4
 	*pack << monster.GetDirection();//1
-	*pack << monster.GetPos().x;//4
-	*pack << monster.GetPos().y;//4
+	*pack << monster.GetCollisionData().GetPos().x;//4
+	*pack << monster.GetCollisionData().GetPos().y;//4
 	*pack << monster.GetHP();//4
 	*pack << monster.GetCurrentScene();//1
 	*pack << (BYTE)monster.GetIsDead();//1

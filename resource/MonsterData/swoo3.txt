@@ -1,0 +1,22 @@
+#MonsterName
+swoo3
+#MonsterState
+Swoo3PhaseTree
+8
+20000000
+../resource/Monster/swoo3/3PStand.png
+0	0.000000	0.000000	7	2	12	0.180000
+../resource/Monster/swoo3/3PMove.png
+1	0.000000	0.000000	7	2	12	0.180000
+../resource/Monster/swoo3/RedHit.png
+2	0.000000	0.000000	7	2	12	0.180000
+../resource/Monster/swoo3/3PDIe.png
+3	120.000000	330.000000	7	6	41	0.180000
+../resource/Monster/swoo3/3PAttack.png
+4	-160.000000	60.000000	7	5	35	0.100000
+../resource/Monster/swoo3/RedHit.png
+5	0.000000	0.000000	1	1	1	0.180000
+../resource/Monster/swoo3/3PSkill1.png
+6	0.000000	380.000000	7	4	26	0.100000
+../resource/Monster/swoo3/3PSkill2.png
+7	0.000000	80.000000	7	2	8	0.100000

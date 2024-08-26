@@ -1,0 +1,20 @@
+#MonsterName
+swoo2
+#MonsterState
+Swoo2PhaseTree
+7
+20000000
+../resource/Monster/swoo2/Stand.png
+0	0.000000	0.000000	8	1	8	0.180000
+../resource/Monster/swoo2/Move.png
+1	0.000000	0.000000	8	1	8	0.180000
+../resource/Monster/swoo2/hit1.0y.png
+2	0.000000	0.000000	1	1	1	0.180000
+../resource/Monster/swoo2/Die.png
+3	0.000000	380.000000	7	5	34	0.180000
+../resource/Monster/swoo2/ATTACK1.png
+4	0.000000	35.000000	6	6	31	0.100000
+../resource/Monster/swoo2/Move.png
+5	0.000000	0.000000	8	1	8	0.100000
+../resource/Monster/swoo2/Skill1.png
+6	0.000000	440.000000	7	4	26	0.100000

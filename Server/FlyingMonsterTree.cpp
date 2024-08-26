@@ -28,14 +28,14 @@ void FlyingMonsterTree::Init()
 
 	std::shared_ptr<ActionNode> attck = std::make_shared<ActionNode>(*this, &BehaviorTree::AttackPlayer);
 	testnode->PushChild(attck);
-
+	GetMonsterData().SetIsFly(true);
 	GetMonsterData().SetIsDead(true);
 	SetRespawnTime(7.0f);
 
 }
 ReturnCode FlyingMonsterTree::ChasePlayer()
 {
-	if (TVector3::Distance(GetMonsterData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 50)
+	if (TVector3::Distance(GetMonsterData().GetCollisionData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 50)
 	{
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_WALK);
 		GetMonsterData().MoveTo(GetMonsterData().GetTargetPlayer()->GetPos(),250);

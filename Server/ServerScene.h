@@ -14,7 +14,7 @@ public:
 	void DeleteScenePlayer(std::shared_ptr<PlayerData> data);
 
 
-
+	bool LoadMonsterData(std::shared_ptr<MonsterData> monster, std::string LoadPath);
 	void LoadSceneData(int Scenenum);
 	std::vector<std::shared_ptr<Line>>		  GetLineColliderList() { return m_LineColliderList; }
 	void PushLineCollider(std::shared_ptr <Line> line) { m_LineColliderList.push_back(line); };

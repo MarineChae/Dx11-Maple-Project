@@ -85,14 +85,14 @@ public:
 class DecoratorNode : public BaseNode
 {
 private:
-	std::function<ReturnCode()> m_decorateFunc;
+	std::function<ReturnCode(BehaviorTree&)> m_decorateFunc;
 
 public:
 	virtual ReturnCode Tick() override;
 
 
 public:
-	DecoratorNode(BehaviorTree& tree, std::function<ReturnCode()> func)
+	DecoratorNode(BehaviorTree& tree, std::function<ReturnCode(BehaviorTree&)> func)
 		:BaseNode(tree)
 		,m_decorateFunc(func)
 	{};

@@ -11,9 +11,10 @@
 0	0.000000	-714.287964	1	1	1	0.180000
 #MonsterList
 1
-../resource/MonsterData/FlyGreen.txt
-
--123.999992	129.999985
+../resource/MonsterData/swoo2.txt
+Swoo2PhaseTree
+20000000
+832.000000	100.000000
 #PotalList
 1
 ../resource/MapObejct/potal.png

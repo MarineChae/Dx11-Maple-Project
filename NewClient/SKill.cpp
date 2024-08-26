@@ -79,7 +79,7 @@ std::shared_ptr<Skill> SkillMgr::LoadSkill(std::string num)
 					float offsetY;
 
 					_fgetts(buffer, _countof(buffer), fpRead);
-					_stscanf_s(buffer, _T("%f %f %f %f %d %d %d %lf \n"), 
+					_stscanf_s(buffer, _T("%f %f %f %f %d %d %d %f \n"), 
 						&offsetX,
 						&offsetY,
 						&colliderScaleX,

@@ -159,6 +159,8 @@
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="StreamPacket.cpp" />
     <ClCompile Include="Swoo1PhaseTree.cpp" />
+    <ClCompile Include="Swoo2PhaseTree.cpp" />
+    <ClCompile Include="Swoo3PhaseTree.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TMath.cpp" />
     <ClCompile Include="User.cpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="StreamPacket.h" />
     <ClInclude Include="Swoo1PhaseTree.h" />
+    <ClInclude Include="Swoo2PhaseTree.h" />
+    <ClInclude Include="Swoo3PhaseTree.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TMath.h" />
     <ClInclude Include="User.h" />

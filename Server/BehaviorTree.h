@@ -15,6 +15,7 @@ private:
 	float m_fRespawnTime;
 
 public:
+	virtual void Update() {};
 	void RunTree();
 	void SetRunState(bool state) { isRun = state; }
 	bool GetRunState() const { return isRun; }
@@ -38,6 +39,8 @@ public:
 	virtual ReturnCode ChasePlayer();
 	virtual ReturnCode AttackPlayer();
 	virtual ReturnCode Respon();
+	virtual ReturnCode Skill1Cooldown();
+	virtual ReturnCode Skill1();
 	virtual void DeathEvent() {};
 
 public:

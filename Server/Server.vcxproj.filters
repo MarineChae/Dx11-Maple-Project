@@ -99,6 +99,12 @@
     <ClCompile Include="Swoo1PhaseTree.cpp">
       <Filter>BehaviorTree</Filter>
     </ClCompile>
+    <ClCompile Include="Swoo2PhaseTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Swoo3PhaseTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCPServer.h">
@@ -177,6 +183,12 @@
       <Filter>BehaviorTree</Filter>
     </ClInclude>
     <ClInclude Include="Swoo1PhaseTree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Swoo2PhaseTree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Swoo3PhaseTree.h">
       <Filter>BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>

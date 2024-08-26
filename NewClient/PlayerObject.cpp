@@ -337,6 +337,7 @@ void PlayerObject::ChangeState(PLAYER_STATE state)
     SetSpriteInfo(GetSpriteData(state));
     SetScale(GetCurrentSpriteInfo()->m_vScale);
     SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+
 }
 
 void PlayerObject::SetProgressBar()

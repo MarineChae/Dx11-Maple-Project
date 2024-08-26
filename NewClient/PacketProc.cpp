@@ -276,7 +276,7 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     if (list.empty())
         return -1;
     auto& monster = list[ID];
-    monster->SetDirection(byDirection);
+
     monster->SetDestination({ fX,fY,0 });
     monster->SetCurrentScene(CurrentScene);
     if (monster->GetIsDead() && !isdead)
@@ -287,6 +287,8 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     monster->SetIsDead(isdead);
     monster->ChangeMonsterState(state);
     monster->SetID(ID);
+
+    monster->SetDirection(byDirection);
     return 0;
 }
 

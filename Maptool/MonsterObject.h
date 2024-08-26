@@ -28,7 +28,8 @@ public:
 	void SetMonsterName(std::string name) { m_csMonsteName = name; };
 	void SetTreeName(std::string name) { m_treename = name; };
 	std::string GetTreeName() { return m_treename; };
-
+	int GetHP()const { return m_iHP; };
+	void SetHP(int hp) {  m_iHP = hp; };
 public:
 	MonsterObject();
 	virtual ~MonsterObject();

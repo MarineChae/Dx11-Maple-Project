@@ -4,6 +4,8 @@
 #include"NormalMonsterTree.h"
 #include"FlyingMonsterTree.h"
 #include"Swoo1PhaseTree.h"
+#include"Swoo2PhaseTree.h"
+#include"Swoo3PhaseTree.h"
 #include"PlayerData.h"
 #include"IOCPServer.h"
 #include"Packet.h"
@@ -25,6 +27,8 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_iCurrentScene = icurrentScene;
 	m_vResponPos = { X,Y,0 };
 	m_fResponTime = 7.0f;
+	SetOriginPos(m_vPos);
+	m_colliderData.SetPos(m_vPos);
 }
 
 std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
@@ -34,7 +38,9 @@ std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
 	{
 		 {"NormalMonsterTree", [this](MonsterData& data) { return std::make_shared<NormalMonsterTree>(data); }},
 		 {"FlyingMonsterTree", [this](MonsterData& data) { return std::make_shared<FlyingMonsterTree>(data); }},
-		 {"Swoo1PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo1PhaseTree>(data); }}
+		 {"Swoo1PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo1PhaseTree>(data); }},
+		 {"Swoo2PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo2PhaseTree>(data); }},
+		 {"Swoo3PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo3PhaseTree>(data); }}
 	};
 
 	auto it = factoryMap.find(treename);
@@ -52,6 +58,16 @@ std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
 
 void MonsterData::Update()
 {
+	//m_colliderData.SetPos(m_vPos);
+	m_colliderData.Update();
+
+	if (m_bFalling && !m_bfly)
+	{
+		//m_vPos.y -= static_cast<float>(900 * 0.0625);
+		float y = m_colliderData.GetPos().y - static_cast<float>(900 * 0.0625);
+		m_colliderData.SetPos({ m_colliderData.GetPos().x ,y ,m_colliderData.GetPos().z});
+		
+	}
 	if (PlayerDataMgr::GetInstance().GetPlayerData(0) != nullptr&&!m_bIsDead && GetHP() >= 0)
 	{
 		m_pTargetPlayer = PlayerDataMgr::GetInstance().GetPlayerData(0);
@@ -78,10 +94,21 @@ void MonsterData::Update()
 	
 }
 
+void MonsterData::SetMonsterState(MONSTER_STATE state)
+{
+	if (m_MonsterState == state)
+		return;
+
+	SetPos(GetPos() - m_vSpriteData[m_MonsterState].m_vOffset);
+	SetPos(GetPos() + m_vSpriteData[state].m_vOffset);
+
+	m_MonsterState = state;
+}
+
 void MonsterData::MoveTo(TVector3 dest,float speed)
 {
 	//몬스터 정보 패킷만들어서 보내라
-	TVector3 dir =  dest- m_vPos;
+	TVector3 dir =  dest- m_colliderData.GetPos();
 	dir.Normalize();
 	if (dir.x < 0)
 		m_byDirection = 0;
@@ -89,7 +116,7 @@ void MonsterData::MoveTo(TVector3 dest,float speed)
 		m_byDirection = 1;
 
 	auto t =0.0625* speed;
-	m_vPos += dir * t;
+	m_colliderData.SetPos(m_colliderData.GetPos() + dir * t);
 
 }
 
@@ -105,9 +132,10 @@ MonsterData::MonsterData()
 	, m_iHP(0)
 	, m_pBehaviorTree()
 	, m_MonsterState(MONSTER_STATE::MS_IDLE)
+	, m_bfly(false)
 {
 	//temp 추후 어떤 트리를 할당할지 파일에서 불러올예정
-	m_pBehaviorTree = std::make_shared<FlyingMonsterTree>(*this);
+	m_pBehaviorTree = std::make_shared<NormalMonsterTree>(*this);
 	m_pBehaviorTree->Init();
 }
 
@@ -123,6 +151,7 @@ MonsterData::MonsterData(std::string treename)
 	, m_iHP(0)
 	, m_pBehaviorTree()
 	, m_MonsterState(MONSTER_STATE::MS_IDLE)
+	, m_bfly(false)
 {
  	m_pBehaviorTree = CreateTree(treename);
 	m_pBehaviorTree->Init();

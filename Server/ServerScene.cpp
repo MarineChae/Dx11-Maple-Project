@@ -72,7 +72,7 @@ void ServerScene::LoadSceneData(int Scenenum)
 					 
 
 					Monster->Create(name, i, 0, 0, x, y, hp, Scenenum);
-
+					LoadMonsterData(Monster, name);
 					m_vSceneMonsterList.push_back(Monster);
 				}
 			}
@@ -199,13 +199,39 @@ void ServerScene::Update()
 	}
 	for (auto& mon : m_vSceneMonsterList)
 	{
-		mon->Update();
 
+		mon->Update();
+		if (!mon->GetIsFly())
+		{
+			for (auto& line : m_LineColliderList)
+			{
+				if (line->type == COLLISION_TYPE::CT_FLOOR || line->type == COLLISION_TYPE::CT_FINALFLOOR)
+				{
+					if (Collision::PointToLine(mon->GetCollisionData().GetCollisionPoint(), line))
+					{
+						auto ret = Collision::ClosestPoint(mon->GetCollisionData().GetCollisionPoint(), line);
+						auto p = mon->GetCollisionData().GetPos();
+						p.y = ret.y + mon->GetCollisionData().GetHeight() + 10;
+						mon ->GetCollisionData().SetPos(p);
+						//mon->SetPos(p);
+						mon->SetIsFalling(false);
+					}
+				}
+			}
+
+		}
+
+		m_fTargetChangeTime += 0.0625;
 		if (m_fTargetChangeTime >= 5.0f)
 		{
-			int size = m_vScenePlayerList.size();
-			size = rand() % size;
-			mon->SetTargetPlayer(m_vScenePlayerList[size]);
+			m_fTargetChangeTime = 0;
+			if (!m_vScenePlayerList.empty())
+			{
+				int size = m_vScenePlayerList.size();
+				size = rand() % size;
+				mon->SetTargetPlayer(m_vScenePlayerList[size]);
+			}
+
 		}
 
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
@@ -234,4 +260,68 @@ std::shared_ptr<ServerScene> ServerSceneMgr::InsertScene(int SceneNum)
 
 
 	return newScene;
+}
+
+
+bool ServerScene::LoadMonsterData(std::shared_ptr<MonsterData> monster, std::string LoadPath)
+{
+	FILE* fpRead = nullptr;
+
+	if (fopen_s(&fpRead, LoadPath.c_str(), "rt") == 0)
+	{
+
+		TCHAR buffer[256] = { 0, };
+
+		while (_fgetts(buffer, _countof(buffer), fpRead) != 0)
+		{
+			TCHAR type[36] = { 0, };
+
+			_stscanf_s(buffer, _T("%s"), type, (unsigned int)_countof(type));
+
+			if (_tcscmp(type, L"#MonsterState") == 0)
+			{
+				TCHAR tree[80] = { 0, };
+				_fgetts(buffer, _countof(buffer), fpRead);
+				_stscanf_s(buffer, _T("%s\n"), tree, (unsigned int)_countof(tree));
+
+				char treename[80];
+				WideCharToMultiByte(CP_ACP, 0, tree, sizeof(tree), treename, sizeof(treename), NULL, NULL);
+
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int iSize = 0;
+				_stscanf_s(buffer, _T("%d"), &iSize);
+				_fgetts(buffer, _countof(buffer), fpRead);
+				int hp = 0;
+				_stscanf_s(buffer, _T("%d"), &hp);
+
+				for (int i = 0; i < iSize; ++i)
+				{
+
+					TCHAR tex[80] = { 0, };
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
+
+					MONSTER_STATE state;
+					SpriteData SpriteInfo;
+
+					_fgetts(buffer, _countof(buffer), fpRead);
+					_stscanf_s(buffer, _T("%d %f %f %d %d %d %f\n"),
+						&state,
+						&SpriteInfo.m_vOffset.x,
+						&SpriteInfo.m_vOffset.y,
+						&SpriteInfo.iCol,
+						&SpriteInfo.iRow,
+						&SpriteInfo.iMaxImageCount,
+						&SpriteInfo.m_fDelay);
+
+					monster->AddSpriteData(SpriteInfo);
+
+				}
+
+			}
+
+		}
+		fclose(fpRead);
+	}
+	return false;
 }

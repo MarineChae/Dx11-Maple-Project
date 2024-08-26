@@ -63,7 +63,7 @@ ReturnCode SequenceNode::Tick()
 
 ReturnCode DecoratorNode::Tick()
 {
-    return m_decorateFunc();
+    return m_decorateFunc(GetTree());
 }
 
 ReturnCode ActionNode::Tick()

@@ -4,6 +4,7 @@ class Texture;
 class Shader;
 struct SpriteData
 {
+	TVector3 m_vOffset;
 	TVector3 m_vScale;
 	int iCol = 0;
 	int iRow = 0;

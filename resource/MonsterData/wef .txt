@@ -1,0 +1,10 @@
+#MonsterName
+wef 
+#MonsterState
+NormalMonsterTree
+2
+0
+../resource/Monster/wef /Stand.png
+0	0.000000	0.000000	8	1	8	0.180000
+../resource/Monster/wef /Skill1.png
+1	0.000000	0.000000	1	1	1	0.180000

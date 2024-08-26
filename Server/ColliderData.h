@@ -16,6 +16,9 @@ public:
 	TVector3 GetAxis(int num)const { return m_Axis[num]; };
 	float	 GetWidth()const { return m_fWidth; };
 	float	 GetHeight()const { return m_fHeight; };
+
+	void SetWidth(float width) { m_fWidth = width; };
+	void SetHeight(float height) { m_fHeight = height; };
 	void SetPos(TVector3 pos) { m_vPos = pos; };
 	void Init();
 	void Update();

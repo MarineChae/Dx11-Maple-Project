@@ -208,7 +208,7 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     for (auto& monster : curScene->GetSceneMonsterList())
     {
         std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-        CreateMonster(pack, iId++,monster->GetName(), 0, monster->GetPos().x,monster->GetPos().y, monster->GetMaxHP(), Scenenum);
+        CreateMonster(pack, iId++,monster->GetName(), 0, monster->GetCollisionData().GetPos().x, monster->GetCollisionData().GetPos().y, monster->GetMaxHP(), Scenenum);
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
     }
 

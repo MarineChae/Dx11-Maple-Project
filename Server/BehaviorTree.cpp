@@ -6,7 +6,11 @@
 void BehaviorTree::RunTree()
 {
 	if (isRun)
+	{
 		m_pRootNode->Tick();
+		Update();
+	}
+		
 }
 
 ReturnCode BehaviorTree::ChasePlayer()
@@ -21,8 +25,19 @@ ReturnCode BehaviorTree::AttackPlayer()
 
 ReturnCode BehaviorTree::Respon()
 {
-	return ReturnCode::SUCCESS; return ReturnCode();
-}	
+	return ReturnCode::SUCCESS; 
+}
+ReturnCode BehaviorTree::Skill1Cooldown()
+{
+	return ReturnCode::SUCCESS;
+}
+
+ReturnCode BehaviorTree::Skill1()
+{
+	return ReturnCode::SUCCESS;
+}
+
+
 
 //ReturnCode BehaviorTree::ChasePlayer()
 //{

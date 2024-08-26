@@ -11,7 +11,7 @@ bool MonsterObject::Init()
 		m_pDamageIndicatorList.push_back(std::make_shared<DamageIndicator>());
 		m_pDamageIndicatorList[i]->Init();
 	}
-
+	m_BeforeDirection = GetDirection();
 	return true;
 }
 
@@ -37,20 +37,32 @@ bool MonsterObject::Frame()
 				break;
 			}
 		}
-		m_bIsHit = false;
+		m_bIsHit = false; 
 	}
-
-
-
-	if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+	if (m_BeforeDirection != GetDirection())
 	{
-		auto tr = GetTransform();
+		m_BeforeDirection = GetDirection();
+		for (auto& sprite : GetSpriteList())
+		{
+
+			sprite->m_vOffset.x = sprite->m_vOffset.x * -1;
+			int a = 0;
+		}
+		}
+
+
+
+	SetTransform(GetCollider()->GetTransform() + GetCurrentSpriteInfo()->m_vOffset); 
+
+	if (GetDestination() != GetCollider()->GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+	{
+		auto tr = GetCollider()->GetTransform();
 		auto des = GetDestination();
-		SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.1f));
+		GetCollider()->SetTransform(GetCollider()->GetTransform().Lerp(GetCollider()->GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
+		GetCollider()->SetTransform(GetCollider()->GetTransform().SmoothStep(GetCollider()->GetTransform(), GetDestination(), 0.1f));
 
 	} 
-	GetCollider()->SetTransform(GetTransform());
+	
 	return true;
 } 
 
@@ -84,13 +96,21 @@ void MonsterObject::AddSpriteData(std::shared_ptr<SpriteData> data , std::wstrin
 void MonsterObject::ChangeMonsterState(MONSTER_STATE state)
 {
 	if (m_MonsterState == state)
+	{
+
 		return;
+	}
+		
+
+	InitTexIndex();
 
 	m_MonsterState = state;
-	InitTexIndex();
+	SetScale(GetSpriteData(state)->m_vScale);
+	SetTexture(GetSpriteData(state)->m_pTexture);
 	SetSpriteInfo(GetSpriteData(state));
-	SetScale(GetCurrentSpriteInfo()->m_vScale);
-	SetTexture(GetCurrentSpriteInfo()->m_pTexture);
+
+
+
 }
 MonsterObject::MonsterObject()
 	:SpriteObject()

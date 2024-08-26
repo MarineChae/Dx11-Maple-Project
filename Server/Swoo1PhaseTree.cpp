@@ -16,6 +16,7 @@ void Swoo1PhaseTree::Init()
 	std::shared_ptr<ActionNode> acttest = std::make_shared<ActionNode>(*this, &BehaviorTree::AttackPlayer);
 	testnode->PushChild(acttest);
 	GetMonsterData().SetIsDead(false);
+	GetMonsterData().SetIsFly(true);
 	SetRespawnTime(7777.0f);
 }
 
@@ -49,7 +50,6 @@ ReturnCode Swoo1PhaseTree::AttackPlayer()
 	if (!GetMonsterData().GetIsDead())
 	{
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
-		Update();
 
 		return ReturnCode::RUNNING;
 	}
@@ -65,7 +65,7 @@ void Swoo1PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
 	SetDieTime(GetDieTime() +0.0625f);
-	if (GetDieTime() >= 8.32f)
+	if (GetDieTime() >= 9.72f)
 	{
 		SetDieTime(0.0f);
 
@@ -85,7 +85,13 @@ void Swoo1PhaseTree::DeathEvent()
 			curScene->AddScenePlayer(player);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
-
+			int iId = 0;
+			for (auto& monster : curScene->GetSceneMonsterList())
+			{
+				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				CreateMonster(pack, iId++, monster->GetName(), 0, monster->GetPos().x, monster->GetPos().y, monster->GetMaxHP(), 3);
+				IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[player->GetSessionID()].get(), pack);
+			}
 
 			SetRunState(false);
 		}

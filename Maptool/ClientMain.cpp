@@ -965,6 +965,7 @@ void ClientMain::SelectMenu()
 				if (m_CreateMonster != nullptr)
 				{
 					std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
+					SpriteInfo->m_vOffset = {0,0,0};
 					SpriteInfo->iCol = 1;
 					SpriteInfo->iRow = 1;
 					SpriteInfo->iMaxImageCount = 1;
@@ -986,31 +987,35 @@ void ClientMain::SelectMenu()
 			if (sprite != nullptr)
 			{
 				std::string s;
-
+				static int monsterHP;
+				static TVector3 offset = sprite->m_vOffset;
 				static int tempcol = sprite->iCol;
 				static int temprow = sprite->iRow;
 				static int temocnt = sprite->iMaxImageCount;
 				static double tempdelay = sprite->m_fDelay;
 				static std::string treename;
-
+				ImGui::InputInt("monsterHP : #", &monsterHP);
+				ImGui::InputFloat("OffsetX : ##", &offset.x);
+				ImGui::InputFloat("OffsetY : ####@@", &offset.y);
 				ImGui::InputInt("Col : #", &tempcol);
 				ImGui::InputInt("Row : ##", &temprow);
 				ImGui::InputInt("MaxImageCount : ##@", &temocnt);
 				ImGui::InputDouble("Delay : ####", &tempdelay);
 
-				const char* itme[] = { "NormalMonsterTree","FlyingMonsterTree","Swoo1PhaseTree"};
+				const char* itme[] = { "NormalMonsterTree","FlyingMonsterTree","Swoo1PhaseTree","Swoo2PhaseTree" };
 				static int treetemp = 0;
 				ImGui::Combo("ObjectType ", &treetemp, itme, IM_ARRAYSIZE(itme));
 
 				treename = itme[treetemp];
 				if (ImGui::Button("Conform", ImVec2(60, 30)))
 				{
+					sprite->m_vOffset = offset;
 					sprite->iCol = tempcol;
 					sprite->iRow = temprow;
 					sprite->iMaxImageCount = temocnt;
 					sprite->m_fDelay = tempdelay;
 					m_CreateMonster->SetTreeName(treename);
-				
+					m_CreateMonster->SetHP(monsterHP);
 					/////이미지 불러오기는 다했음 세이브 로드 만들어라
 					m_CreateMonster->GetSpriteInfo()->m_vScale = { static_cast<float>(m_CreateMonster->GetTexture()->GetWidth() / m_CreateMonster->GetSpriteInfo()->iCol),
 																static_cast<float>(m_CreateMonster->GetTexture()->GetHeight() / m_CreateMonster->GetSpriteInfo()->iRow),
@@ -1020,6 +1025,7 @@ void ClientMain::SelectMenu()
 					m_CreateMonster->GetSpriteInfo()->m_UVList.clear();
 					m_CreateMonster->SetUVData(m_CreateMonster->GetSpriteInfo()->m_UVList, m_CreateMonster->GetSpriteInfo()->iRow, m_CreateMonster->GetSpriteInfo()->iCol);
 					m_CreateMonster->InitTexIndex();
+					m_CreateMonster->SetTransform(m_CreateMonster->GetCollider()->GetTransform() + sprite->m_vOffset);
 				}
 
 				if (ImGui::Button("ChangeImage", ImVec2(60, 30)))

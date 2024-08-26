@@ -4,11 +4,12 @@ class Texture;
 class Shader;
 struct SpriteData
 {
+	TVector3 m_vOffset;
 	TVector3 m_vScale;
 	int iCol = 0;
 	int iRow = 0;
 	int iMaxImageCount = 0;
-	double m_fDelay = 0.0f;
+	float m_fDelay = 0.0f;
 	const Texture* m_pTexture;
 	std::vector<UVRect> m_UVList;
 };

@@ -1,5 +1,5 @@
 #MapName
-../resource/MapObejct/3Phase Back.png
+../resource/MapObejct/3PhaseBack.png
 #SceneNum
 4
 #LineCollider
@@ -7,9 +7,13 @@
 0	-1404.871338	-537.013672	1403.498169	-535.013611
 #ObjectList
 1
-../resource/MapObejct/3Phase foothold.png
+../resource/MapObejct/3Phasefoothold.png
 0	0.000000	-679.013672	1	1	1	0.180000
 #MonsterList
-0
+1
+../resource/MonsterData/swoo3.txt
+Swoo3PhaseTree
+20000000
+776.319214	43.999985
 #PotalList
 0

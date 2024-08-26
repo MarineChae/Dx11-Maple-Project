@@ -1,0 +1,10 @@
+#MonsterName
+asd
+#MonsterState
+NormalMonsterTree
+2
+0
+../resource/Monster/asd/hit1.0r.png
+0	0.000000	0.000000	1	1	1	0.180000
+../resource/Monster/asd/flyr.png
+1	122.000000	122.000000	4	1	4	0.180000

@@ -1,7 +1,10 @@
 #MonsterName
 123
 #MonsterState
-1
-../resource/Monster/123/Defalut.png
-FlyingMonsterTree
-0	1	1	1	0.180000
+Swoo2PhaseTree
+2
+20000000
+../resource/Monster/123/Stand.png
+0	11.000000	11.000000	8	1	8	0.100000
+../resource/Monster/123/Skill1.png
+1	0.000000	0.000000	1	1	1	0.180000

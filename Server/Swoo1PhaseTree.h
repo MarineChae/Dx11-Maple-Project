@@ -9,7 +9,7 @@ class Swoo1PhaseTree:public BehaviorTree
 	float m_fSpawnTime;
 public:
 	virtual void Init();
-	void Update();
+	virtual void Update()override;
 
 public:
 	virtual ReturnCode AttackPlayer()override;
