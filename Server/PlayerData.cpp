@@ -43,8 +43,8 @@ void PlayerData::Update()
 	}
 	else
 	{
-		if (!m_bIsFalling && !m_bIsJumping)
-			m_vMovePow.x = m_vMovePow.x * (1 - 1) + 0 * 1;
+		if (!m_bIsFalling && !m_bIsJumping)// && !m_bIsHit)
+			m_vMovePow.x = m_vMovePow.x * (1 - 0.5) + 0 * 0.5;
 
 	}
 	if (m_bIsFalling && !m_bIsJumping)

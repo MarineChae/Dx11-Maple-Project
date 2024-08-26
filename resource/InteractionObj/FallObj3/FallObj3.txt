@@ -1,0 +1,10 @@
+#ObjectName
+FallObj3
+#ObjectState
+3
+../resource/InteractionObj/FallObj3/Fallobj3Warning.png
+0	5	4	17	0.100000
+../resource/InteractionObj/FallObj3/Fallobj3ing.png
+1	1	1	1	0.100000
+../resource/InteractionObj/FallObj3/Fallobj3End.png
+2	5	2	8	0.180000

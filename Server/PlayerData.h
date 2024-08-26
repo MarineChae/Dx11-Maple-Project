@@ -31,6 +31,7 @@ private:
 	bool    m_bisMove;
 	bool m_bIsFalling;
 	bool m_bIsJumping;
+	bool m_bIsHit;
 	TVector3 m_vCollisionPoint;
 
 	TVector3 m_vMovePow;
@@ -58,9 +59,10 @@ public:
 	bool  GetIsJumping()const { return m_bIsJumping; }
 	bool GetIsMove()const { return m_bisMove; };
 	bool GetOnLope()const { return m_bOnLope; };
+	bool GetIsHit()const { return m_bIsHit; };
 	ColliderData GetCollisionData()const { return m_colliderData; };
 	BYTE GetLopeUp()const { return m_byLopeUp; };
-
+	TVector3 GetMovepow()const {return  m_vMovePow; };
 	char* GetActiveSkillName() { return m_csActiveSkillName; };
 
 	//setter
@@ -76,7 +78,7 @@ public:
 	void SetOnLope(bool onlope) { m_bOnLope = onlope; }
 	void SetLopeUp(BYTE lopeUP) { m_byLopeUp = lopeUP; };
 	void SetMovePow(TVector3 pow) { m_vMovePow = pow; };
-
+	void SetIsHit(bool hit) { m_bIsHit = hit; }
 	void SetActiveSkillName(char* name) { m_csActiveSkillName = name; }
 
 };

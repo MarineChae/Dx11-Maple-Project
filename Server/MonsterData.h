@@ -3,6 +3,7 @@
 
 class BehaviorTree;
 class PlayerData;
+
 struct SpriteData
 {
 	TVector3 m_vOffset;
@@ -26,6 +27,7 @@ private:
 
 	DWORD	m_dwAction;
 	BYTE	m_byDirection;
+	BYTE	m_byBeforeDirection;
 
 	TVector3 m_vPos;
 	TVector3 m_vOriginPos;
@@ -37,6 +39,8 @@ private:
 	bool   m_bFalling;
 	MONSTER_STATE m_MonsterState;
 	ColliderData m_colliderData;
+	ColliderData m_attackColliderData;
+	TVector3	m_fAttackColliderOffset;
 	std::vector<SpriteData>	m_vSpriteData;
 	//behaviortree 추가해야함
 
@@ -60,6 +64,7 @@ public:
 	bool  GetIsFly()const { return m_bfly; };
 	bool  GetIsFalling()const { return m_bFalling; };
 	ColliderData& GetCollisionData() { return m_colliderData; };
+	ColliderData& GetAttackCollisionData() { return m_attackColliderData; };
 	void AddSpriteData(SpriteData& data) { m_vSpriteData.push_back(data); };
 
 	void SetPos(TVector3 pos) { m_vPos = pos; };

@@ -8,11 +8,7 @@
 #ObjectList
 0
 #MonsterList
-1
-../resource/MonsterData/swoo2.txt
-Swoo2PhaseTree
-20000000
-832.000000	100.000000
+0
 #PotalList
 2
 ../resource/MapObejct/potal.png

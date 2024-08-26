@@ -7,4 +7,4 @@ FallObj0
 ../resource/InteractionObj/FallObj0/Fallobj0ing.png
 1	1	1	1	0.100000
 ../resource/InteractionObj/FallObj0/Fallobj0End.png
-2	5	2	8	0.180000
+2	5	2	8	0.100000

@@ -7,7 +7,7 @@
 #include"PacketProc.h"
 #include"StreamPacket.h"
 #include"ServerScene.h"
-
+#include"ColliderData.h"
 std::mutex m;
 
 int SessionMgr::m_iSessionCount = 0;

@@ -65,6 +65,7 @@ void Swoo1PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
 	SetDieTime(GetDieTime() +0.0625f);
+	SetRunState(false);
 	if (GetDieTime() >= 9.72f)
 	{
 		SetDieTime(0.0f);

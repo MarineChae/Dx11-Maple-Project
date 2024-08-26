@@ -35,17 +35,35 @@ void Swoo3PhaseTree::Init()
 
 	GetMonsterData().GetCollisionData().SetHeight(108.0f);
 	GetMonsterData().SetIsDead(false);
+	SetRespawnTime(7777.0f);
 }
 
 void Swoo3PhaseTree::Update()
 {
 	m_f1SkillColldown += 0.0625;
 	m_f2SkillColldown += 0.0625;
+	m_fSpawnTime += 0.0625;
+	if (m_fSpawnTime >= 1.5f)
+	{
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+
+		std::string st = "../resource/InteractionObj/FallObj";
+		int ivalue = 2 + (rand() % 3);
+		st += std::to_string(ivalue) + "/FallObj" + std::to_string(ivalue) + ".txt";
+		char c[80];
+		strcpy_s(c, st.c_str());
+
+		float randx = randstep(-1000, 1000);
+		SpawnObjectPacket(pack, randx, 700, 0, c, GetMonsterData().GetCurrentScene());
+		m_fSpawnTime = 0.0f;
+		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+	}
+
 }
 
 ReturnCode Swoo3PhaseTree::ChasePlayer()
 {
-	if (TVector3::Distance(GetMonsterData().GetCollisionData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 150)
+	if (TVector3::Distance(GetMonsterData().GetCollisionData().GetPos(), GetMonsterData().GetTargetPlayer()->GetPos()) >= 500)
 	{
 		GetMonsterData().MoveTo(GetMonsterData().GetTargetPlayer()->GetPos(), 250);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_WALK);
@@ -62,11 +80,42 @@ ReturnCode Swoo3PhaseTree::ChasePlayer()
 ReturnCode Swoo3PhaseTree::AttackPlayer()
 {
 
-	if (GetWaitTime() >= 3.1f)
+	if (GetWaitTime() >= 3.5f)
 	{
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+
+		for (auto& player : curScene->second->GetScenePlayerList())
+		{
+			player->SetIsHit(false);
+		}
 		SetWaitTime(0.0f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		return ReturnCode::SUCCESS;
+	}
+	else if (GetWaitTime() >= 0.8f && GetWaitTime() <= 1.7f)
+	{
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+
+		for (auto& player : curScene->second->GetScenePlayerList())
+		{
+			if (GetMonsterData().GetAttackCollisionData().CheckOBBCollision(player->GetCollisionData()) && !player->GetIsHit())
+			{
+				TVector3 value(3000, 0, 0);
+				if (GetMonsterData().GetDirection() == 0)
+				{
+					value *= -1;
+				}
+				player->SetMovePow(player->GetMovepow() + value);
+				player->SetIsHit(true);
+			}
+
+		}
+		SetWaitTime(GetWaitTime() + 0.0625f);
+		return ReturnCode::RUNNING;
 	}
 	else
 	{
@@ -99,6 +148,7 @@ ReturnCode Swoo3PhaseTree::Skill1()
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		return ReturnCode::SUCCESS;
 	}
+
 	else
 	{
 		SetWaitTime(GetWaitTime() + 0.0625f);
@@ -112,12 +162,17 @@ void Swoo3PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
 	SetDieTime(GetDieTime() + 0.0625f);
+	SetRunState(false);
 	if (GetDieTime() >= 6.12f)
 	{
 		SetDieTime(0.0f);
-
+	
 		GetMonsterData().SetIsDead(true);
-		for (auto& player : ServerSceneMgr::GetInstance().GetSceneList()[3]->GetScenePlayerList())
+		GetMonsterData().SetIsDead(true);
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+		for (auto& player : curScene->second->GetScenePlayerList())
 		{
 
 			std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
@@ -147,6 +202,9 @@ void Swoo3PhaseTree::DeathEvent()
 
 Swoo3PhaseTree::Swoo3PhaseTree(MonsterData& data)
 	:BehaviorTree(data)
+	, m_f1SkillColldown(0.0f)
+	, m_f2SkillColldown (0.0f)
+	,m_fSpawnTime(0.0f)
 {
 }
 

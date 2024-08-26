@@ -319,6 +319,7 @@ BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack)
     player->SetCurrentScene((SceneNum)CurrentScene);
     player->SetMaxHp(HP);
     player->SetHp(HP);
+    player->SetState(PLAYER_STATE::PS_JUMP);
     ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
    

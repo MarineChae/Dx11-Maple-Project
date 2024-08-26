@@ -10,13 +10,6 @@
 void FlyingMonsterTree::Init()
 {
 
-	///////////트리구조///////////
-	//// 현재는 플레이어에게 접근이 기본 접근 후 일정거리에 들어가면
-	//// 자폭공격 
-	////// 정찰 따로 없음 
-	/////// 타겟 플레이어는 랜덤으로 정했으면
-
-
 	std::shared_ptr<SequenceNode> testnode = std::make_shared<SequenceNode>(*this);
 	SetRootNode(testnode);
 
@@ -54,9 +47,11 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 	if (GetWaitTime() >= 1.3f)
 	{
 		SetWaitTime(0.0f);
+		GetMonsterData().GetCollisionData().SetPos(GetMonsterData().GetResponPos());
+		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
 		GetMonsterData().SetIsDead(true);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
-		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
+
 		return ReturnCode::SUCCESS;
 	}
 	else
@@ -66,23 +61,6 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 		return ReturnCode::RUNNING;
 	}
 
-	/////////degub///////////
-	/*std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
-
-	GetMonsterData().GetTargetPlayer()->SetCurrentScene((SceneNum)3);
-
-	SceneChangePacket(SendPack, GetMonsterData().GetTargetPlayer()->GetSessionID(), 3);
-	IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()].get(), SendPack);
-	auto BeforeScene = ServerSceneMgr::GetInstance().InsertScene(2);
-	auto curScene = ServerSceneMgr::GetInstance().InsertScene(3);
-
-	BeforeScene->DeleteScenePlayer(GetMonsterData().GetTargetPlayer());
-	curScene->AddScenePlayer(GetMonsterData().GetTargetPlayer());
-
-	
-	IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
-	IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[GetMonsterData().GetTargetPlayer()->GetSessionID()]);
-*/
 
 
 }
@@ -92,7 +70,7 @@ ReturnCode FlyingMonsterTree::Respon()
 	if (!GetMonsterData().GetIsDead())
 	{
 		SetWaitTime(GetWaitTime() + 0.0625f);
-		if (GetWaitTime() >= 0.6f)
+		if (GetWaitTime() >= 0.5f)
 		{
 			
 			SetWaitTime(0.0f);
@@ -118,6 +96,7 @@ void FlyingMonsterTree::DeathEvent()
 	if (GetDieTime() >= 0.8f)
 	{
 		SetDieTime(0.0f);
+		GetMonsterData().GetCollisionData().SetPos(GetMonsterData().GetResponPos());
 		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
 		GetMonsterData().SetIsDead(true);
 	}

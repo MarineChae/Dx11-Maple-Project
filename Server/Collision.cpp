@@ -2,6 +2,24 @@
 #include "Collision.h"
 
 
+bool Collision::OBBCollision2D(ColliderData coll1, ColliderData coll2, TVector3 axis)
+{
+    float projection1 = 0;
+
+    projection1 += std::abs((coll1.GetAxis(0).Dot(axis) * coll1.GetWidth()));
+    projection1 += std::abs((coll1.GetAxis(1).Dot(axis) * coll1.GetHeight()));
+
+    float projection2 = 0;
+
+    projection2 += std::abs((coll2.GetAxis(0).Dot(axis) * coll2.GetWidth()));
+    projection2 += std::abs((coll2.GetAxis(1).Dot(axis) * coll2.GetHeight()));
+
+    auto a = coll1.GetPos() - coll2.GetPos();
+    float distance = std::abs(a.Dot(axis));
+
+    return distance <= projection1 + projection2;
+}
+
 bool Collision::isLineIntersectingOBB(std::shared_ptr<Line> line, ColliderData coll1obb, float coefficient)
 {
 
@@ -30,7 +48,6 @@ bool Collision::isLineIntersectingOBB(std::shared_ptr<Line> line, ColliderData c
 
     return true;
 }
-
 
 bool Collision::PointToLine(TVector3 point, std::shared_ptr<Line> line)
 {

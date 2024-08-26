@@ -21,6 +21,7 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_iId = Id;
 	m_dwAction = Action;
 	m_byDirection = Direction;
+	m_byBeforeDirection = Direction;
 	m_vPos = { X,Y,0 };
 	m_iMaxHp = HP;
 	m_iHP = m_iMaxHp;
@@ -29,6 +30,10 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_fResponTime = 7.0f;
 	SetOriginPos(m_vPos);
 	m_colliderData.SetPos(m_vPos);
+	m_fAttackColliderOffset = { -500,0,0 };
+	m_attackColliderData.SetPos(m_vPos + m_fAttackColliderOffset);
+	m_attackColliderData.SetWidth(500.0f);
+	m_attackColliderData.SetHeight(400.0f);
 }
 
 std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
@@ -61,6 +66,24 @@ void MonsterData::Update()
 	//m_colliderData.SetPos(m_vPos);
 	m_colliderData.Update();
 
+	if (m_pTargetPlayer != nullptr && MONSTER_STATE::MS_WALK >= m_MonsterState)
+	{
+		TVector3 dir = m_pTargetPlayer->GetPos() - m_colliderData.GetPos();
+		dir.Normalize();
+		if (dir.x < 0)
+			m_byDirection = 0;
+		else
+			m_byDirection = 1;
+	}
+
+
+	if (m_byBeforeDirection != m_byDirection)
+	{
+		m_byBeforeDirection = m_byDirection;
+		m_fAttackColliderOffset *= -1;
+	}
+
+	m_attackColliderData.SetPos(m_colliderData.GetPos() + m_fAttackColliderOffset);
 	if (m_bFalling && !m_bfly)
 	{
 		//m_vPos.y -= static_cast<float>(900 * 0.0625);
@@ -75,7 +98,7 @@ void MonsterData::Update()
 
 	}
 	if (GetHP() <= 0)
-	{
+	{ 
 		m_pBehaviorTree->DeathEvent();
 	}
 	if (m_bIsDead)
@@ -84,7 +107,7 @@ void MonsterData::Update()
 		m_fRemainResponTime += 0.0625f;
 		if (m_fRemainResponTime >= m_pBehaviorTree->GetRespawnTime())
 		{
-			
+		
  			m_iHP = m_iMaxHp;
 			m_bIsDead = false;
 			m_fRemainResponTime =0;
