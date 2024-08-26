@@ -54,6 +54,7 @@ public:
 
 	void MoveTo(TVector3 dest,float speed);
 	std::shared_ptr<PlayerData> GetTargetPlayer() const {return m_pTargetPlayer;}
+	void SetTargetPlayer(std::shared_ptr<PlayerData> player) { m_pTargetPlayer = player; }
 	TVector3 GetResponPos() const { return m_vResponPos; };
 	MONSTER_STATE GetMonsterState()const { return m_MonsterState; }
 

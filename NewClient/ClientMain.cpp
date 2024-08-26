@@ -43,7 +43,7 @@ bool ClientMain::Frame()
 			if (obj == ObejctMgr::GetInstance().GetPlayerObject())
 			{
 				bool collision = false;
-				for (auto& line : testScene->GetLineColliderList())
+				for (auto& line : SceneMgr::GetInstance().GetCurrentScene()->GetLineColliderList())
 				{
 					if (obj->GetOnLope())
 					{
@@ -111,7 +111,7 @@ bool ClientMain::Frame()
 				}
 
 
-				for (auto& potal : testScene->GetPotalList())
+				for (auto& potal : SceneMgr::GetInstance().GetCurrentScene()->GetPotalList())
 				{
 					if (Collider::CheckOBBCollision(potal->GetCollider(), obj->GetCollider())
 						&& (Input::GetInstance().GetKeyState(VK_UP) == KEY_PUSH))

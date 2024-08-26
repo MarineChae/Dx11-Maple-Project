@@ -24,7 +24,6 @@ void MonsterData::Create(char* name, int Id, DWORD Action, BYTE Direction, float
 	m_iHP = m_iMaxHp;
 	m_iCurrentScene = icurrentScene;
 	m_vResponPos = { X,Y,0 };
-	m_bIsDead = true;
 	m_fResponTime = 7.0f;
 }
 
@@ -53,25 +52,30 @@ std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
 
 void MonsterData::Update()
 {
-	if (PlayerDataMgr::GetInstance().GetPlayerData(0) != nullptr&&!m_bIsDead)
+	if (PlayerDataMgr::GetInstance().GetPlayerData(0) != nullptr&&!m_bIsDead && GetHP() >= 0)
 	{
 		m_pTargetPlayer = PlayerDataMgr::GetInstance().GetPlayerData(0);
 		m_pBehaviorTree->RunTree();
 
 	}
+	if (GetHP() <= 0)
+	{
+		m_pBehaviorTree->DeathEvent();
+	}
 	if (m_bIsDead)
 	{
+		
 		m_fRemainResponTime += 0.0625f;
-		if (m_fRemainResponTime >= m_fResponTime)
+		if (m_fRemainResponTime >= m_pBehaviorTree->GetRespawnTime())
 		{
 			
-			m_iHP = m_iMaxHp;
+ 			m_iHP = m_iMaxHp;
 			m_bIsDead = false;
 			m_fRemainResponTime =0;
 		}
 
 	}
-
+	
 }
 
 void MonsterData::MoveTo(TVector3 dest,float speed)

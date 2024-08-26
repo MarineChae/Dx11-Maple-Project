@@ -165,13 +165,8 @@ BOOL PacketProc_MonsterGetDamage(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     auto monster = scene->GetMonsterData(monsterid);
 
-    monster->SetHP(monster->GetHP() - damage);
+     monster->SetHP(monster->GetHP() - damage);
 
-    if (monster->GetHP() <= 0)
-    {
-        monster->SetPos(monster->GetResponPos());
-        monster->SetIsDead(true);
-    }
 
     return 0;
 }

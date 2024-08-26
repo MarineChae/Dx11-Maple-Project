@@ -35,7 +35,9 @@ public:
 	void SetHp(int hp) { m_iHP = hp; };
 	int  GetHp()const { return m_iHP; };
 	std::vector<std::shared_ptr<DamageIndicator>> GetDamageIndicatorList()const { return m_pDamageIndicatorList; }
+	MONSTER_STATE GetMonsterState() const { return m_MonsterState; }
 
+	
 public:
 	virtual bool GetIsDead() override { return m_IsDead; }
 	virtual void SetIsDead(bool dead)override { m_IsDead = dead; };

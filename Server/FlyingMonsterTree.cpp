@@ -29,8 +29,8 @@ void FlyingMonsterTree::Init()
 	std::shared_ptr<ActionNode> attck = std::make_shared<ActionNode>(*this, &BehaviorTree::AttackPlayer);
 	testnode->PushChild(attck);
 
-
-
+	GetMonsterData().SetIsDead(true);
+	SetRespawnTime(7.0f);
 
 }
 ReturnCode FlyingMonsterTree::ChasePlayer()
@@ -51,9 +51,9 @@ ReturnCode FlyingMonsterTree::ChasePlayer()
  
 ReturnCode FlyingMonsterTree::AttackPlayer()
 {
-	if (m_fWaitTime >= 1.3f)
+	if (GetWaitTime() >= 1.3f)
 	{
-		m_fWaitTime = 0.0f;
+		SetWaitTime(0.0f);
 		GetMonsterData().SetIsDead(true);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
@@ -61,7 +61,7 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 	}
 	else
 	{
-		m_fWaitTime += 0.0625f;
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -91,11 +91,11 @@ ReturnCode FlyingMonsterTree::Respon()
 {
 	if (!GetMonsterData().GetIsDead())
 	{
-		m_fWaitTime += 0.0625f;
-		if (m_fWaitTime >= 0.6f)
+		SetWaitTime(GetWaitTime() + 0.0625f);
+		if (GetWaitTime() >= 0.6f)
 		{
 			
-			m_fWaitTime = 0.0f;
+			SetWaitTime(0.0f);
 			return ReturnCode::SUCCESS;
 		}
 		else
@@ -111,11 +111,22 @@ ReturnCode FlyingMonsterTree::Respon()
 
 }
 
+void FlyingMonsterTree::DeathEvent()
+{
+	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
+	SetDieTime(GetDieTime() + 0.0625f);
+	if (GetDieTime() >= 0.8f)
+	{
+		SetDieTime(0.0f);
+		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
+		GetMonsterData().SetIsDead(true);
+	}
+}
+
 
 
 FlyingMonsterTree::FlyingMonsterTree(MonsterData& data)
 	:BehaviorTree(data)
-	, m_fWaitTime(0.0f)
 {
 }
 

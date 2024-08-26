@@ -206,6 +206,7 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack)
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+    obj->SetID(ID);
     //id관련 추가해야함
     SceneMgr::GetInstance().GetScene(CurrentScene)->PushMonster(obj);
 
@@ -272,6 +273,8 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     *pack >> state;
 
     auto list = SceneMgr::GetInstance().GetScene(CurrentScene)->GetMonsterList();
+    if (list.empty())
+        return -1;
     auto& monster = list[ID];
     monster->SetDirection(byDirection);
     monster->SetDestination({ fX,fY,0 });

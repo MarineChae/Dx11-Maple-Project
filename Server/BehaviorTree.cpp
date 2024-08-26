@@ -43,6 +43,9 @@ BehaviorTree::BehaviorTree(MonsterData& Monster)
 	:m_pRootNode()
 	, isRun(true)
 	, m_Monster(Monster)
+	, m_fWaitTime(0.0f)
+	, m_fDieTime(0.0f)
+	, m_fRespawnTime(0.0f)
 {
-	
+
 };

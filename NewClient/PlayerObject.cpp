@@ -88,7 +88,7 @@ bool PlayerObject::Frame()
             for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
             {
                 auto coll = monster->GetCollider();
-                if (!monster->GetIsDead())
+                if (!monster->GetIsDead() && monster->GetMonsterState() != MS_DIE)
                 {
                     if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
                     {

@@ -201,6 +201,13 @@ void ServerScene::Update()
 	{
 		mon->Update();
 
+		if (m_fTargetChangeTime >= 5.0f)
+		{
+			int size = m_vScenePlayerList.size();
+			size = rand() % size;
+			mon->SetTargetPlayer(m_vScenePlayerList[size]);
+		}
+
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 		MonsterStateUpdatePacket(pack, *mon);
 		IOCPServer::GetInstance().AddPacket(pack, mon->GetCurrentScene());

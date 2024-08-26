@@ -6,7 +6,7 @@ private:
 	std::vector<std::shared_ptr<PlayerData>> m_vScenePlayerList;
 	std::vector<std::shared_ptr<MonsterData>> m_vSceneMonsterList;
 	std::vector<std::shared_ptr<Line>>		  m_LineColliderList;
-
+	float									 m_fTargetChangeTime;
 public:
 	std::vector<std::shared_ptr<PlayerData>> GetScenePlayerList()const { return m_vScenePlayerList; }
 	std::vector<std::shared_ptr<MonsterData>> GetSceneMonsterList()const { return m_vSceneMonsterList; }

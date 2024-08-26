@@ -415,8 +415,10 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 													1 });
 				monster->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
 
-
-
+				monster->InitTexIndex();
+				monster->SetSpriteInfo(monster->GetSpriteData(MS_IDLE));
+				monster->SetScale(monster->GetCurrentSpriteInfo()->m_vScale);
+				monster->SetTexture(monster->GetCurrentSpriteInfo()->m_pTexture);
 			}
 
 		}

@@ -49,30 +49,26 @@ bool MonsterObject::Frame()
 		SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
 		SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.1f));
 
-	}
+	} 
 	GetCollider()->SetTransform(GetTransform());
 	return true;
-}
+} 
 
 bool MonsterObject::Render()
 {	
+	////죽는 타이밍을 서버에서 조정하자
+	// 데스이벤트 메소드를 사용해서죽는 모션이 끝난 후 클라이언트에서 사망 처리를 시켜줘야할것같다
+	// 근데 그러면 계속 타격을 입을텐데?
+	// 그럼 스테이트가 다이일때는 타격 못하게 막자
 	if (m_IsDead)
+		return false;
+	SpriteObject::Render();
+	for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
 	{
-		for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
-		{
-			if (m_pDamageIndicatorList[i]->GetIsValid())
-				m_pDamageIndicatorList[i]->Render();
-		}
-	}
-	else
-	{
-		SpriteObject::Render();
-		for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
-		{
-			if (m_pDamageIndicatorList[i]->GetIsValid())
-				m_pDamageIndicatorList[i]->Render();
-		}
-	}
+		if (m_pDamageIndicatorList[i]->GetIsValid())
+			m_pDamageIndicatorList[i]->Render();
+	} 
+	
 	return true;
 }
 

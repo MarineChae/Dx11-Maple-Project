@@ -45,7 +45,7 @@ public:
 	TVector3 GetDestination() const { return m_vDestination; };
 	TMatrix& GetWorldMat() { return m_WolrdMatrix; }
 	TMatrix& GetViewMat() { return m_ViewMatrix; }
-	TMatrix& GetProjectionMat() { return m_ProjMatrix; }
+	TMatrix& GetProjectionMat() { return m_ProjMatrix; } 
 	std::shared_ptr<Collider> GetCollider() const;
 	ObejctType	GetObjectType() const { return m_ObjectType; };
 	OBJECT_STATE	GetObjectState()const { return m_ObjectState; };

@@ -6,6 +6,7 @@
 #include"MakePacket.h"
 #include"Timer.h"
 #include"IOCPServer.h"
+#include"ServerScene.h"
 
 void Swoo1PhaseTree::Init()
 {
@@ -14,8 +15,8 @@ void Swoo1PhaseTree::Init()
 
 	std::shared_ptr<ActionNode> acttest = std::make_shared<ActionNode>(*this, &BehaviorTree::AttackPlayer);
 	testnode->PushChild(acttest);
-
-
+	GetMonsterData().SetIsDead(false);
+	SetRespawnTime(7777.0f);
 }
 
 void Swoo1PhaseTree::Update()
@@ -44,8 +45,10 @@ void Swoo1PhaseTree::Update()
 
 ReturnCode Swoo1PhaseTree::AttackPlayer()
 {
+	OutputDebugString(std::to_wstring(GetMonsterData().GetHP()).c_str());
 	if (!GetMonsterData().GetIsDead())
 	{
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		Update();
 
 		return ReturnCode::RUNNING;
@@ -53,14 +56,43 @@ ReturnCode Swoo1PhaseTree::AttackPlayer()
 	else
 	{
 
-		//°­Á¦ ¾ÀÀÌµ¿
 		return ReturnCode::SUCCESS;
 	}
 
 }
 
+void Swoo1PhaseTree::DeathEvent()
+{
+	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
+	SetDieTime(GetDieTime() +0.0625f);
+	if (GetDieTime() >= 8.32f)
+	{
+		SetDieTime(0.0f);
+
+		GetMonsterData().SetIsDead(true);
+		for (auto& player : ServerSceneMgr::GetInstance().GetSceneList()[2]->GetScenePlayerList())
+		{
+
+			std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+			player->SetCurrentScene((SceneNum)3);
+
+			SceneChangePacket(SendPack, player->GetSessionID(), 3);
+			IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[player->GetSessionID()].get(), SendPack);
+			auto BeforeScene = ServerSceneMgr::GetInstance().InsertScene(2);
+			auto curScene = ServerSceneMgr::GetInstance().InsertScene(3);
+
+			BeforeScene->DeleteScenePlayer(player);
+			curScene->AddScenePlayer(player);
+			IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
+			IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
+
+
+			SetRunState(false);
+		}
+	}
+}
 Swoo1PhaseTree::Swoo1PhaseTree(MonsterData& data)
 	:BehaviorTree(data)
-	, m_fSpawnTime(0)
+	, m_fSpawnTime(0.0f)
 {
 };
