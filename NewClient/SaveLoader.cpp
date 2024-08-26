@@ -6,6 +6,7 @@
 #include"Texture.h"
 #include"MonsterObject.h"
 #include"SpriteObject.h"
+#include"SoundMgr.h"
 bool SaveLoader::SaveData(std::shared_ptr<Scene> pSceneData, std::string SavePath)
 {
 
@@ -208,38 +209,14 @@ bool SaveLoader::LoadData(std::shared_ptr<Scene> pSceneData, std::string LoadPat
 
 
 			}
-			else if (_tcscmp(type, L"#MonsterList") == 0)
+			else if (_tcscmp(type, L"#BGM") == 0)
 			{
-				//pSceneData->ClearMonsterList();
-				//_fgetts(buffer, _countof(buffer), fpRead);
-				//int iSize = 0;
-				//_stscanf_s(buffer, _T("%d"), &iSize);
-				//
-				//for (int i = 0; i < iSize; ++i)
-				//{
-				//	std::shared_ptr<Object> obj = std::make_shared<Object>();
-				//	TCHAR tex[80] = { 0, };
-				//	_fgetts(buffer, _countof(buffer), fpRead);
-				//	_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
-				//	obj->Init();
-				//	obj->Create(tex, L"../Shader/Defalutshader.hlsl");
-				//
-				//	TVector3 temp;
-				//	_fgetts(buffer, _countof(buffer), fpRead);
-				//	_stscanf_s(buffer, _T("%f %f \n"), &temp.x, &temp.y);
-				//	obj->SetTransform(temp);
-				//
-				//	obj->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-				//								 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-				//	obj->GetCollider()->SetTransform(obj->GetTransform());
-				//	obj->GetCollider()->SetScale({ static_cast<float>(obj->GetTexture()->GetWidth()),
-				//								 static_cast<float>(obj->GetTexture()->GetHeight()),0 });
-				//	obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
-				//
-				//	pSceneData->PushMonster(obj);
-				//}
-				//
-				//
+				TCHAR sound[80] = { 0, };
+				_fgetts(buffer, _countof(buffer), fpRead);
+				_stscanf_s(buffer, _T("%s\n"), sound, (unsigned int)_countof(sound));
+
+				pSceneData->SetBGM(SoundMgr::GetInstance().Load(sound));
+					
 			}
 			else if (_tcscmp(type, L"#PotalList") == 0)
 			{
@@ -345,6 +322,7 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 	if (fopen_s(&fpRead, LoadPath.c_str(), "rt") == 0)
 	{
 
+		monster->Init();
 		TCHAR buffer[256] = { 0, };
 
 		while (_fgetts(buffer, _countof(buffer), fpRead) != 0)
@@ -384,7 +362,6 @@ bool SaveLoader::LoadMonsterData(std::shared_ptr<MonsterObject> monster, std::st
 					_fgetts(buffer, _countof(buffer), fpRead);
 					_stscanf_s(buffer, _T("%s\n"), tex, (unsigned int)_countof(tex));
 
-					monster->Init();
 
 					MONSTER_STATE state;
 					std::shared_ptr<SpriteData> SpriteInfo = std::make_shared<SpriteData>();
@@ -502,6 +479,7 @@ bool SaveLoader::LoadObjectData(std::shared_ptr<SpriteObject> monster, std::stri
 
 
 			}
+
 
 		}
 		fclose(fpRead);

@@ -20,7 +20,7 @@ bool MonsterObject::Frame()
 	for (int i = 0; i < m_pDamageIndicatorList.size(); ++i)
 	{
 		if(m_pDamageIndicatorList[i]->GetIsValid())
-			m_pDamageIndicatorList[i]->Frame(GetTransform(), 100000);
+			m_pDamageIndicatorList[i]->Frame(GetCollider()->GetTransform()+TVector3(0,200,0), m_vDamageList);
 	}
 
 	if (m_IsDead)
@@ -108,6 +108,15 @@ void MonsterObject::ChangeMonsterState(MONSTER_STATE state)
 	SetScale(GetSpriteData(state)->m_vScale);
 	SetTexture(GetSpriteData(state)->m_pTexture);
 	SetSpriteInfo(GetSpriteData(state));
+
+
+
+}
+void MonsterObject::SetIsHit(bool hit, std::shared_ptr<SpriteObject> eff, std::vector<int> damagelist)
+{
+	m_bIsHit = hit;
+	m_pHitEff = eff;
+	m_vDamageList = damagelist;
 
 
 

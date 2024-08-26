@@ -11,6 +11,7 @@
 #include"Scene.h"
 #include"DamageIndicator.h"
 #include"UI.h"
+#include"EffectSpwaner.h"
 std::vector<std::shared_ptr<Packet>> SendPacketList;
 
 bool PlayerObject::Init()
@@ -85,6 +86,7 @@ bool PlayerObject::Frame()
 
         if (m_pActivateSkill->GetCanHit())
         {
+            m_pActivateSkill->PlaySkillSound();
             for (auto& monster : SceneMgr::GetInstance().GetCurrentScene()->GetMonsterList())
             {
                 auto coll = monster->GetCollider();
@@ -92,7 +94,16 @@ bool PlayerObject::Frame()
                 {
                     if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
                     {
-                        monster->SetIsHit(true);
+                        std::vector<int> damagelist;
+                        for (int i = 0; i < 8; ++i)
+                        {
+                            auto t = randstep(-100.0f, 100.0f);
+                            auto t1 = randstep(-100.0f, 100.0f);
+                            EffectSpwaner::GetInstance().SpawnEffect(m_pActivateSkill->GetEffect(), coll->GetTransform() + TVector3(t1,t,0),0.1*i);
+                            damagelist.push_back(randstep(50000, 150000));
+                        }
+
+                        monster->SetIsHit(true, m_pActivateSkill->GetEffect(), damagelist);
                         if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
                         {
                             std::shared_ptr<Packet> pack = std::make_shared<Packet>();
@@ -100,7 +111,7 @@ bool PlayerObject::Frame()
                             NetSendPacket(pack);
 
                         }
-
+                        m_pActivateSkill->SetPlayEffSound(true);
                     }
 
                 }

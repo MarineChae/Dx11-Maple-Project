@@ -145,11 +145,13 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="CSoundMgr.cpp" />
     <ClCompile Include="DamageIndicator.cpp" />
     <ClCompile Include="DamageObject.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DropObject.cpp" />
     <ClCompile Include="DxRenderer.cpp" />
+    <ClCompile Include="EffectSpwaner.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MakePacket.cpp" />
@@ -181,6 +183,8 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="EffectSpwaner.h" />
+    <ClInclude Include="SoundMgr.h" />
     <ClInclude Include="DamageIndicator.h" />
     <ClInclude Include="DamageObject.h" />
     <ClInclude Include="Device.h" />

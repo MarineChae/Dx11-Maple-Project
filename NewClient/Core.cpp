@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "Timer.h"
 #include "ClientNet.h"
-
+#include "SoundMgr.h"
 bool Core::Init()
 {
     return true;
@@ -33,6 +33,7 @@ bool Core::EngineInit()
     CameraMgr::GetInstance().GetCamera().Init();
     Input::GetInstance().Init();
     Timer::GetInstance().Init();
+
     if (!connentNetWork())
     {
         return false;
@@ -49,7 +50,7 @@ bool Core::EngineFrame()
 
     Input::GetInstance().Frame();
     Timer::GetInstance().Frame();
-
+    SoundMgr::GetInstance().Frame();
 
 
     SetWindowText(MyWindow::GetHWND(), std::to_wstring(Timer::GetInstance().GetFPS()).c_str());
@@ -78,6 +79,8 @@ bool Core::EngineRelease()
 {
     Device::Release();
     CameraMgr::GetInstance().GetCamera().Release();
+    SoundMgr::GetInstance().Release();
+
     Release();
     return true;
 }

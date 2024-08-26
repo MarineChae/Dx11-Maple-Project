@@ -17,6 +17,8 @@ private:
 	bool		  m_bIsHit;
 	int			  m_iID;
 	std::vector<std::shared_ptr<DamageIndicator>> m_pDamageIndicatorList;
+	std::vector<int>m_vDamageList;
+	std::shared_ptr<SpriteObject> m_pHitEff;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -42,7 +44,7 @@ public:
 	virtual bool GetIsDead() override { return m_IsDead; }
 	virtual void SetIsDead(bool dead)override { m_IsDead = dead; };
 	virtual bool GetIsHit() const override { return m_bIsHit; } ;
-	virtual void SetIsHit(bool hit) override { m_bIsHit = hit; };
+	virtual void SetIsHit(bool hit, std::shared_ptr<SpriteObject> eff, std::vector<int> damagelist);
 	virtual int GetID() const override { return m_iID; }
 	virtual void SetID(int ID)  override { m_iID = ID; };
 public:

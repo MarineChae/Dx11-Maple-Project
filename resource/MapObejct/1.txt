@@ -15,3 +15,5 @@
 1	1	-1212.000000	-456.000031	8	1	8	0.180000
 ../resource/MapObejct/potal.png
 2	1	596.486755	-454.959351	8	1	8	0.180000
+#BGM
+../resource/Sound/BigMachine_mission.mp3

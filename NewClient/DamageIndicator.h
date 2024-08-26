@@ -10,7 +10,7 @@ private:
 	float m_fRenderCnt;
 public:
 	bool Init();
-	bool Frame(TVector3 pos, int damage);
+	bool Frame(TVector3 pos, std::vector<int>damage);
 	bool Render();
 
 	void SetIsValid(bool valid)  { m_bisValid = valid; };

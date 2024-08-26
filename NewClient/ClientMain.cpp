@@ -11,6 +11,8 @@
 #include"SaveLoader.h"
 #include"Texture.h"
 #include"UI.h"
+#include"SoundMgr.h"
+#include"EffectSpwaner.h"
 extern float MapSizeX = 0;
 extern float MapSizeY = 0;
 bool ClientMain::Init()
@@ -21,6 +23,8 @@ bool ClientMain::Init()
 	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
 	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight(); 
 
+	testScene->SetBGM(SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3"));
+	testScene->GetBGM()->SoundPlay(true);
 	SceneMgr::GetInstance().SetCurrentScene(testScene);
 	UIMgr::GetInstance().Init();
 	return true;
@@ -29,7 +33,7 @@ bool ClientMain::Init()
 bool ClientMain::Frame()
 {
 	SceneMgr::GetInstance().GetCurrentScene()->Frame();
-
+	EffectSpwaner::GetInstance().Frame();
 
 	CameraMgr::GetInstance().GetCamera().SetCameraPos(ObejctMgr::GetInstance().GetPlayerObject()->GetTransform());
 	CameraMgr::GetInstance().GetCamera().ControlAngle(1388, 766
@@ -151,6 +155,7 @@ bool ClientMain::Render()
 		}
 		
 	}
+	EffectSpwaner::GetInstance().Render();
 	UIMgr::GetInstance().GetUI()->Render();
   	return true;
 }

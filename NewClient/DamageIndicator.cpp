@@ -16,17 +16,18 @@ bool DamageIndicator::Init()
 	return false;
 }
 
-bool DamageIndicator::Frame(TVector3 pos, int damage)
+bool DamageIndicator::Frame(TVector3 pos, std::vector<int> damage)
 {
 	if (m_bisValid)
 	{
 		StartPrintDamage();
 		bool chk = false;
 		TVector3 inter(0, 0, 1);
-		for (auto& dam : m_vPrintDamage)
+		int i = 0;
+		for (auto& damage : damage)
 		{
-			dam->Frame(pos+ inter, damage);
-			chk = dam->GetIsValid();
+			m_vPrintDamage[i]->Frame(pos + inter, damage);
+			chk = m_vPrintDamage[i++]->GetIsValid();
 			inter.y += 50.0f;
 		}
 		if (!chk)
@@ -46,7 +47,7 @@ bool DamageIndicator::Render()
 	if (m_bisValid)
 	{
 		m_fRenderCnt += Timer::GetInstance().GetSecPerFrame();
-		if (m_fRenderCnt >= m_vPrintDamage.size() / 10)
+ 		if (m_fRenderCnt >= m_vPrintDamage.size() / 10)
 		{
 			for (auto& dam : m_vPrintDamage)
 			{

@@ -4,5 +4,10 @@ FistInrange
 1
 ../resource/Skill/00001/00001.png
 500.00000	0.00000	400.00000	150.00000	5	4	16	0.04625
-
-702 353
+#SkillEffect
+../resource/Skill/00001/00001HIT.png
+5	2	10	0.04625
+#SkillSound
+../resource/Sound/FistEnrange.mp3
+#SkillEffectSound
+../resource/Sound/FistEnrangeHit.mp3

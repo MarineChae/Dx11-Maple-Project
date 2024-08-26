@@ -8,6 +8,7 @@
 #include"SaveLoader.h"
 #include"SKill.h"
 #include"DropObject.h"
+#include"SoundMgr.h"
 
 extern float MapSizeX;
 extern float MapSizeY;
@@ -160,9 +161,11 @@ BOOL PacketProc_SceneChange(std::shared_ptr<Packet> pack)
     auto scene = SceneMgr::GetInstance().GetScene(Scenenum);
     if (obj == ObejctMgr::GetInstance().GetPlayerObject())
     {
+        SceneMgr::GetInstance().GetCurrentScene()->GetBGM()->SoundStop();
         SceneMgr::GetInstance().SetCurrentScene(scene);
         MapSizeX = scene->GetMap()->GetTexture()->GetWidth();
         MapSizeY = scene->GetMap()->GetTexture()->GetHeight();
+        scene->GetBGM()->SoundPlay(true);
     }
 
     obj->SetTransform({ 0,0,0 });

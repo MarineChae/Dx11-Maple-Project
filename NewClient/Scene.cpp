@@ -4,6 +4,7 @@
 #include"PlayerObject.h"
 #include"UI.h"
 #include"SaveLoader.h"
+#include"SoundMgr.h"
 void Scene::DeletePlayer(std::shared_ptr<PlayerObject> object)
 {
 	for (auto it = m_PlayerList.begin(); it != m_PlayerList.end(); )
@@ -40,10 +41,12 @@ bool Scene::Init(std::wstring MapName)
 	found = Key.find_last_of(L".");
 	m_sMapName = Key.substr(0, found);
 
-
+	 
 	m_pMap->Create(MapName,L"../Shader/Defalutshader.hlsl");
 	m_pCollider = std::make_shared<Collider>();
 	m_pCollider->Create(L" ", L"../Shader/LineDebug.hlsl");
+	//m_pBGM = SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3");
+	//m_pBGM->SoundPlay(true);
 
     return true;
 }

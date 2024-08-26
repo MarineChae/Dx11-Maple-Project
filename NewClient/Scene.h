@@ -2,6 +2,7 @@
 #include "MonsterObject.h"
 
 class PlayerObject;
+class Sound;
 class Scene
 {
 private:
@@ -16,7 +17,7 @@ private:
 	std::vector<std::shared_ptr<Object>>	  m_ObjectList;
 	std::vector<std::shared_ptr<Object>>	  m_PotalList;
 	std::vector<std::shared_ptr<Line>>		  m_LineColliderList;
-
+	std::shared_ptr<Sound>					  m_pBGM;
 public:
 	int										  GetSceneNum() const { return m_iSceneNum; };
 	std::wstring							  GetMapName() const { return  m_sMapName; }
@@ -29,8 +30,11 @@ public:
 	std::vector<std::shared_ptr<Object>>	  GetPotalList() { return m_PotalList; }
 	std::shared_ptr<Collider>				  GetCollider() { return m_pCollider; }
 	std::vector<std::shared_ptr<Line>>		  GetLineColliderList() { return m_LineColliderList; }
+	std::shared_ptr<Sound>					  GetBGM() { return m_pBGM; }
 
 	void SetSceneNum(int num) { m_iSceneNum = num; };
+	void SetBGM(std::shared_ptr<Sound> bgm) { m_pBGM = bgm; };
+
 	void PushMonster(std::shared_ptr<MonsterObject> monster) { return m_MonsterList.push_back(monster); }
 	void PushPlayer(std::shared_ptr<PlayerObject> object) { return m_PlayerList.push_back(object); }
 	void PushObject(std::shared_ptr<Object> object) { return m_ObjectList.push_back(object); }

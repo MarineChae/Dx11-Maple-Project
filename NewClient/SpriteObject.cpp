@@ -16,7 +16,7 @@ bool SpriteObject::Create(std::wstring FileName, std::wstring ShaderFileName)
     else
     {
         m_pSpriteInfo = std::make_shared<SpriteData>();
-        m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
+        //m_pSpriteInfo->m_vScale = { static_cast<float>(GetTexture()->GetWidth()),static_cast<float>(GetTexture()->GetHeight()),1 };
     }
 
     return false;

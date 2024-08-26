@@ -88,7 +88,7 @@ void DamageObject::SetIsValid(bool valid)
 }
 
 DamageObject::DamageObject()
-	:m_fPrintTime(1.0f)
+	:m_fPrintTime(3.0f)
 	, m_fCurrentTime(0.0f)
 	, m_fAlpha(1.0f)
 	, m_bValid(false)

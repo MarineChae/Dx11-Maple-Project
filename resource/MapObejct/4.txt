@@ -17,3 +17,5 @@ Swoo3PhaseTree
 776.319214	43.999985
 #PotalList
 0
+#BGM
+../resource/Sound/GravityLordRise.mp3

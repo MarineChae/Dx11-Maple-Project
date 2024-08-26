@@ -19,3 +19,5 @@ Swoo2PhaseTree
 1
 ../resource/MapObejct/potal.png
 1	1	-833.999939	-306.000031	8	1	8	0.180000
+#BGM
+../resource/Sound/GravityLord.mp3

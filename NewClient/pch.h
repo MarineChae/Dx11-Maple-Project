@@ -158,4 +158,4 @@ static std::string wtm(std::wstring str)
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
     return conv.to_bytes(str);
 }
-
+#define randstep(fmin,fmax) ((float)fmin + ((float)fmax-(float)fmin) * rand()/RAND_MAX)
