@@ -27,6 +27,18 @@ bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
 
+    //if (m_iHP <= 0)
+    //{
+    //    ChangeState(PLAYER_STATE::PS_DIE);
+    //    Input::GetInstance().SetActive(false);
+    //}
+    //if (PLAYER_STATE::PS_DIE == m_PlayerState &&Input::GetInstance().GetKeyState(VK_F10) == KEY_PUSH)
+    //{
+    //    ChangeState(PLAYER_STATE::PS_STAND);
+    //    m_iHP = m_iMaxHP;
+    //    Input::GetInstance().SetActive(true);
+    //}
+
     if (nullptr != m_pActivateSkill && !m_pActivateSkill->GetEnable())
     {
         m_pActivateSkill->SetCanHit(true);
@@ -35,12 +47,12 @@ bool PlayerObject::Frame()
     }
    
 
-   if (GetDestination() != GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+   if (GetDestination() != GetCollider()->GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
    {
        auto tr = GetTransform();
        auto des = GetDestination();
-       SetTransform(GetTransform().Lerp(GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-       SetTransform(GetTransform().SmoothStep(GetTransform(), GetDestination(), 0.10f));
+       SetTransform(GetTransform().Lerp(GetCollider()->GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
+       SetTransform(GetTransform().SmoothStep(GetCollider()->GetTransform(), GetDestination(), 0.10f));
       
    }
    if (GetJumping()) 
@@ -94,20 +106,23 @@ bool PlayerObject::Frame()
                 {
                     if (Collider::CheckOBBCollision(m_pActivateSkill->GetCollider(), coll))
                     {
+                        int packDamage = 0;
                         std::vector<int> damagelist;
                         for (int i = 0; i < 8; ++i)
                         {
                             auto t = randstep(-100.0f, 100.0f);
                             auto t1 = randstep(-100.0f, 100.0f);
                             EffectSpwaner::GetInstance().SpawnEffect(m_pActivateSkill->GetEffect(), coll->GetTransform() + TVector3(t1,t,0),0.1*i);
-                            damagelist.push_back(randstep(50000, 150000));
+                            auto dam = randstep(50000, 150000);
+                            packDamage += dam;
+                            damagelist.push_back(dam);
                         }
-
+                      
                         monster->SetIsHit(true, m_pActivateSkill->GetEffect(), damagelist);
                         if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
                         {
                             std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), 1000000, (BYTE)GetCurrentScene());
+                            MonsterGetDamagePacket(pack, GetObejctID(), monster->GetID(), packDamage, (BYTE)GetCurrentScene());
                             NetSendPacket(pack);
 
                         }
@@ -184,13 +199,15 @@ void PlayerObject::InputKey()
 
     if (Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
     {
-         ChangeState(PLAYER_STATE::PS_ATTACK);
+
 
         dwAction = ACTION_ATTACK;
     }
     if(nullptr != m_pActivateSkill && m_pActivateSkill->GetEnable())
         dwAction = ACTION_ATTACK;
 
+    if( m_PlayerState ==PLAYER_STATE::PS_DIE)
+        dwAction = ACTION_DIE;
 
     m_dwActionInput = dwAction;
 
@@ -201,6 +218,10 @@ void PlayerObject::PacketSendProc()
     static auto temp = SkillMgr::GetInstance().GetSkill("00001");
     std::shared_ptr<Packet> SendPacket = std::make_shared<Packet>();
 
+    if (m_PlayerState == PLAYER_STATE::PS_DIE)
+        m_dwCurrentAction = ACTION_DIE;
+
+
     switch (m_dwCurrentAction)
     {
 
@@ -209,6 +230,7 @@ void PlayerObject::PacketSendProc()
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_STAND);
 
@@ -220,6 +242,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_WALK);
 
@@ -228,6 +251,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope,(BYTE)1);
         ChangeState(PLAYER_STATE::PS_ONLOPE);
         break;
@@ -235,6 +259,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)0);
         ChangeState(PLAYER_STATE::PS_ONLOPE);
         break;
@@ -242,6 +267,7 @@ void PlayerObject::PacketSendProc()
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_JUMP);
 
@@ -253,6 +279,7 @@ void PlayerObject::PacketSendProc()
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
+            GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
         ChangeState(PLAYER_STATE::PS_JUMP);
         break;
@@ -262,8 +289,14 @@ void PlayerObject::PacketSendProc()
             GetTransform().x,
             GetTransform().y,
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, temp->GetSkillName().data(), temp->GetSkillNum().data());
-
+            ChangeState(PLAYER_STATE::PS_ATTACK);
         break;
+    case ACTION_DIE:
+        MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
+            GetTransform().x,
+            GetTransform().y,
+            GetHp(),
+            GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
     }
     if (m_bOnLope)
     {
@@ -328,6 +361,14 @@ void PlayerObject::SetPlayerSprite()
     SetSpriteInfo(fist);
     Create(L"../resource/Player/PFistEnrange.png", L"../Shader/Defalutshader.hlsl");
 
+    std::shared_ptr<SpriteData> die = std::make_shared<SpriteData>();
+    die->iCol = 1;
+    die->iRow = 1;
+    die->iMaxImageCount = 1;
+    die->m_fDelay = 0.25f;
+    die->m_vScale = { 46,68,1 };
+    SetSpriteInfo(die);
+    Create(L"../resource/Player/DEAD.png", L"../Shader/Defalutshader.hlsl");
 
 
 

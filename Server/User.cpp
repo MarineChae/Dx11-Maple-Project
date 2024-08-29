@@ -26,7 +26,7 @@ void User::Close()
 		else if (otherplayer->GetSessionID() == m_dwSessionID)
 		{
 			
-			if (ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()] != nullptr)
+ 			if (ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()] != nullptr)
 			{
 
 				ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()]->DeleteScenePlayer(otherplayer);

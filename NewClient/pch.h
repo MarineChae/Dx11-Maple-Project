@@ -94,6 +94,7 @@ enum PLAYER_STATE
     PS_JUMP,
     PS_ONLOPE,
     PS_ATTACK,
+    PS_DIE,
     PS_DEFAULT,
 
 

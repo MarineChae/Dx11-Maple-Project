@@ -69,7 +69,7 @@ bool IocpModel::Init()
 	m_hIocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 
 	DWORD dwThreadID;
-	for (int iThread = 0; iThread < MAX_WORKER_THREAD; ++iThread)
+	for (int iThread = 0; iThread < 1; ++iThread)
 	{
 		m_hWorkerThread[iThread] = CreateThread(0, 0, WorkerThread, this, 0, &dwThreadID);
 		//IocpModel을 인자로 넘기는 스레드 생성

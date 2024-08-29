@@ -12,6 +12,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     BYTE byDirection;
     float fX;
     float fY;
+    int iHP;
     BYTE isFalling;
     BYTE isJump;
     BYTE onLope;
@@ -22,6 +23,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     *pack >> dwSessionID;
     *pack >> fX;
     *pack >> fY;
+    *pack >> iHP;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> onLope;
@@ -45,6 +47,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetAction(state);
     player->SetDirection(byDirection);
     player->SetOnLope(onLope);
+    player->SetHP(iHP);
     OutputDebugString(std::to_wstring((int)onLope).c_str());
 
  
@@ -59,6 +62,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     BYTE byDirection;
     float fX;
     float fY; 
+    int iHP;
     BYTE isFalling;
     BYTE isJump;
     BYTE onLope;
@@ -69,6 +73,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     *pack >> dwSessionID; 
     *pack >> fX;
     *pack >> fY;
+    *pack >> iHP;
     *pack >> isFalling;
     *pack >> isJump;
     *pack >> onLope;
@@ -92,6 +97,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     }
     player->SetIsJumping(isJump);
     player->SetOnLope(onLope);
+    player->SetHP(iHP);
     OutputDebugString(std::to_wstring((int)onLope).c_str());
 
     player->SetLopeUp(lopeUp);

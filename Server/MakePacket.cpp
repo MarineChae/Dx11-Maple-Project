@@ -3,12 +3,12 @@
 #include "PlayerData.h"
 #include"MonsterData.h"
 
-void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
+void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, int HP, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 19 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_START;
 	PacketHeader.PacketTemp = 0;
 
@@ -18,6 +18,7 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << HP;
 	*pack << isFalling;
 	*pack << isJump;
 	*pack << state;
@@ -25,11 +26,11 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 
 }
 
-void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
+void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y,int HP, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 15 + sizeof(PLAYER_STATE);
+	PacketHeader.PacketSize = 19 + sizeof(PLAYER_STATE);
 	PacketHeader.PacketType = PACKET_CS_MOVE_END;
 
 
@@ -39,6 +40,7 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 	*pack << SessionID;
 	*pack << X;
 	*pack << Y;
+	*pack << HP;
 	*pack << isFalling;
 	*pack << isJump;
 	*pack << state;

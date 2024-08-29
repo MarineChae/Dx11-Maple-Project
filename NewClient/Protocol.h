@@ -41,7 +41,7 @@
 #define ACTION_MOVEUP		2
 #define ACTION_MOVEDOWN		3
 #define ACTION_ATTACK		4
-
+#define ACTION_DIE	 		5
 
 #define ACTION_STAND			10
 #define ACTION_FALL				11

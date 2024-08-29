@@ -180,6 +180,7 @@ void ServerScene::Update()
 			std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 			MoveStartPacket(pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
 				player->GetPos().y,
+				player->GetHP(),
 				player->GetAction(),
 				player->GetIsFalling(),
 				player->GetIsJumping());
@@ -190,6 +191,7 @@ void ServerScene::Update()
 			std::shared_ptr<Packet> Pack = std::make_shared<Packet>();
 			MoveStopPacket(Pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
 				player->GetPos().y,
+				player->GetHP(),
 				player->GetAction(),
 				player->GetIsFalling(),
 				player->GetIsJumping());

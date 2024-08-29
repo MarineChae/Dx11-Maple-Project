@@ -36,7 +36,7 @@ BOOL connentNetWork()
     SOCKADDR_IN sa;
 
     sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1");
+    sa.sin_addr.s_addr = inet_addr("25.31.78.91");
     sa.sin_port = htons(m_PortNum);
 
     int ret = connect(m_SOCK, (SOCKADDR*)&sa, sizeof(sa));
@@ -105,7 +105,7 @@ BOOL NetworkProc(WPARAM wParam, LPARAM lParam)
 
 
     }
-
+     
     return TRUE;
 }
 
@@ -141,7 +141,7 @@ BOOL NetSendEvent()
 
 
     Res = WSASend(m_SOCK, &WsaBuff, 1, &SendSize, Flag, NULL, NULL);
-   
+    
 
     if (SOCKET_ERROR == Res)
     {

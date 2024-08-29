@@ -21,7 +21,10 @@ void PlayerData::Update()
 	m_colliderData.Update();
 
 	int coefficient = 0;
-
+	if (m_dwAction == PLAYER_STATE::PS_DIE)
+	{
+		m_vMovePow = TVector3::Zero;
+	}
 	//¿ÞÂÊ
 	if (m_bisMove && !m_bOnLope &&(!m_bIsFalling || !m_bIsJumping))
 	{
