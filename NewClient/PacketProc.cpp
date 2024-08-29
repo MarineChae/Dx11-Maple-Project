@@ -123,30 +123,27 @@ BOOL PacketProc_Attack(std::shared_ptr<Packet> pack)
     obj->SetFalling(isFalling);
 
     obj->SetJumping(isJump);
-    if (obj->Getactiveskil() == nullptr)
+
+    auto skill = obj->FindSkillMap(Skillnum);
+    if (skill == nullptr)
     {
-        auto skill = obj->FindSkillMap(Skillnum);
-        if (skill == nullptr)
-        {
-            skill = SkillMgr::GetInstance().LoadSkill(Skillnum);
-            obj->InsertSkill(skill);
-        }
-        skill->SetEnable(true);
-        skill->SetDirection(obj->GetDirection());
-        if (obj->GetDirection() > 0)
-        {
-            skill->SetTransform(obj->GetTransform() + (skill->GetOffset() * 1));
-
-        }
-        else
-        {
-            TVector3 temp{ skill->GetOffset().x * -1 , skill->GetOffset().y ,1 };
-            skill->SetTransform(obj->GetTransform() + temp);
-
-        }
-        obj->SetActivateSkill(skill);
+        skill = SkillMgr::GetInstance().LoadSkill(Skillnum);
+        obj->InsertSkill(skill);
+    }
+    skill->SetEnable(true);
+    skill->SetDirection(obj->GetDirection());
+    if (obj->GetDirection() > 0)
+    {
+        skill->SetTransform(obj->GetTransform() + (skill->GetOffset() * 1));
 
     }
+    else
+    {
+        TVector3 temp{ skill->GetOffset().x * -1 , skill->GetOffset().y ,1 };
+        skill->SetTransform(obj->GetTransform() + temp);
+
+    }
+    obj->SetActivateSkill(skill);
 
     return 0;
 }

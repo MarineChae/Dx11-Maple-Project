@@ -203,7 +203,7 @@ void PlayerObject::InputKey()
 
         dwAction = ACTION_ATTACK;
     }
-    if(nullptr != m_pActivateSkill && Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
+    if(nullptr != m_pActivateSkill && m_pActivateSkill->GetEnable())
         dwAction = ACTION_ATTACK;
 
     if( m_PlayerState ==PLAYER_STATE::PS_DIE)
@@ -220,7 +220,7 @@ void PlayerObject::PacketSendProc()
 
     if (m_PlayerState == PLAYER_STATE::PS_DIE)
         m_dwCurrentAction = ACTION_DIE;
-   
+
 
     switch (m_dwCurrentAction)
     {
