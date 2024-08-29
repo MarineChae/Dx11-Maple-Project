@@ -43,6 +43,7 @@ public:
 	PLAYER_STATE GetPlayerState() const { return m_PlayerState; };
 	void InsertSkill(std::shared_ptr<Skill> skill); 
 	void SetActivateSkill(std::shared_ptr<Skill> skill);
+	std::shared_ptr<Skill> Getactiveskil() { return m_pActivateSkill; }
 	std::shared_ptr<Skill> FindSkillMap(std::string num);
 	std::map<std::string, std::shared_ptr<Skill>> GetSkillList() { return m_vSkillList; }
 public:
