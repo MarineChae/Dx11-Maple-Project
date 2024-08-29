@@ -36,7 +36,7 @@ BOOL connentNetWork()
     SOCKADDR_IN sa;
 
     sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = inet_addr("25.31.78.91");
+    sa.sin_addr.s_addr = inet_addr("121.142.12.74");
     sa.sin_port = htons(m_PortNum);
 
     int ret = connect(m_SOCK, (SOCKADDR*)&sa, sizeof(sa));
@@ -253,7 +253,7 @@ BOOL NetRecvEvent()
             if (1 == dwResult)
                 break;
 
-            if (0xff == dwResult)
+            if (0xff == dwResult) 
                 return FALSE;
 
         }

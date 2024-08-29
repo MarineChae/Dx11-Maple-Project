@@ -68,13 +68,13 @@ bool PlayerObject::Frame()
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
     {
         InputKey();
-        InputAction();
-
+        InputAction();  
+        PacketSendProc();
     }
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
         SetProgressBar();
-        PacketSendProc();
+      
  
     }
 
@@ -306,10 +306,10 @@ void PlayerObject::PacketSendProc()
     static double sendtime = 0;
     sendtime += Timer::GetInstance().GetSecPerFrame();
 
-    if (sendtime >= 0.0625)
+    if (sendtime >= 0.1625)
     {
         NetSendPacket(SendPacket);
-        sendtime -= 0.0625;
+        sendtime =0;
     }
 
 }

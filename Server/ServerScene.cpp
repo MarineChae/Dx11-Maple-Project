@@ -163,16 +163,6 @@ void ServerScene::Update()
 			once=false;
 
 
-		if (player->GetIsFalling())
-			OutputDebugString(L"Falling\n");
-		else
-		{
-			OutputDebugString(L"stand\n");
-
-		}
-
-
-
 
 
 		if (player->GetIsMove())
@@ -223,7 +213,7 @@ void ServerScene::Update()
 
 		}
 
-		m_fTargetChangeTime += 0.0625;
+		m_fTargetChangeTime += 0.0325;
 		if (m_fTargetChangeTime >= 5.0f)
 		{
 			m_fTargetChangeTime = 0;

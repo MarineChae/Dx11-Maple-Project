@@ -22,9 +22,9 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			
 			if (pUser != nullptr)
 			{
-				//m2.lock();
+				m2.lock();
 				pUser->Dispatch(dwTransfer,overlap);
-				//m2.unlock();
+				m2.unlock();
 			}
 		}
 		else
@@ -37,16 +37,17 @@ DWORD WINAPI WorkerThread(LPVOID param)
 			}
 			if (Errmsg == ERROR_HANDLE_EOF)
 			{
-				ERRORMSG(L"ERROR_HANDLE_EOF");
+				//ERRORMSG(L"ERROR_HANDLE_EOF");
 				SetEvent(iocp->GetKillEvent());
 			}
 			if (Errmsg == ERROR_NETNAME_DELETED)
 			{
-				pUser->Close();
-				ERRORMSG(L"ClientHardClosd");
+				pUser->SetConnect(false);
+				//pUser->Close();
+				//ERRORMSG(L"ClientHardClosd");
 				continue;
 			}
-			ERRORMSG(L"ERROR ETC...");
+			//ERRORMSG(L"ERROR ETC...");
 			SetEvent(iocp->GetKillEvent());
 			
 			break;

@@ -48,7 +48,6 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetDirection(byDirection);
     player->SetOnLope(onLope);
     player->SetHP(iHP);
-    OutputDebugString(std::to_wstring((int)onLope).c_str());
 
  
     player->SetLopeUp(lopeUp);
@@ -98,7 +97,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetIsJumping(isJump);
     player->SetOnLope(onLope);
     player->SetHP(iHP);
-    OutputDebugString(std::to_wstring((int)onLope).c_str());
+   
 
     player->SetLopeUp(lopeUp);
     return 0;

@@ -65,7 +65,8 @@ void IOCPServer::ChatMsg(Packet& packet)
 
 int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 {
-
+	if (pUser == nullptr)
+		return -1;
 	char* SendBuffer = packet->GetBufferPointer();
 	pUser->GetSendBuffer().buf = SendBuffer;
 	pUser->GetSendBuffer().len = packet->GetDataSize();
@@ -111,8 +112,8 @@ bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
 		{
 
 			int err = GetLastError();
-			ERRORMSG(L"BroadCasting");
-			iterSend->SetConnect(false);
+			//ERRORMSG(L"BroadCasting");
+			//iterSend->SetConnect(false);
 			continue;
 		}
 	}
@@ -137,11 +138,11 @@ bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>,int> packet)
 
 
 		if (iSendByte == SOCKET_ERROR)
-		{
+		{ 
 
 			int err = GetLastError();
-			ERRORMSG(L"BroadCasting");
-			iterSend->SetConnect(false);
+			//ERRORMSG(L"BroadCasting");
+			//iterSend->SetConnect(false);
 			continue;
 		}
 	}
@@ -168,15 +169,39 @@ bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, st
 		{
 
 			int err = GetLastError();
-			ERRORMSG(L"BroadCasting");
-			iterSend->SetConnect(false);
+			//ERRORMSG(L"BroadCasting");
+			//iterSend->SetConnect(false);
 			continue;
 		}
 	}
 
 	return true;
 }
+bool IOCPServer::Broadcasting(std::shared_ptr<Packet>packet , std::shared_ptr<User> pUser)
+{
 
+	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
+	{
+		if (iterSend == nullptr) continue;
+
+		if (iterSend->IsConnected() == false || iterSend == pUser) continue;
+
+		int curScene = PlayerDataMgr::GetInstance().GetPlayerData(iterSend->GetSessionId())->GetCurrentScene();
+
+		int iSendByte = SendPacket(iterSend.get(), packet);
+
+		if (iSendByte == SOCKET_ERROR)
+		{
+
+			int err = GetLastError();
+			//ERRORMSG(L"BroadCasting");
+			//iterSend->SetConnect(false);
+			continue;
+		}
+	}
+
+	return true;
+}
 
 
 bool IOCPServer::Init()
@@ -213,7 +238,7 @@ bool IOCPServer::Init()
 	ret = bind(m_NetworkBase.GetSocket(), (SOCKADDR*)&m_NetworkBase.GetSockAddr(), sizeof(m_NetworkBase.GetSockAddr()));
 	if (ret == SOCKET_ERROR)
 	{
-		ERRORMSG(L"SOCKET BIND ERROR");
+		//ERRORMSG(L"SOCKET BIND ERROR");
 		return false;
 	}
 
@@ -222,7 +247,7 @@ bool IOCPServer::Init()
 	ret = listen(m_NetworkBase.GetSocket(), SOMAXCONN);
 	if (ret == SOCKET_ERROR)
 	{
-		ERRORMSG(L"SOCKET LISTEN ERROR");
+		//ERRORMSG(L"SOCKET LISTEN ERROR");
 		return false;
 	}
 
@@ -243,7 +268,7 @@ bool IOCPServer::ThreadRun()
 	Timer::GetInstance().Frame();
 	static double threadtimer=0;
 	threadtimer += Timer::GetInstance().GetSecPerFrame();
-	if (threadtimer <= 0.0625)
+	if (threadtimer <= 0.0325)
 	{
 
 		return true;
@@ -279,9 +304,9 @@ bool IOCPServer::ThreadRun()
 			continue;
 		}
 		std::shared_ptr<User> pUser = *iterSend;
-		if (pUser->IsConnected() == false)
+		if (iterSend->get()->IsConnected() == false)
 		{
-			pUser->Close();
+			iterSend->get()->Close();
 			iterSend = SessionMgr::GetInstance().GetUserList().erase(iterSend);
 		}
 		else

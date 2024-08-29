@@ -31,14 +31,14 @@ void User::Close()
 
 				ServerSceneMgr::GetInstance().GetSceneList()[otherplayer->GetCurrentScene()]->DeleteScenePlayer(otherplayer);
 			}
-			PlayerDataMgr::GetInstance().DeletePlayerData(m_dwSessionID);
+  			PlayerDataMgr::GetInstance().DeletePlayerData(m_dwSessionID);
 			break;
 		}
 
 	}
-
+	//IOCPServer::GetInstance().Broadcasting(pack);
 	IOCPServer::GetInstance().AddPacket(pack,-1);
-	m_bConnected = false;
+ 	m_bConnected = false;
 	closesocket(m_UserSock);
 
 }
@@ -115,7 +115,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
-		
+		OutputDebugString(L"send\n");
 
 	}
 	delete myov;
@@ -213,7 +213,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 
 		std::shared_ptr<Packet> pack2 = std::make_shared<Packet>();
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 65493, CurrentScene);
-		IOCPServer::GetInstance().Broadcasting(pack2);
+		IOCPServer::GetInstance().Broadcasting(pack2, user);
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),PLAYER_STATE::PS_STAND,0,x,y, 65493);
@@ -239,7 +239,7 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 					otherplayer->GetPos().y,
 					otherplayer->GetHP(), otherplayer->GetCurrentScene());
 
-				OutputDebugString(L"other character");
+	
 				Sleep(50);
 				IOCPServer::GetInstance().SendPacket(user.get(), playerpack);
 			}

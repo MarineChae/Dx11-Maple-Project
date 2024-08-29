@@ -9,7 +9,7 @@
 #include"SKill.h"
 #include"DropObject.h"
 #include"SoundMgr.h"
-
+#include"MakePacket.h"
 extern float MapSizeX;
 extern float MapSizeY;
 BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
@@ -328,10 +328,21 @@ BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack)
     player->SetCurrentScene((SceneNum)CurrentScene);
     player->SetMaxHp(HP);
     player->SetHp(HP);
-    player->SetState(PLAYER_STATE::PS_JUMP);
+    player->ChangeState(PLAYER_STATE::PS_JUMP);
     ObejctMgr::GetInstance().PushObject(player, dwSessionID);
     ObejctMgr::GetInstance().SetPlayerObject(player);
-   
+
+    auto scene = SceneMgr::GetInstance().GetScene(CurrentScene);
+
+    
+    SceneMgr::GetInstance().SetCurrentScene(scene);
+    MapSizeX = scene->GetMap()->GetTexture()->GetWidth();
+    MapSizeY = scene->GetMap()->GetTexture()->GetHeight();
+    scene->GetBGM()->SoundPlay(true);
+    
+    player->SetTransform({ 0,0,0 });
+    player->SetCurrentScene((SceneNum)CurrentScene);
+    scene->PushPlayer(player); 
 
     return 0;
 }
@@ -365,6 +376,7 @@ BOOL PacketProc_CreateOtherCharacter(std::shared_ptr<Packet> pack)
     other->SetRenderState(true);
     other->SetObejctID(dwSessionID);
     other->SetCurrentScene((SceneNum)CurrentScene);
+    other->ChangeState(PLAYER_STATE::PS_JUMP);
     ObejctMgr::GetInstance().PushObject(other, dwSessionID);
 
 
@@ -378,6 +390,6 @@ BOOL PacketProc_DisconnectOtherCharacter(std::shared_ptr<Packet> pack)
     *pack >> dwSessionID;
 
     ObejctMgr::GetInstance().DisconnectCharacter(dwSessionID);
-
+    
     return 0;
 }

@@ -18,14 +18,15 @@ extern float MapSizeY = 0;
 bool ClientMain::Init()
 {
 	saveload = std::make_shared<SaveLoader>();
-	testScene = std::make_shared<Scene>();
-	saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
-	MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
-	MapSizeY = testScene->GetMap()->GetTexture()->GetHeight(); 
+	//testScene = std::make_shared<Scene>();
+	//saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
+	//MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
+	//MapSizeY = testScene->GetMap()->GetTexture()->GetHeight(); 
+	//
+	//testScene->SetBGM(SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3"));
+	//testScene->GetBGM()->SoundPlay(true);
 
-	testScene->SetBGM(SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3"));
-	testScene->GetBGM()->SoundPlay(true);
-	SceneMgr::GetInstance().SetCurrentScene(testScene);
+	//SceneMgr::GetInstance().SetCurrentScene(testScene);
 	UIMgr::GetInstance().Init();
 	return true;
 }
