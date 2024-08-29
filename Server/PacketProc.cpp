@@ -38,7 +38,8 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
  
     player->SetIsFalling(isFalling);
-    if (player->GetIsJumping() != isJump)
+
+    if (player->GetIsJumping() != isJump && !isFalling)
     {
         player->SetBeforePos(player->GetPos());
     }
@@ -90,7 +91,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetAction(state);
     player->SetDirection(byDirection);
 
-    if (player->GetIsJumping() != isJump)
+    if (player->GetIsJumping() != isJump && !isFalling)
     {
         player->SetBeforePos(player->GetPos());
     }
@@ -136,7 +137,7 @@ BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetIsFalling(isFalling);
     player->SetIsMove(false);
     player->SetAction(state);
-    if (player->GetIsJumping() != isJump)
+    if (player->GetIsJumping() != isJump && !isFalling)
     {
         player->SetBeforePos(player->GetPos());
     }
