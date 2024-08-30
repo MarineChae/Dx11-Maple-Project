@@ -1,0 +1,7 @@
+#ObjectName
+LazerCollider
+#ObjectState
+1
+../resource/InteractionObj/LazerCollider.png
+0	1	1	1	0.150000
+

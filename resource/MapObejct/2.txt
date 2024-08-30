@@ -82,7 +82,7 @@
 ../resource/MapObejct/LTSpawn.png
 0	-958.271912	394.098480	5	1	5	0.180000
 ../resource/MapObejct/LBSpawn.png
-0	-1135.470581	40.098434	5	1	5	0.180000
+0	-1135.470581	40.098434	5	1	5	0.180000 
 #MonsterList
 5
 ../resource/MonsterData/swoo1.txt

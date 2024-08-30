@@ -113,14 +113,14 @@ void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float 
 
 }
 
-void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rotate,char* ObjectName, BYTE CurrentScene)
+void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rotate,char* ObjectName, OBJECT_TYPE objectType, BYTE CurrentScene)
 {
 	int namelen = strlen(ObjectName);
 
 	PACKET_HEADER PacketHeader;
 
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
-	PacketHeader.PacketSize = 17 + namelen;
+	PacketHeader.PacketSize = 17 + namelen + sizeof(objectType);
 	PacketHeader.PacketType = PACKET_CS_SPAWN_OBJECT;
 
 	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
@@ -129,6 +129,7 @@ void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rot
 	*pack << X;//4
 	*pack << Y;//4
 	*pack << rotate;//4
+	*pack << objectType;
 	*pack << CurrentScene;
 	*pack << (BYTE)NETWORK_PACKET_END;
 

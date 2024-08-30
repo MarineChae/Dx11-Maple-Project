@@ -244,11 +244,12 @@ std::shared_ptr<ServerScene> ServerSceneMgr::InsertScene(int SceneNum)
 	//씬이 로딩되어 있지 않은경우 파일에서 몬스터 정보와 충돌정보를 가져와야한다...
 	std::shared_ptr<ServerScene> newScene = std::make_shared<ServerScene>();
 
+	m_mSceneList.insert({ SceneNum,newScene });
 
 	newScene->LoadSceneData(SceneNum);
 
 
-	m_mSceneList.insert({ SceneNum,newScene });
+	
 
 
 	return newScene;

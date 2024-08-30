@@ -5,6 +5,8 @@
 #include"UI.h"
 #include"SaveLoader.h"
 #include"SoundMgr.h"
+#include"Timer.h"
+
 void Scene::DeletePlayer(std::shared_ptr<PlayerObject> object)
 {
 	for (auto it = m_PlayerList.begin(); it != m_PlayerList.end(); )
@@ -70,8 +72,28 @@ bool Scene::Frame()
 	m_pMap->Frame();
 	for (auto& ob : m_ObjectList)
 	{
+
 		ob->Frame();
 		ob->GetCollider()->Frame();
+		if (ob->GetObjectType() == ObejctType::LAZER_OBJECT )
+		{
+			ob->m_vRotate.z += Timer::GetInstance().GetSecPerFrame() * 0.33f;
+			
+		}
+		if (ob->GetObjectType() == ObejctType::COLLIDER)
+		{
+			ob->GetCollider()->m_vRotate.z += Timer::GetInstance().GetSecPerFrame() * 0.33f;
+			for (auto& player : ObejctMgr::GetInstance().GetObjectList())
+			{
+				if (player == nullptr) continue;
+				if (Collider::CheckOBBCollision(ob->GetCollider(), player->GetCollider()))
+				{
+					int a = 0;
+				}
+			}
+
+		}
+			
 	}
 
 	for (auto& m : m_MonsterList)
@@ -88,6 +110,8 @@ bool Scene::Frame()
 		}
 		else
 		{
+			if (it->get()->GetObjectType() == ObejctType::LAZER_OBJECT)
+				it->get()->m_vRotate.z += Timer::GetInstance().GetSecPerFrame();
 			it->get()->GetCollider()->Frame();
 			++it;
 		}
@@ -109,15 +133,21 @@ bool Scene::Render()
 		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		ob->Render();
+		if (ob->GetObjectType() == ObejctType::COLLIDER)
+		{
+			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->GetCollider()->Render();
+		}
 	}
 	for (auto& m : m_MonsterList)
 	{
 		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		m->Render();
-		m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-			&CameraMgr::GetInstance().GetCamera().GetProjection());
-		m->GetCollider()->Render();
+		//m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+		//	&CameraMgr::GetInstance().GetCamera().GetProjection());
+		//m->GetCollider()->Render();
 	}
 	for (auto& ob : m_InteractObjectList)
 	{

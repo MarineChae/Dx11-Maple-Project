@@ -231,6 +231,7 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
     float X;
     float Y;
     float rotate;
+    ObejctType type;
     BYTE CurrentScene;
 
     *pack >> namelen;
@@ -238,13 +239,25 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
     *pack >> X;
     *pack >> Y;
     *pack >> rotate;
+    *pack >> type;
     *pack >> CurrentScene;
 
 
     std::wstring ws(name, &name[namelen]);
+    std::shared_ptr<SpriteObject> obj;
+    if (type == ObejctType::FALLING_OBJECT)
+    {
+        obj = std::make_shared<DropObject>();
+        SceneMgr::GetInstance().GetScene(CurrentScene)->PushInteractObjectList(obj);
+    }
+    else if (type == ObejctType::LAZER_OBJECT || type == ObejctType::COLLIDER)
+    {
+        obj = std::make_shared<SpriteObject>();
+        SceneMgr::GetInstance().GetScene(CurrentScene)->PushObject(obj);
+    }
 
-    std::shared_ptr<DropObject> obj = std::make_shared<DropObject>();
-
+    obj->m_vRotate.z = rotate;
+    obj->SetObejctType(type);
     obj->Init();
     SaveLoadMgr::GetInstance().GetSaveLoader().LoadObjectData(obj, wtm(ws));
     obj->SetTransform({ X,Y,0 });
@@ -253,13 +266,17 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
     obj->SetSpriteInfo(obj->GetSpriteData(obj->GetObjectState()));
     obj->SetScale(obj->GetCurrentSpriteInfo()->m_vScale);
     obj->SetTexture(obj->GetCurrentSpriteInfo()->m_pTexture);
-    obj->SetPlacedScene(CurrentScene);
+    //obj->SetPlacedScene(CurrentScene);
 
     obj->GetCollider()->SetTransform(obj->GetTransform());
     obj->GetCollider()->SetScale(obj->GetScale());
     obj->GetCollider()->Create(L" ", L"../Shader/LineDebug.hlsl");
+    obj->GetCollider()->m_vRotate.z = rotate;
     //id관련 추가해야함
-    SceneMgr::GetInstance().GetScene(CurrentScene)->PushInteractObjectList(obj);
+
+
+
+  
 
     return 0;
 } 

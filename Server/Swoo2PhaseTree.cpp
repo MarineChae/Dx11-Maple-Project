@@ -55,7 +55,7 @@ void Swoo2PhaseTree::Update()
 		strcpy_s(c, st.c_str());
 
 		float randx = randstep(-1000, 1000);
-		SpawnObjectPacket(pack, randx, 700, 0, c, GetMonsterData().GetCurrentScene());
+		SpawnObjectPacket(pack, randx, 700, 0, c, OBJECT_TYPE::FALLING_OBJECT,GetMonsterData().GetCurrentScene());
 		m_fSpawnTime = 0.0f;
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
 	}

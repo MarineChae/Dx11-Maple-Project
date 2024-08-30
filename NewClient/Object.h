@@ -11,7 +11,11 @@ enum SceneNum
 enum ObejctType
 {
 	Defalut,
-	Portal
+	Portal,
+	FALLING_OBJECT,
+	LAZER_OBJECT,
+	TRAB_OBJECT,
+	COLLIDER,
 };
 
 
@@ -50,6 +54,7 @@ public:
 	ObejctType	GetObjectType() const { return m_ObjectType; };
 	OBJECT_STATE	GetObjectState()const { return m_ObjectState; };
 	//setter
+	void SetWorldMat(TMatrix mat) { m_WolrdMatrix = mat; };
 	void		 SetObejctID(DWORD id) { m_dwObjectID = id; }
 	virtual void SetTransform(TVector3 transform) { m_vTransform = transform; };
 	void		 SetDestination(TVector3 Destination) { m_vDestination = Destination; };

@@ -35,6 +35,10 @@ public:
 	Packet& operator << (MONSTER_STATE statevalue);
 	Packet& operator >> (MONSTER_STATE& statevalue);
 
+
+	Packet& operator << (OBJECT_TYPE statevalue);
+	Packet& operator >> (OBJECT_TYPE& statevalue);
+
 	Packet& operator << (BYTE bytevalue);
 	Packet& operator << (char charvalue);
 

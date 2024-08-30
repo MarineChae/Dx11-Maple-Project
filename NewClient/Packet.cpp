@@ -3,7 +3,7 @@
 #include<assert.h>
 
 #include "Packet.h"
-
+#include"Object.h"
 Packet Packet::operator=(Packet& Packet)
 {
 	m_pReadPos = m_pBuffer;
@@ -35,6 +35,18 @@ Packet& Packet::operator>>(MONSTER_STATE& statevalue)
 	GetData(reinterpret_cast<char*>(&statevalue), sizeof(MONSTER_STATE));
 	return *this;
 }
+Packet& Packet::operator<<(ObejctType statevalue)
+{
+	PutData(reinterpret_cast<char*>(&statevalue), sizeof(ObejctType));
+	return *this;
+}
+
+Packet& Packet::operator>>(ObejctType& statevalue)
+{
+	GetData(reinterpret_cast<char*>(&statevalue), sizeof(ObejctType));
+	return *this;
+}
+
 Packet& Packet::operator<<(BYTE bytevalue)
 {
 	PutData(reinterpret_cast<char*>(&bytevalue), sizeof(BYTE));

@@ -7,6 +7,7 @@
 #include"Timer.h"
 #include"IOCPServer.h"
 #include"ServerScene.h"
+#include"ObjectData.h"
 
 void Swoo1PhaseTree::Init()
 {
@@ -18,6 +19,28 @@ void Swoo1PhaseTree::Init()
 	GetMonsterData().SetIsDead(false);
 	GetMonsterData().SetIsFly(true);
 	SetRespawnTime(7777.0f);
+
+	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+
+	std::string st = "../resource/InteractionObj/Lazer.txt";
+	char c[80];
+	strcpy_s(c, st.c_str());
+	m_pLazer= std::make_shared<ObjectData>();
+	m_pLazer->Init(0,-100,0,c, OBJECT_TYPE::LAZER_OBJECT);
+
+	st = "../resource/InteractionObj/LazerCollider.txt";
+	strcpy_s(c, st.c_str());
+	m_pLazerCollider1 = std::make_shared<ObjectData>();
+	m_pLazerCollider1->Init(0, -100, 0, c, OBJECT_TYPE::COLLIDER);
+
+	m_pLazerCollider2 = std::make_shared<ObjectData>();
+	m_pLazerCollider2->Init(0, -100, 1.58, c, OBJECT_TYPE::COLLIDER);
+
+	ServerSceneMgr::GetInstance().GetSceneList()[2]->PushObject(m_pLazer);
+
+	ServerSceneMgr::GetInstance().GetSceneList()[2]->PushObject(m_pLazerCollider1);
+
+	ServerSceneMgr::GetInstance().GetSceneList()[2]->PushObject(m_pLazerCollider2);
 }
 
 void Swoo1PhaseTree::Update()
@@ -36,12 +59,13 @@ void Swoo1PhaseTree::Update()
 		strcpy_s(c, st.c_str());
 
 		float randx = randstep(-1000, 1000);
-		SpawnObjectPacket(pack,randx,700,0,c,GetMonsterData().GetCurrentScene());
+		SpawnObjectPacket(pack,randx,700,0,c, OBJECT_TYPE::FALLING_OBJECT,GetMonsterData().GetCurrentScene());
 		m_fSpawnTime = 0.0f;
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
 	}
-	
-
+	m_pLazer->AddRotate(0.0625*0.33f);
+	m_pLazerCollider1->AddRotate(0.0625 * 0.33f);
+	m_pLazerCollider2->AddRotate(0.0625 * 0.33f);
 }
 
 ReturnCode Swoo1PhaseTree::AttackPlayer()

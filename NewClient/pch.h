@@ -111,6 +111,7 @@ enum MONSTER_STATE
     MS_SKILL2,
     MS_SKILL3,
 };
+
 enum OBJECT_STATE
 {
     OB_WARNING,

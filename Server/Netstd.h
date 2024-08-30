@@ -54,6 +54,16 @@ enum COLLISION_TYPE
     CT_FINALFLOOR,
     CT_DEFAULT,
 };
+enum OBJECT_TYPE
+{
+    Defalut,
+    Portal,
+    FALLING_OBJECT,
+    LAZER_OBJECT,
+    TRAB_OBJECT,
+    COLLIDER,
+
+};
 struct Line
 {
     TVector3 From;

@@ -6,6 +6,7 @@
 #include"MakePacket.h"
 #include"ServerScene.h"
 #include"MonsterData.h"
+#include"ObjectData.h"
 BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
 {
     DWORD dwSessionID;
@@ -215,6 +216,12 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     {
         std::shared_ptr<Packet> pack = std::make_shared<Packet>();
         CreateMonster(pack, iId++,monster->GetName(), 0, monster->GetCollisionData().GetPos().x, monster->GetCollisionData().GetPos().y, monster->GetMaxHP(), Scenenum);
+        IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
+    }
+    for (auto& obj : curScene->GetSceneObjectList())
+    {
+        std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+        SpawnObjectPacket(pack, obj->GetPosX(), obj->GetPosY(), obj->GetRotate(), obj->GetName(), obj->GetObjectType(), Scenenum);
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
     }
 

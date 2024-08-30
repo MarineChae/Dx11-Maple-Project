@@ -141,6 +141,7 @@
     <ClCompile Include="MakePacket.cpp" />
     <ClCompile Include="MonsterData.cpp" />
     <ClCompile Include="NormalMonsterTree.cpp" />
+    <ClCompile Include="ObjectData.cpp" />
     <ClCompile Include="PacketProc.cpp" />
     <ClCompile Include="PlayerData.cpp" />
     <ClCompile Include="IocpModel.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="MakePacket.h" />
     <ClInclude Include="MonsterData.h" />
     <ClInclude Include="NormalMonsterTree.h" />
+    <ClInclude Include="ObjectData.h" />
     <ClInclude Include="PacketProc.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="IocpModel.h" />

@@ -86,8 +86,9 @@ void Object::SetMatrix(TMatrix* WolrdMatrix, TMatrix* ViewMatrix, TMatrix* ProjM
     GetConstantData().WolrdMatrix = m_WolrdMatrix.Transpose();
     GetConstantData().ViewMatrix = m_ViewMatrix.Transpose();
     GetConstantData().ProjMatrix = m_ProjMatrix.Transpose();
-
-    Device::GetContext()->UpdateSubresource(GetConstantBuffer(), 0, nullptr, &GetConstantData(), 0, 0);
+    auto t = GetConstantBuffer();
+    auto& data = GetConstantData();
+    Device::GetContext()->UpdateSubresource(t, 0, nullptr, &data, 0, 0);
 }
 
 void Object::SetScale(TVector3 scale)

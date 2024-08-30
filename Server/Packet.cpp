@@ -35,6 +35,17 @@ Packet& Packet::operator>>(MONSTER_STATE& statevalue)
 	return *this;
 }
 
+Packet& Packet::operator<<(OBJECT_TYPE statevalue)
+{
+	PutData(reinterpret_cast<char*>(&statevalue), sizeof(OBJECT_TYPE));
+	return *this;
+}
+
+Packet& Packet::operator>>(OBJECT_TYPE& statevalue)
+{
+	GetData(reinterpret_cast<char*>(&statevalue), sizeof(OBJECT_TYPE));
+	return *this;
+}
 Packet& Packet::operator<<(BYTE bytevalue)
 {
 	PutData(reinterpret_cast<char*>(&bytevalue), sizeof(BYTE));

@@ -1,6 +1,7 @@
 #pragma once
 #include"ObjectPool.h"
 
+enum ObejctType;
 class Packet 
 {
 	enum ePacket
@@ -33,6 +34,9 @@ public:
 					    
 	Packet& operator << (MONSTER_STATE statevalue);
 	Packet& operator >> (MONSTER_STATE& statevalue);
+
+	Packet& operator << (ObejctType statevalue);
+	Packet& operator >> (ObejctType& statevalue);
 
 	Packet& operator << (BYTE bytevalue);
 	Packet& operator << (char charvalue);

@@ -18,21 +18,15 @@ extern float MapSizeY = 0;
 bool ClientMain::Init()
 {
 	saveload = std::make_shared<SaveLoader>();
-	//testScene = std::make_shared<Scene>();
-	//saveload->LoadData(testScene,"../resource/MapObejct/1.txt");
-	//MapSizeX = testScene->GetMap()->GetTexture()->GetWidth();
-	//MapSizeY = testScene->GetMap()->GetTexture()->GetHeight(); 
-	//
-	//testScene->SetBGM(SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3"));
-	//testScene->GetBGM()->SoundPlay(true);
 
-	//SceneMgr::GetInstance().SetCurrentScene(testScene);
 	UIMgr::GetInstance().Init();
 	return true;
 }
 
 bool ClientMain::Frame()
 {
+
+
 	SceneMgr::GetInstance().GetCurrentScene()->Frame();
 	EffectSpwaner::GetInstance().Frame();
 
@@ -121,7 +115,6 @@ bool ClientMain::Frame()
 					if (Collider::CheckOBBCollision(potal->GetCollider(), obj->GetCollider())
 						&& (Input::GetInstance().GetKeyState(VK_UP) == KEY_PUSH))
 					{
-						CameraMgr::GetInstance().GetCamera().SetZoomScale(1.0f);
 						std::shared_ptr<Packet> pack = std::make_shared<Packet>();
 						SceneChangePacket(pack, ObejctMgr::GetInstance().GetPlayerObject()->GetObejctID(), potal->GetNextSceneNum());
 						NetSendPacket(pack);
@@ -156,8 +149,11 @@ bool ClientMain::Render()
 		}
 		
 	}
+
+
 	EffectSpwaner::GetInstance().Render();
 	UIMgr::GetInstance().GetUI()->Render();
+
   	return true;
 }
 
