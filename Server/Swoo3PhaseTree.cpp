@@ -40,9 +40,9 @@ void Swoo3PhaseTree::Init()
 
 void Swoo3PhaseTree::Update()
 {
-	m_f1SkillColldown += 0.0325;
-	m_f2SkillColldown += 0.0325;
-	m_fSpawnTime += 0.0325;
+	m_f1SkillColldown += 0.0625;
+	m_f2SkillColldown += 0.0625;
+	m_fSpawnTime += 0.0625;
 	if (m_fSpawnTime >= 1.5f)
 	{
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
@@ -114,12 +114,12 @@ ReturnCode Swoo3PhaseTree::AttackPlayer()
 			}
 
 		}
-		SetWaitTime(GetWaitTime() + 0.0325f);
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		return ReturnCode::RUNNING;
 	}
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0325f);
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -151,7 +151,7 @@ ReturnCode Swoo3PhaseTree::Skill1()
 
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0325f);
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_SKILL1);
 		return ReturnCode::RUNNING;
 	}
@@ -161,7 +161,7 @@ ReturnCode Swoo3PhaseTree::Skill1()
 void Swoo3PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() + 0.0325f);
+	SetDieTime(GetDieTime() + 0.0625f);
 	SetRunState(false);
 	if (GetDieTime() >= 6.12f)
 	{

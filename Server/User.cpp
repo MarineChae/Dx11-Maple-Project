@@ -85,10 +85,11 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 			m_bConnected = false;
 			return;
 		}
-
+		
 		m_pStreamPacket->Put(m_buffer, dwTransfer);
 
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+
 		ParsePacket(pack);
 
 	/*	Packet pack;

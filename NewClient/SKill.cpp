@@ -230,7 +230,7 @@ bool Skill::Frame()
 		m_bEnable = false;
 
 	}
-		
+
 
 	return true;
 }

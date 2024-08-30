@@ -93,6 +93,17 @@ bool PlayerObject::Frame()
     if (m_pActivateSkill != nullptr)
     {
         m_pActivateSkill->Frame();
+        if (GetDirection() > 0)
+        {
+            m_pActivateSkill->SetTransform(GetTransform() + (m_pActivateSkill->GetOffset() * 1));
+        
+        }
+        else
+        {
+            TVector3 temp{ m_pActivateSkill->GetOffset().x * -1 , m_pActivateSkill->GetOffset().y ,1 };
+            m_pActivateSkill->SetTransform(GetTransform() + temp);
+        
+        }
         m_pActivateSkill->GetCollider()->SetTransform(m_pActivateSkill->GetTransform());
         m_pActivateSkill->GetCollider()->Frame();
 
@@ -203,7 +214,7 @@ void PlayerObject::InputKey()
 
         dwAction = ACTION_ATTACK;
     }
-    if(nullptr != m_pActivateSkill && Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
+    if(nullptr != m_pActivateSkill) //&& Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
         dwAction = ACTION_ATTACK;
 
     if( m_PlayerState ==PLAYER_STATE::PS_DIE)
@@ -285,11 +296,12 @@ void PlayerObject::PacketSendProc()
         break;
     
     case ACTION_ATTACK:
+        ChangeState(PLAYER_STATE::PS_ATTACK);
         AttackPacket(SendPacket, GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, temp->GetSkillName().data(), temp->GetSkillNum().data());
-            ChangeState(PLAYER_STATE::PS_ATTACK);
+
         break;
     case ACTION_DIE:
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),

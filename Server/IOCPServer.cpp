@@ -268,7 +268,7 @@ bool IOCPServer::ThreadRun()
 	Timer::GetInstance().Frame();
 	static double threadtimer=0;
 	threadtimer += Timer::GetInstance().GetSecPerFrame();
-	if (threadtimer <= 0.0325)
+	if (threadtimer <= 0.0625)
 	{
 
 		return true;

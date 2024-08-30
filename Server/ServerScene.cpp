@@ -213,7 +213,7 @@ void ServerScene::Update()
 
 		}
 
-		m_fTargetChangeTime += 0.0325;
+		m_fTargetChangeTime += 0.0625;
 		if (m_fTargetChangeTime >= 5.0f)
 		{
 			m_fTargetChangeTime = 0;

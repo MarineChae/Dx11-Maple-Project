@@ -24,7 +24,7 @@ void Swoo1PhaseTree::Update()
 {
 	//오브젝트 생성해서 위치 로테이션 다보내
 
-	m_fSpawnTime += 0.0325;
+	m_fSpawnTime += 0.0625;
 	if (m_fSpawnTime >= 1.5f)
 	{
 		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
@@ -64,7 +64,7 @@ ReturnCode Swoo1PhaseTree::AttackPlayer()
 void Swoo1PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() +0.0325f);
+	SetDieTime(GetDieTime() +0.0625f);
 	SetRunState(false);
 	if (GetDieTime() >= 9.72f)
 	{

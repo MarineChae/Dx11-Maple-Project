@@ -89,18 +89,22 @@ bool Collider::Render()
 bool Collider::CreateVertexData()
 {
     std::vector<PNCT_VERTEX> v;
-    v.resize(8);
+    v.resize(10);
 
     v[0].Pos = { -1.0f,1.0f,0.0f };
     v[1].Pos = { 1.0f,1.0f,0.0f };
 
-    v[2].Pos = { 1.0f ,-1.0f,0.0f };
-    v[3].Pos = { -1.0f, -1.0f,0.0f };
-    v[4].Pos = { -1.0f,1.0f,0.0f };
-    v[5].Pos = { 0.0f,1.0f,0.0f };
+    v[2].Pos = { 1.0f,1.0f,0.0f };
+    v[3].Pos = { 1.0f ,-1.0f,0.0f };
+
+    v[4].Pos = { 1.0f ,-1.0f,0.0f };
+    v[5].Pos = { -1.0f, -1.0f,0.0f };
+
+    v[6].Pos = { -1.0f, -1.0f,0.0f };
+    v[7].Pos = { -1.0f,1.0f,0.0f };
     
-    v[6].Pos = {  0.0f,0.0f,0.0f };
-    v[7].Pos = {  1.0f,0.0f,0.0f };
+    v[8].Pos = {  0.0f,0.0f,0.0f };
+    v[9].Pos = {  1.0f,0.0f,0.0f };
     
    
 

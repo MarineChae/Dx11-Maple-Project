@@ -56,7 +56,7 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 	}
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0325f);
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -69,7 +69,7 @@ ReturnCode FlyingMonsterTree::Respon()
 {
 	if (!GetMonsterData().GetIsDead())
 	{
-		SetWaitTime(GetWaitTime() + 0.0325f);
+		SetWaitTime(GetWaitTime() + 0.0625f);
 		if (GetWaitTime() >= 0.5f)
 		{
 			
@@ -92,7 +92,7 @@ ReturnCode FlyingMonsterTree::Respon()
 void FlyingMonsterTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() + 0.0325f);
+	SetDieTime(GetDieTime() + 0.0625f);
 	if (GetDieTime() >= 0.8f)
 	{
 		SetDieTime(0.0f);

@@ -86,8 +86,8 @@ void MonsterData::Update()
 	m_attackColliderData.SetPos(m_colliderData.GetPos() + m_fAttackColliderOffset);
 	if (m_bFalling && !m_bfly)
 	{
-		//m_vPos.y -= static_cast<float>(900 * 0.0325);
-		float y = m_colliderData.GetPos().y - static_cast<float>(900 * 0.0325);
+		//m_vPos.y -= static_cast<float>(900 * 0.0625);
+		float y = m_colliderData.GetPos().y - static_cast<float>(900 * 0.0625);
 		m_colliderData.SetPos({ m_colliderData.GetPos().x ,y ,m_colliderData.GetPos().z});
 		
 	}
@@ -104,7 +104,7 @@ void MonsterData::Update()
 	if (m_bIsDead)
 	{
 		
-		m_fRemainResponTime += 0.0325f;
+		m_fRemainResponTime += 0.0625f;
 		if (m_fRemainResponTime >= m_pBehaviorTree->GetRespawnTime())
 		{
 		
@@ -138,7 +138,7 @@ void MonsterData::MoveTo(TVector3 dest,float speed)
 	else
 		m_byDirection = 1;
 
-	auto t =0.0325* speed;
+	auto t =0.0625* speed;
 	m_colliderData.SetPos(m_colliderData.GetPos() + dir * t);
 
 }
