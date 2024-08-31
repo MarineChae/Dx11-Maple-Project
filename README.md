@@ -1,4 +1,4 @@
-##MapleStory 모작 (서버,클라이언트)
+## MapleStory 모작 (서버,클라이언트)
 
 * 제작기간 : 2024.06.01 ~ 2024.08.08 (타 프로젝트 약 1달간 진행)
   
@@ -9,7 +9,7 @@
 * DownloadLink :
 
 
-##NetWork
+## NetWork
 * ObjectPool Pattern
    
 <details>
@@ -148,3 +148,104 @@ int Packet::GetData(char* pScr, int iSrcSize)
 
 ```
 </details>
+
+* BehaviorTree
+  - 모든 몬스터들의 행동패턴을 BT를 이용하여 구현했습니다.
+  - 몬스터의 로직은 서버에서 전담하여 각각의 클라이언트로 데이터를 전송합니다.
+
+   
+<details>
+<summary>BehaviorTree코드샘플</summary>
+
+```c++
+class BehaviorTree
+{
+private:
+
+	std::shared_ptr<BranchNode> m_pRootNode;
+	bool isRun;
+	MonsterData& m_Monster;
+private:
+	float m_fWaitTime;
+	float m_fDieTime;
+	float m_fRespawnTime;
+
+public:
+	virtual void Update() {};
+	void RunTree();
+	void SetRunState(bool state) { isRun = state; }
+	bool GetRunState() const { return isRun; }
+	std::shared_ptr<BranchNode> GetRootNode() const { return m_pRootNode; }
+	void SetRootNode(std::shared_ptr<BranchNode> node) { m_pRootNode = node; };
+	MonsterData& GetMonsterData() {return m_Monster;}
+public:
+
+	float GetWaitTime() const { return m_fWaitTime; };
+	float GetDieTime() const { return m_fDieTime; };
+	float GetRespawnTime() const { return m_fRespawnTime; };
+
+	void SetWaitTime(float time) { m_fWaitTime = time; };
+	void SetDieTime(float time) { m_fDieTime = time; };
+	void SetRespawnTime(float time) { m_fRespawnTime = time; };
+
+
+
+
+public:
+	virtual ReturnCode ChasePlayer();
+	virtual ReturnCode AttackPlayer();
+	virtual ReturnCode Respon();
+	virtual ReturnCode Skill1Cooldown();
+	virtual ReturnCode Skill1();
+	virtual ReturnCode Skill2Cooldown();
+	virtual ReturnCode Skill2();
+	virtual void DeathEvent() {};
+
+public:
+	virtual void Init() {};
+
+public:
+	BehaviorTree(MonsterData& Monster);
+	virtual ~BehaviorTree() {};
+};
+
+```
+</details>
+
+<details>
+<summary>BossBT코드샘플</summary>
+
+```c++
+#pragma once
+#include"BehaviorTree.h"
+class Swoo2PhaseTree :public BehaviorTree
+{
+private:
+
+	float m_fSpawnTime;
+	float m_f1SkillColldown;
+	float m_f2SkillColldown;
+public:
+	virtual void Init();
+	virtual void Update()override;
+
+public:
+	virtual ReturnCode ChasePlayer() override;
+	virtual ReturnCode AttackPlayer() override;
+	virtual ReturnCode Skill1Cooldown()override;
+	virtual ReturnCode Skill1()override;
+	virtual void DeathEvent() override;
+
+
+public:
+
+	Swoo2PhaseTree(MonsterData& data);
+	virtual ~Swoo2PhaseTree();
+
+
+};
+
+
+```
+</details>
+
