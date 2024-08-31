@@ -10,6 +10,11 @@
 
 * 멀티스레딩을 사용한 IOCP 게임서버 및 게임클라이언트 
 
+![Alt text](readImage/Lobby.png)
+![Alt text](readImage/s1.png)
+
+<br>
+
 ## NetWork
 
 * Accept Thread
@@ -357,7 +362,7 @@ int Packet::GetData(char* pScr, int iSrcSize)
   - 몬스터의 로직은 서버에서 전담하여 각각의 클라이언트로 데이터를 전송합니다.
   - 몬스터의 트리는 파일을 읽어 해당되는 트리로 할당하도록 팩토리 패턴을 이용하여 구현했습니다.
 
-   
+   ![Alt text](readImage/2p.png)
 <details>
 <summary>BehaviorTree코드샘플</summary>
 
@@ -521,7 +526,7 @@ std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
 * Collision
   - 게임에서 사용하는 충돌은 Line-Point , Line - OBB , OBB-OBB 를 구현하였습니다.
     
-
+   ![Alt text](readImage/Linepoint.png)
 <details>
 <summary>Line-Point코드샘플</summary>
 
@@ -596,6 +601,8 @@ bool Collision::isLineIntersectingOBB(std::shared_ptr<Line> line, std::shared_pt
 
 <br>
 
+   ![Alt text](readImage/OBBOBB.png)
+   
 <details>
 <summary> OBB - OBB코드샘플</summary>
 
