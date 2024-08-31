@@ -67,6 +67,7 @@ bool AcceptIocp::ThreadRun()
 
 
 <br>
+
 * IOCP Model
 	- 비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
 
@@ -133,6 +134,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
 </details>
 
 <br>
+
 * MainThread
   - Main Thread에서는 패킷들을 BroadCast와 동시에 게임의 로직을 담당합니다.
 
@@ -203,6 +205,7 @@ bool IOCPServer::ThreadRun()
 
 
 <br>
+
 * ObjectPool Pattern
    - 잦은 생성 파괴로인한 성능 저하를 방지하기 위하여 메모리를 재사용 하도록 만들었습니다.
      
@@ -295,6 +298,7 @@ long long volatile ObjectPool<T>::m_TailPos(0);
 
 
 <br>
+
 * Data Serialization 
    - 동적 할당된 값은 그대로 저장할 수 없기 때문에 데이터를 전송하기 위해 byte로 변환해서 전송해야하기 때문에 데이터를 직렬화 시켜주었습니다.
   
@@ -347,6 +351,7 @@ int Packet::GetData(char* pScr, int iSrcSize)
 
 
 <br>
+
 * BehaviorTree
   - 모든 몬스터들의 행동패턴을 BT를 이용하여 구현했습니다.
   - 몬스터의 로직은 서버에서 전담하여 각각의 클라이언트로 데이터를 전송합니다.
