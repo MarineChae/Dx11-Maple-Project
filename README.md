@@ -203,7 +203,7 @@ bool IOCPServer::ThreadRun()
 * ObjectPool Pattern
    
 <details>
-<summary>코드샘플</summary>
+<summary>ObjectPool Pattern 코드샘플</summary>
 
 ```c++
 
@@ -295,7 +295,7 @@ long long volatile ObjectPool<T>::m_TailPos(0);
    
   
 <details>
-<summary>코드샘플</summary>
+<summary>Data Serialization 코드샘플</summary>
 
 ```c++
 
