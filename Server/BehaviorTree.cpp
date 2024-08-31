@@ -37,6 +37,16 @@ ReturnCode BehaviorTree::Skill1()
 	return ReturnCode::SUCCESS;
 }
 
+ReturnCode BehaviorTree::Skill2Cooldown()
+{
+	return ReturnCode();
+}
+
+ReturnCode BehaviorTree::Skill2()
+{
+	return ReturnCode();
+}
+
 
 
 //ReturnCode BehaviorTree::ChasePlayer()

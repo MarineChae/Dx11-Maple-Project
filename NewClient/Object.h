@@ -14,7 +14,7 @@ enum ObejctType
 	Portal,
 	FALLING_OBJECT,
 	LAZER_OBJECT,
-	TRAB_OBJECT,
+	BALL_OBJECT,
 	COLLIDER,
 };
 

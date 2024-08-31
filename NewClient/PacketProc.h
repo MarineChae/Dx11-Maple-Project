@@ -11,6 +11,8 @@ BOOL PacketProc_CreateMonster(std::shared_ptr<Packet> pack);
 BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack);
 BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack);
 
+BOOL PacketProc_PlayerGetDamage(std::shared_ptr<Packet> pack);
+
 
 
 BOOL PacketProc_CreateMyCharacter(std::shared_ptr<Packet> pack);

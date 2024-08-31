@@ -27,23 +27,33 @@ bool PlayerObject::Frame()
 {
     SpriteObject::Frame();
 
+
+    if (m_bIsHit)
+    {
+        m_fHitTime += Timer::GetInstance().GetSecPerFrame();
+        if (m_fHitTime >= 1.5f)
+        {
+            m_fHitTime = 0;
+            m_bIsHit = false;
+        }
+
+    }
     //if (m_iHP <= 0)
     //{
     //    ChangeState(PLAYER_STATE::PS_DIE);
     //    Input::GetInstance().SetActive(false);
     //}
-    //if (PLAYER_STATE::PS_DIE == m_PlayerState &&Input::GetInstance().GetKeyState(VK_F10) == KEY_PUSH)
-    //{
-    //    ChangeState(PLAYER_STATE::PS_STAND);
-    //    m_iHP = m_iMaxHP;
-    //    Input::GetInstance().SetActive(true);
-    //}
+    if (Input::GetInstance().GetKeyState(VK_F1) == KEY_PUSH)
+    {
+        m_iHP = m_iMaxHP;
+    }
 
     if (nullptr != m_pActivateSkill && !m_pActivateSkill->GetEnable())
     {
         m_pActivateSkill->SetCanHit(true);
-        m_pActivateSkill = nullptr;
         ChangeState(PS_STAND);
+        if (ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+            m_pActivateSkill = nullptr;
     }
    
 
@@ -124,7 +134,7 @@ bool PlayerObject::Frame()
                             auto t = randstep(-100.0f, 100.0f);
                             auto t1 = randstep(-100.0f, 100.0f);
                             EffectSpwaner::GetInstance().SpawnEffect(m_pActivateSkill->GetEffect(), coll->GetTransform() + TVector3(t1,t,0),0.1*i);
-                            auto dam = randstep(50000, 150000);
+                            auto dam = randstep(500300, 1503000);
                             packDamage += dam;
                             damagelist.push_back(dam);
                         }
@@ -214,13 +224,20 @@ void PlayerObject::InputKey()
 
         dwAction = ACTION_ATTACK;
     }
-    if(nullptr != m_pActivateSkill) //&& Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
-        dwAction = ACTION_ATTACK;
+
+    if (nullptr != m_pActivateSkill && !m_pActivateSkill->GetEnable())
+    {
+        dwAction = ACTION_STAND;
+        m_pActivateSkill = nullptr;
+    }
+       
 
     if( m_PlayerState ==PLAYER_STATE::PS_DIE)
         dwAction = ACTION_DIE;
 
+
     m_dwActionInput = dwAction;
+
 
 }
 
@@ -229,70 +246,81 @@ void PlayerObject::PacketSendProc()
     static auto temp = SkillMgr::GetInstance().GetSkill("00001");
     std::shared_ptr<Packet> SendPacket = std::make_shared<Packet>();
 
+    if (m_dwOldActionInput == m_dwCurrentAction)
+        return;
+
     if (m_PlayerState == PLAYER_STATE::PS_DIE)
         m_dwCurrentAction = ACTION_DIE;
-   
+
+
+
+    m_dwOldActionInput = m_dwCurrentAction;
 
     switch (m_dwCurrentAction)
     {
 
     case ACTION_STAND:
-
+        ChangeState(PLAYER_STATE::PS_STAND);
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(),(BYTE)m_bIsFalling,(BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
-        ChangeState(PLAYER_STATE::PS_STAND);
+        NetSendPacket(SendPacket);
 
         break;
 
 
     case ACTION_MOVELEFT:
     case ACTION_MOVERIGHT:
+        ChangeState(PLAYER_STATE::PS_WALK);
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(),(BYTE)m_bIsFalling, (BYTE)m_bIsJump,(BYTE)m_bOnLope, (BYTE)2);
-        ChangeState(PLAYER_STATE::PS_WALK);
+        NetSendPacket(SendPacket);
 
         break;
     case ACTION_MOVEUP:
+        ChangeState(PLAYER_STATE::PS_ONLOPE);
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope,(BYTE)1);
-        ChangeState(PLAYER_STATE::PS_ONLOPE);
+        NetSendPacket(SendPacket);
         break;
     case ACTION_MOVEDOWN:
+        ChangeState(PLAYER_STATE::PS_ONLOPE);
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)0);
-        ChangeState(PLAYER_STATE::PS_ONLOPE);
+        NetSendPacket(SendPacket);
         break;
     case ACTION_STANDJUMP:
+        ChangeState(PLAYER_STATE::PS_JUMP);
         MoveStopPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
-        ChangeState(PLAYER_STATE::PS_JUMP);
+        NetSendPacket(SendPacket);
 
         break;
     case ACTION_MOVELEFT_JUMP:
     case ACTION_MOVERIGHT_JUMP:
     case ACTION_MOVELEFT_FALL:
     case ACTION_MOVERIGHT_FALL:
+        ChangeState(PLAYER_STATE::PS_JUMP);
         MoveStartPacket(SendPacket, GetDirection(), GetObejctID(),
             GetTransform().x,
             GetTransform().y,
             GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
-        ChangeState(PLAYER_STATE::PS_JUMP);
+        NetSendPacket(SendPacket);
         break;
     
     case ACTION_ATTACK:
@@ -301,6 +329,7 @@ void PlayerObject::PacketSendProc()
             GetTransform().x,
             GetTransform().y,
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, temp->GetSkillName().data(), temp->GetSkillNum().data());
+        NetSendPacket(SendPacket);
 
         break;
     case ACTION_DIE:
@@ -309,20 +338,13 @@ void PlayerObject::PacketSendProc()
             GetTransform().y,
             GetHp(),
             GetPlayerState(), (BYTE)m_bIsFalling, (BYTE)m_bIsJump, (BYTE)m_bOnLope, (BYTE)2);
+        NetSendPacket(SendPacket);
     }
     if (m_bOnLope)
     {
         ChangeState(PLAYER_STATE::PS_ONLOPE);
     }
 
-    static double sendtime = 0;
-    sendtime += Timer::GetInstance().GetSecPerFrame();
-
-    if (sendtime >= 0.1625)
-    {
-        NetSendPacket(SendPacket);
-        sendtime =0;
-    }
 
 }
 
@@ -537,6 +559,8 @@ PlayerObject::PlayerObject()
     , m_vBeforePos()
     , m_CurrentScene(SceneNum::Lobby)
     , m_bOnLope(false)
+    , m_fHitTime(0.0f)
+    , m_bIsHit(false)
 {
 
 

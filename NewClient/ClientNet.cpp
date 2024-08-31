@@ -301,7 +301,9 @@ BOOL PacketProc(BYTE byPacketType, std::shared_ptr<Packet> pack)
     case PACKET_CS_SPAWN_OBJECT:
         PacketProc_CreateObject(pack);
         break;
-        
+    case PACKET_CS_CHRACTER_GETDAMAGE:
+        PacketProc_PlayerGetDamage(pack);
+        break;
 
     }
 

@@ -1,0 +1,7 @@
+#ObjectName
+RedBall
+#ObjectState
+1
+../resource/InteractionObj/RedBall.png
+0	7	1	7	0.150000
+

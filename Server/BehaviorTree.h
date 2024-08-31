@@ -41,6 +41,8 @@ public:
 	virtual ReturnCode Respon();
 	virtual ReturnCode Skill1Cooldown();
 	virtual ReturnCode Skill1();
+	virtual ReturnCode Skill2Cooldown();
+	virtual ReturnCode Skill2();
 	virtual void DeathEvent() {};
 
 public:

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BallObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ClientMain.cpp" />
     <ClCompile Include="ClientNet.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BallObject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ClientMain.h" />
     <ClInclude Include="ClientNet.h" />

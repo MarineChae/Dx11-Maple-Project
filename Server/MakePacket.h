@@ -8,6 +8,9 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 
 void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, int HP, PLAYER_STATE state, BYTE isFalling, BYTE isJump);
 
+void PlayerGetDamage(std::shared_ptr<Packet> pack, DWORD SessionID, float damage);
+
+
 void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump, char* skillname, char* skillNum);
 
 void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y, float rotate, char* ObjectName, OBJECT_TYPE objectType, BYTE CurrentScene);

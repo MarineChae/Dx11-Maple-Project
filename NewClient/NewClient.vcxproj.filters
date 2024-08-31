@@ -132,6 +132,9 @@
     <ClCompile Include="EffectSpwaner.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="BallObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TMath.h">
@@ -240,6 +243,9 @@
       <Filter>Core\header</Filter>
     </ClInclude>
     <ClInclude Include="EffectSpwaner.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BallObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

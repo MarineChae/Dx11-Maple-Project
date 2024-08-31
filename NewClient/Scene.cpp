@@ -6,6 +6,11 @@
 #include"SaveLoader.h"
 #include"SoundMgr.h"
 #include"Timer.h"
+#include"EffectSpwaner.h"
+std::shared_ptr<SpriteObject> LaserEff = std::make_shared<SpriteObject>();
+std::shared_ptr<SpriteData> LaserEffdata = std::make_shared<SpriteData>();
+extern float MapSizeX;
+extern float MapSizeY;
 
 void Scene::DeletePlayer(std::shared_ptr<PlayerObject> object)
 {
@@ -49,7 +54,16 @@ bool Scene::Init(std::wstring MapName)
 	m_pCollider->Create(L" ", L"../Shader/LineDebug.hlsl");
 	//m_pBGM = SoundMgr::GetInstance().Load(L"../resource/Sound/BigMachine_mission.mp3");
 	//m_pBGM->SoundPlay(true);
+	
+	LaserEffdata->iCol = 6;
+	LaserEffdata->iMaxImageCount = 6;
+	LaserEffdata->iRow = 1;
+	LaserEffdata->m_fDelay = 0.10;
+	LaserEffdata->m_vScale = { 188,168,1 };
 
+	LaserEff->SetSpriteInfo(LaserEffdata);
+	LaserEff->Create(L"../resource/Skill/laserHit.png",L"../Shader/Defalutshader.hlsl");
+	LaserEff->SetScale({188,168,1});
     return true;
 }
 
@@ -70,30 +84,56 @@ bool Scene::Frame()
 	}
 
 	m_pMap->Frame();
-	for (auto& ob : m_ObjectList)
+	for (auto it = m_ObjectList.begin(); it != m_ObjectList.end();)
 	{
-
-		ob->Frame();
-		ob->GetCollider()->Frame();
+		auto& ob = *it;
 		if (ob->GetObjectType() == ObejctType::LAZER_OBJECT )
 		{
+			ob->Frame();
+			ob->GetCollider()->Frame();
 			ob->m_vRotate.z += Timer::GetInstance().GetSecPerFrame() * 0.33f;
-			
 		}
-		if (ob->GetObjectType() == ObejctType::COLLIDER)
+		if (ob->GetObjectType() == ObejctType::BALL_OBJECT)
 		{
+			ob->GetCollider()->Frame();
+			if (!ob->Frame())
+			{
+				it = m_ObjectList.erase(it);
+				continue;
+			}
+			for (auto& player : ObejctMgr::GetInstance().GetObjectList())
+			{
+				if (player == nullptr) continue;
+				if (Collider::CheckOBBCollision(ob->GetCollider(), player->GetCollider()) && !player->GetIsHit())
+				{
+					EffectSpwaner::GetInstance().SpawnEffect(LaserEff, player->GetTransform(), 0);
+					player->SetHp(player->GetHp() - 15000);
+					player->SetIsHit(true);
+				}
+			}
+		}
+		if (ob->GetObjectType() == ObejctType::COLLIDER && m_MonsterList[0]->GetHp()>=0)
+		{
+			ob->Frame();
+			ob->GetCollider()->Frame();
 			ob->GetCollider()->m_vRotate.z += Timer::GetInstance().GetSecPerFrame() * 0.33f;
 			for (auto& player : ObejctMgr::GetInstance().GetObjectList())
 			{
 				if (player == nullptr) continue;
-				if (Collider::CheckOBBCollision(ob->GetCollider(), player->GetCollider()))
+				if (Collider::CheckOBBCollision(ob->GetCollider(), player->GetCollider()) && !player->GetIsHit())
 				{
-					int a = 0;
+					EffectSpwaner::GetInstance().SpawnEffect(LaserEff, player->GetTransform(),0);
+					player->SetHp(player->GetHp() - (player->GetMaxHp() / 2));
+					player->SetIsHit(true);
 				}
 			}
-
 		}
-			
+		else
+		{
+			ob->Frame();
+			ob->GetCollider()->Frame();
+		}
+		++it;
 	}
 
 	for (auto& m : m_MonsterList)
@@ -110,9 +150,9 @@ bool Scene::Frame()
 		}
 		else
 		{
-			if (it->get()->GetObjectType() == ObejctType::LAZER_OBJECT)
-				it->get()->m_vRotate.z += Timer::GetInstance().GetSecPerFrame();
+
 			it->get()->GetCollider()->Frame();
+		
 			++it;
 		}
 		
@@ -130,9 +170,19 @@ bool Scene::Render()
 
 	for (auto& ob : m_ObjectList)
 	{
-		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-			&CameraMgr::GetInstance().GetCamera().GetProjection());
-		ob->Render();
+		if (ob->GetObjectType() == ObejctType::LAZER_OBJECT && m_MonsterList[0]->GetHp() >= 0)
+		{
+			ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->Render();
+		}
+		else if (ob->GetObjectType() != ObejctType::LAZER_OBJECT)
+		{
+			ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->Render();
+		}
+
 		if (ob->GetObjectType() == ObejctType::COLLIDER)
 		{
 			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
@@ -151,9 +201,12 @@ bool Scene::Render()
 	}
 	for (auto& ob : m_InteractObjectList)
 	{
-		ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-			&CameraMgr::GetInstance().GetCamera().GetProjection());
-		ob->Render();
+
+			ob->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
+				&CameraMgr::GetInstance().GetCamera().GetProjection());
+			ob->Render();
+
+
 		if (ob->GetCollider() != nullptr)
 		{
 			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),

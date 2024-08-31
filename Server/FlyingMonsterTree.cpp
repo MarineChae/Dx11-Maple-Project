@@ -46,6 +46,13 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 {
 	if (GetWaitTime() >= 1.3f)
 	{
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+		for (auto& player : curScene->second->GetScenePlayerList())
+		{
+			player->SetIsHit(false);
+		}
 		SetWaitTime(0.0f);
 		GetMonsterData().GetCollisionData().SetPos(GetMonsterData().GetResponPos());
 		GetMonsterData().SetPos(GetMonsterData().GetResponPos());
@@ -53,6 +60,26 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 
 		return ReturnCode::SUCCESS;
+	}
+	else if (GetWaitTime() >= 0.5f && GetWaitTime() <= 1.0f)
+	{
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+
+		for (auto& player : curScene->second->GetScenePlayerList())
+		{
+			if (GetMonsterData().GetAttackCollisionData().CheckOBBCollision(player->GetCollisionData()) && !player->GetIsHit())
+			{
+				player->SetIsHit(true);
+				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				PlayerGetDamage(pack, player->GetSessionID(), 3000);
+				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+			}
+
+		}
+		SetWaitTime(GetWaitTime() + 0.0625f);
+		return ReturnCode::RUNNING;
 	}
 	else
 	{

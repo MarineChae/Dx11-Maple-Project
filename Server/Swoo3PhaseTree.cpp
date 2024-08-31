@@ -21,6 +21,12 @@ void Swoo3PhaseTree::Init()
 	std::shared_ptr<ActionNode> SKill1 = std::make_shared<ActionNode>(*this, &BehaviorTree::Skill1);
 	Skill1seq->PushChild(SKill1);
 
+	std::shared_ptr<SequenceNode> Skill2seq = std::make_shared<SequenceNode>(*this);
+	root->PushChild(Skill2seq);
+	std::shared_ptr<DecoratorNode> cool2Down = std::make_shared<DecoratorNode>(*this, &BehaviorTree::Skill2Cooldown);
+	Skill2seq->PushChild(cool2Down);
+	std::shared_ptr<ActionNode> SKill2 = std::make_shared<ActionNode>(*this, &BehaviorTree::Skill2);
+	Skill2seq->PushChild(SKill2);
 
 	//추격및 공격
 	std::shared_ptr<SequenceNode> ChaseAndAttack = std::make_shared<SequenceNode>(*this);
@@ -111,6 +117,9 @@ ReturnCode Swoo3PhaseTree::AttackPlayer()
 				}
 				player->SetMovePow(player->GetMovepow() + value);
 				player->SetIsHit(true);
+				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				PlayerGetDamage(pack, player->GetSessionID(), 20000);
+				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
 			}
 
 		}
@@ -144,6 +153,13 @@ ReturnCode Swoo3PhaseTree::Skill1()
 {
 	if (GetWaitTime() >= 2.6f)
 	{
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		std::string st = "../resource/InteractionObj/RedBall.txt";
+		char c[80];
+		strcpy_s(c, st.c_str());
+		SpawnObjectPacket(pack, GetMonsterData().GetCollisionData().GetPos().x, GetMonsterData().GetCollisionData().GetPos().y + 300,
+			0, c, OBJECT_TYPE::BALL_OBJECT, GetMonsterData().GetCurrentScene());
+		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
 		SetWaitTime(0.0f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		return ReturnCode::SUCCESS;
@@ -200,6 +216,49 @@ void Swoo3PhaseTree::DeathEvent()
 	}
 }
 
+ReturnCode Swoo3PhaseTree::Skill2Cooldown()
+{
+
+	if (m_f2SkillColldown >= 15.0f)
+	{
+		m_f2SkillColldown = 0;
+		return ReturnCode::SUCCESS;
+	}
+
+	return ReturnCode::FAILURE;
+}
+
+ReturnCode Swoo3PhaseTree::Skill2()
+{
+	if (GetWaitTime() >= 0.8f)
+	{
+
+		SetWaitTime(0.0f);
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
+		return ReturnCode::SUCCESS;
+	}
+	else
+	{
+		int num = GetMonsterData().GetCurrentScene();
+		auto list = ServerSceneMgr::GetInstance().GetSceneList();
+		auto curScene = list.find(num);
+
+		for (auto& player : curScene->second->GetScenePlayerList())
+		{
+			TVector3 value =GetMonsterData().GetCollisionData().GetPos() - player->GetCollisionData().GetPos();
+			value.Normalize();
+			value *= 1000;
+
+			value.y = 0;
+			value.z = 0;
+			player->SetMovePow(player->GetMovepow() + value);
+
+		}
+		SetWaitTime(GetWaitTime() + 0.0625f);
+		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_SKILL2);
+		return ReturnCode::RUNNING;
+	}
+}
 Swoo3PhaseTree::Swoo3PhaseTree(MonsterData& data)
 	:BehaviorTree(data)
 	, m_f1SkillColldown(0.0f)

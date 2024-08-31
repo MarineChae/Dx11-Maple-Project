@@ -113,6 +113,9 @@ ReturnCode Swoo2PhaseTree::AttackPlayer()
 				}
 				player->SetMovePow(player->GetMovepow() + value);
 				player->SetIsHit(true);
+				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				PlayerGetDamage(pack,player->GetSessionID(), 20000);
+				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
 			}
 
 		}
@@ -146,10 +149,20 @@ ReturnCode Swoo2PhaseTree::Skill1()
 {
 	if (GetWaitTime() >= 2.6f)
 	{
+		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		std::string st = "../resource/InteractionObj/BlueBall.txt";
+		char c[80];
+		strcpy_s(c, st.c_str());
+		SpawnObjectPacket(pack, GetMonsterData().GetCollisionData().GetPos().x, GetMonsterData().GetCollisionData().GetPos().y+300, 
+			0, c, OBJECT_TYPE::BALL_OBJECT, GetMonsterData().GetCurrentScene());
+		m_fSpawnTime = 0.0f;
+		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 		SetWaitTime(0.0f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		return ReturnCode::SUCCESS;
 	}
+
 	else
 	{
 		SetWaitTime(GetWaitTime() + 0.0625f);

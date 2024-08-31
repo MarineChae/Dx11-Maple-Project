@@ -76,7 +76,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     *pack >> fY;
     *pack >> iHP;
     *pack >> isFalling;
-    *pack >> isJump;
+     *pack >> isJump;
     *pack >> onLope;
     *pack >> lopeUp;
     *pack >> state;
@@ -194,7 +194,7 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
     std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
     auto beforeScenenum = player->GetCurrentScene();
     player->SetCurrentScene((SceneNum)Scenenum);
-    player->SetPos({ 0,0,0 });
+    player->SetPos({ 0,-300,0 });
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
     IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), SendPack);

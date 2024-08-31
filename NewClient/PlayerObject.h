@@ -15,13 +15,15 @@ private:
 	int		     m_BeforeDirection;
 	bool	     m_bIsPlayable;
 	DWORD	     m_dwActionInput;
+	DWORD	     m_dwOldActionInput;
 	PLAYER_STATE m_PlayerState;
 	TVector3     m_pMovePow;
 	int			 m_CurrentScene;
 	bool		 m_bOnLope;
 	std::map<std::string ,std::shared_ptr<Skill>> m_vSkillList;
 	std::shared_ptr<Skill>	m_pActivateSkill;
-
+	bool		 m_bIsHit;
+	float		 m_fHitTime;
 public:
 	virtual bool Init() override;
 	virtual bool Frame() override;
@@ -31,6 +33,8 @@ public:
 	bool         m_bIsJump;
 	TVector3     m_vBeforePos;
 public:
+	void SetIsHit(bool hit) { m_bIsHit = hit; };
+	bool GetIsHit()const { return m_bIsHit; };
 	void SetMaxHp(int hp) { m_iMaxHP = hp; };
 	int  GetMaxHp()	const{ return m_iMaxHP; };
 	void SetHp(int hp) { m_iHP = hp; };

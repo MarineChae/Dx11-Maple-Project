@@ -93,6 +93,7 @@ bool SpriteObject::TextureChangeProc()
             m_AccumulatedTime = 0;
             ret = false;
             m_iTexIndex = 0;
+            return ret;
         }
         m_AccumulatedTime -= m_pSpriteInfo->m_fDelay;
     }

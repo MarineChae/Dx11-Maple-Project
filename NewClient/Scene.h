@@ -29,7 +29,7 @@ public:
 	std::vector<std::shared_ptr<SpriteObject>>	  GetInteractObjectList() { return m_InteractObjectList; }
 	std::vector<std::shared_ptr<Object>>	  GetPotalList() { return m_PotalList; }
 	std::shared_ptr<Collider>				  GetCollider() { return m_pCollider; }
-	std::vector<std::shared_ptr<Line>>		  GetLineColliderList() { return m_LineColliderList; }
+	std::vector<std::shared_ptr<Line>>		  GetLineColliderList() { return m_LineColliderList; } 
 	std::shared_ptr<Sound>					  GetBGM() { return m_pBGM; }
 
 	void SetSceneNum(int num) { m_iSceneNum = num; };

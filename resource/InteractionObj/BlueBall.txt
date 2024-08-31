@@ -1,0 +1,7 @@
+#ObjectName
+BlueBall
+#ObjectState
+1
+../resource/InteractionObj/BlueBall.png
+0	7	1	7	0.150000
+

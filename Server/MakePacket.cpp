@@ -48,6 +48,20 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 
 }
 
+void PlayerGetDamage(std::shared_ptr<Packet> pack, DWORD SessionID, float damage)
+{
+	PACKET_HEADER PacketHeader;
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 8;
+	PacketHeader.PacketType = PACKET_CS_CHRACTER_GETDAMAGE;
+
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << SessionID;
+	*pack << damage;
+	*pack << (BYTE)NETWORK_PACKET_END;
+}
+
 void CreateMyCharacter(std::shared_ptr<Packet> pack, DWORD dwSessionID, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;

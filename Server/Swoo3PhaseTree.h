@@ -18,7 +18,8 @@ public:
 	virtual ReturnCode Skill1Cooldown()override;
 	virtual ReturnCode Skill1()override;
 	virtual void DeathEvent() override;
-
+	virtual ReturnCode Skill2Cooldown()override;
+	virtual ReturnCode Skill2()override;
 
 public:
 

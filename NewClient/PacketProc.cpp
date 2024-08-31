@@ -10,6 +10,7 @@
 #include"DropObject.h"
 #include"SoundMgr.h"
 #include"MakePacket.h"
+#include"BallObject.h"
 extern float MapSizeX;
 extern float MapSizeY;
 BOOL PacketProc_MoveStart(std::shared_ptr<Packet> pack)
@@ -250,12 +251,16 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
         obj = std::make_shared<DropObject>();
         SceneMgr::GetInstance().GetScene(CurrentScene)->PushInteractObjectList(obj);
     }
-    else if (type == ObejctType::LAZER_OBJECT || type == ObejctType::COLLIDER)
+    else if (type == ObejctType::LAZER_OBJECT || type == ObejctType::COLLIDER )
     {
         obj = std::make_shared<SpriteObject>();
         SceneMgr::GetInstance().GetScene(CurrentScene)->PushObject(obj);
     }
-
+    else if (type == BALL_OBJECT)
+    {
+        obj = std::make_shared<BallObject>();
+        SceneMgr::GetInstance().GetScene(CurrentScene)->PushObject(obj);
+    }
     obj->m_vRotate.z = rotate;
     obj->SetObejctType(type);
     obj->Init();
@@ -265,6 +270,11 @@ BOOL PacketProc_CreateObject(std::shared_ptr<Packet> pack)
     obj->SetObjectState(OB_WARNING);
     obj->SetSpriteInfo(obj->GetSpriteData(obj->GetObjectState()));
     obj->SetScale(obj->GetCurrentSpriteInfo()->m_vScale);
+    if (type == BALL_OBJECT)
+    {
+        obj->SetScale(obj->GetCurrentSpriteInfo()->m_vScale*2);
+
+    }
     obj->SetTexture(obj->GetCurrentSpriteInfo()->m_pTexture);
     //obj->SetPlacedScene(CurrentScene);
 
@@ -317,6 +327,23 @@ BOOL PacketProc_UpdateMonster(std::shared_ptr<Packet> pack)
     monster->SetID(ID);
 
     monster->SetDirection(byDirection);
+    return 0;
+}
+
+BOOL PacketProc_PlayerGetDamage(std::shared_ptr<Packet> pack)
+{
+    DWORD SessionId;
+    float damage;
+
+    *pack >> SessionId;
+    *pack >> damage;
+
+    std::shared_ptr<PlayerObject> obj = ObejctMgr::GetInstance().GetOtherObject(SessionId);
+
+    obj->SetHp(obj->GetHp() - damage);
+
+
+
     return 0;
 }
 
