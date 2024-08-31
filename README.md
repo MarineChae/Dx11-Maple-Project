@@ -245,7 +245,35 @@ public:
 
 };
 
+void Swoo2PhaseTree::Init()
+{
+	std::shared_ptr<SelectorNode> root = std::make_shared<SelectorNode>(*this);
+	SetRootNode(root);
 
+	/// 스킬 쓸 수 있으면 스킬먼저 사용
+	std::shared_ptr<SequenceNode> Skill1seq = std::make_shared<SequenceNode>(*this);
+	root->PushChild(Skill1seq);
+	std::shared_ptr<DecoratorNode> coolDown = std::make_shared<DecoratorNode>(*this,&BehaviorTree::Skill1Cooldown);
+	Skill1seq->PushChild(coolDown);
+	std::shared_ptr<ActionNode> SKill1 = std::make_shared<ActionNode>(*this, &BehaviorTree::Skill1);
+	Skill1seq->PushChild(SKill1);
+	
+
+	//추격및 공격
+	std::shared_ptr<SequenceNode> ChaseAndAttack = std::make_shared<SequenceNode>(*this);
+	root->PushChild(ChaseAndAttack);
+	std::shared_ptr<ActionNode> chase = std::make_shared<ActionNode>(*this, &BehaviorTree::ChasePlayer);
+	ChaseAndAttack->PushChild(chase);
+	std::shared_ptr<ActionNode> attack = std::make_shared<ActionNode>(*this, &BehaviorTree::AttackPlayer);
+	ChaseAndAttack->PushChild(attack);
+
+
+	GetMonsterData().GetCollisionData().SetWidth(94.0f);
+
+	GetMonsterData().GetCollisionData().SetHeight(108.0f);
+	GetMonsterData().SetIsDead(false);
+	SetRespawnTime(7777.0f);
+}
 ```
 </details>
 
