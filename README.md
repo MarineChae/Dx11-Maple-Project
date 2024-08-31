@@ -8,10 +8,191 @@
 
 * DownloadLink :
 
+* 멀티스레딩을 사용한 IOCP 게임서버 및 게임클라이언트 
 
 ## NetWork
 
-멀티스레딩을 활용하여 IOCP 게임서버를 제작했습니다.
+* 서버에 접속하는 클라이언트들을 처리해주는 Accept Thread입니다.
+* 
+
+  <details>
+<summary>IOCP Thread코드샘플</summary>
+
+```c++
+
+bool AcceptIocp::ThreadRun()
+{
+	if (m_pServer == nullptr)return false;
+	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+	SOCKADDR_IN clientaddr;
+	int addlen = sizeof(clientaddr);
+	SOCKET clientsock = accept(m_pServer->GetNetWork().GetSocket(), (SOCKADDR*)&clientaddr, &addlen);
+	if (clientsock == SOCKET_ERROR)
+	{
+		int iError = WSAGetLastError();
+		if (iError != WSAEWOULDBLOCK)
+		{
+			
+			return false;
+		}
+	}
+	else
+	{
+
+		std::shared_ptr<User> user = std::make_shared<User>(clientsock, clientaddr);
+ 		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
+		user->Recv();
+
+		for (int iSize = 0; iSize < MAX_USER_SIZE; ++iSize)
+		{
+ 			if (SessionMgr::GetInstance().ConnectUser(user))
+			{
+				break;
+			}
+			else
+				printf("Client Connect Failed IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
+
+		}
+		printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
+
+	}
+
+	return true;
+}
+
+
+```
+</details>
+
+	-비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
+  <details>
+<summary>IOCP Thread코드샘플</summary>
+
+```c++
+
+DWORD WINAPI WorkerThread(LPVOID param)
+{
+	DWORD dwTransfer;
+	ULONG_PTR KeyValue;
+	OVERLAPPED* overlap;
+	IocpModel* iocp = (IocpModel*)param;
+	
+	while (1)
+	{
+		if (WaitForSingleObject(iocp->GetKillEvent(), 0) == WAIT_OBJECT_0)
+		{
+			break;
+		}
+		BOOL bRet = GetQueuedCompletionStatus(iocp->GetIocpHandle(), &dwTransfer, &KeyValue, &overlap,0);
+		User* pUser = (User*)KeyValue;
+		if (bRet == TRUE)
+		{
+			
+			if (pUser != nullptr)
+			{
+				
+				pUser->Dispatch(dwTransfer,overlap);
+				
+			}
+		}
+		else
+		{
+			DWORD Errmsg = GetLastError();
+			if (Errmsg == WAIT_TIMEOUT)
+			{
+
+				continue;
+			}
+			if (Errmsg == ERROR_HANDLE_EOF)
+			{
+
+				SetEvent(iocp->GetKillEvent());
+			}
+			if (Errmsg == ERROR_NETNAME_DELETED)
+			{
+				pUser->SetConnect(false);
+				continue;
+			}
+
+			SetEvent(iocp->GetKillEvent());
+			
+			break;
+		}
+	}
+
+	return 0;
+
+}
+
+
+```
+</details>
+
+* Main Thread에서는 패킷들을 BroadCast와 동시에 게임의 로직을 담당합니다.
+ <details>
+<summary>Main Thread코드샘플</summary>
+
+```c++
+bool IOCPServer::ThreadRun()
+{
+	Timer::GetInstance().Frame();
+	static double threadtimer=0;
+	threadtimer += Timer::GetInstance().GetSecPerFrame();
+	if (threadtimer <= 0.0625)
+	{
+
+		return true;
+	}
+
+	threadtimer = 0;
+
+	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
+	{
+		scene.second->Update();
+	}
+
+
+	for (auto& data : m_BroadcastPacketPool.GetPacketList())
+	{
+		
+		if (!Broadcasting(data))
+		{
+			
+		}
+
+		//OutputDebugString(L"send\n");
+	}
+
+	m_BroadcastPacketPool.GetPacketList().clear();
+
+	for (std::vector<std::shared_ptr<User>>::iterator iterSend = SessionMgr::GetInstance().GetUserList().begin();
+		iterSend != SessionMgr::GetInstance().GetUserList().end();)
+	{
+		if (*iterSend == nullptr)
+		{
+			iterSend++;
+			continue;
+		}
+		std::shared_ptr<User> pUser = *iterSend;
+		if (iterSend->get()->IsConnected() == false)
+		{
+			iterSend->get()->Close();
+			iterSend = SessionMgr::GetInstance().GetUserList().erase(iterSend);
+		}
+		else
+		{
+			iterSend++;
+		}
+
+	}
+
+
+	return true;
+}
+
+
+```
+</details>
 
 
 * ObjectPool Pattern
