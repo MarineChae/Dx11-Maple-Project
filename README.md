@@ -14,58 +14,6 @@
 
 * 서버에 접속하는 클라이언트들을 처리해주는 Accept Thread입니다.
 
-
-  <details>
-<summary>Accept Thread코드샘플</summary>
-
-```c++
-
-bool AcceptIocp::ThreadRun()
-{
-	if (m_pServer == nullptr)return false;
-	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-	SOCKADDR_IN clientaddr;
-	int addlen = sizeof(clientaddr);
-	SOCKET clientsock = accept(m_pServer->GetNetWork().GetSocket(), (SOCKADDR*)&clientaddr, &addlen);
-	if (clientsock == SOCKET_ERROR)
-	{
-		int iError = WSAGetLastError();
-		if (iError != WSAEWOULDBLOCK)
-		{
-			
-			return false;
-		}
-	}
-	else
-	{
-
-		std::shared_ptr<User> user = std::make_shared<User>(clientsock, clientaddr);
- 		user->bind(m_pServer->GetIocpModel().GetIocpHandle());
-		user->Recv();
-
-		for (int iSize = 0; iSize < MAX_USER_SIZE; ++iSize)
-		{
- 			if (SessionMgr::GetInstance().ConnectUser(user))
-			{
-				break;
-			}
-			else
-				printf("Client Connect Failed IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
-
-		}
-		printf("Client Connect IP: %s Port:%d\n", inet_ntoa(user->GetUserAddr().sin_addr), ntohs(user->GetUserAddr().sin_port));
-
-	}
-
-	return true;
-}
-
-
-```
-</details>
-
-
-
 *비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
 
 
