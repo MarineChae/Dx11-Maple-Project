@@ -16,7 +16,7 @@
 
 
   <details>
-<summary>IOCP Thread코드샘플</summary>
+<summary>Accept Thread코드샘플</summary>
 
 ```c++
 
