@@ -10,6 +10,10 @@
 
 * 멀티스레딩을 사용한 IOCP 게임서버 및 게임클라이언트 
 
+* 방향키 이동
+* Z 공격
+* SpaceBar 점프
+
 ![Alt text](readImage/Lobby.png)
 ![Alt text](readImage/s1.png)
 
