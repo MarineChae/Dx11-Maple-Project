@@ -13,7 +13,7 @@
 ## NetWork
 
 * 서버에 접속하는 클라이언트들을 처리해주는 Accept Thread입니다.
-* 
+
 
   <details>
 <summary>IOCP Thread코드샘플</summary>
@@ -64,7 +64,11 @@ bool AcceptIocp::ThreadRun()
 ```
 </details>
 
-	-비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
+
+
+*비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
+
+
   <details>
 <summary>IOCP Thread코드샘플</summary>
 
@@ -127,6 +131,8 @@ DWORD WINAPI WorkerThread(LPVOID param)
 
 ```
 </details>
+
+
 
 * Main Thread에서는 패킷들을 BroadCast와 동시에 게임의 로직을 담당합니다.
  <details>
@@ -193,6 +199,7 @@ bool IOCPServer::ThreadRun()
 
 ```
 </details>
+
 
 
 * ObjectPool Pattern
@@ -284,6 +291,8 @@ long long volatile ObjectPool<T>::m_TailPos(0);
 ```
 </details>
 
+
+
 * Data Serialization 
    
   
@@ -333,6 +342,8 @@ int Packet::GetData(char* pScr, int iSrcSize)
 
 ```
 </details>
+
+
 
 * BehaviorTree
   - 모든 몬스터들의 행동패턴을 BT를 이용하여 구현했습니다.
