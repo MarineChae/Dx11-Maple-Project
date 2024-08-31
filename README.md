@@ -152,6 +152,7 @@ int Packet::GetData(char* pScr, int iSrcSize)
 * BehaviorTree
   - 모든 몬스터들의 행동패턴을 BT를 이용하여 구현했습니다.
   - 몬스터의 로직은 서버에서 전담하여 각각의 클라이언트로 데이터를 전송합니다.
+  - 몬스터의 트리는 파일을 읽어 해당되는 트리로 할당하도록 팩토리 패턴을 이용하여 구현했습니다.
 
    
 <details>
@@ -277,3 +278,35 @@ void Swoo2PhaseTree::Init()
 ```
 </details>
 
+<details>
+<summary>팩토리 패턴 코드샘플</summary>
+
+```c++
+
+std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
+{
+
+	static std::unordered_map<std::string, std::function<std::shared_ptr<BehaviorTree>(MonsterData& data)>> factoryMap =
+	{
+		 {"NormalMonsterTree", [this](MonsterData& data) { return std::make_shared<NormalMonsterTree>(data); }},
+		 {"FlyingMonsterTree", [this](MonsterData& data) { return std::make_shared<FlyingMonsterTree>(data); }},
+		 {"Swoo1PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo1PhaseTree>(data); }},
+		 {"Swoo2PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo2PhaseTree>(data); }},
+		 {"Swoo3PhaseTree", [this](MonsterData& data) { return std::make_shared<Swoo3PhaseTree>(data); }}
+	};
+
+	auto it = factoryMap.find(treename);
+
+	if (it != factoryMap.end())
+	{
+		return it->second(*this);
+	}
+	else
+	{
+		return std::make_shared<NormalMonsterTree>(*this);
+	}
+
+}
+
+```
+</details>
