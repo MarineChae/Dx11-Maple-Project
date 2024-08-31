@@ -12,7 +12,8 @@
 
 ## NetWork
 
-* 서버에 접속하는 클라이언트들을 처리해주는 Accept Thread입니다.
+* Accept Thread
+  -서버에 접속하는 클라이언트들을 처리해주는 Accept Thread입니다.
 
 
 <details>
@@ -66,7 +67,8 @@ bool AcceptIocp::ThreadRun()
 
 
 
-* 비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
+*IOCP Model
+	-비동기 I/O 작업을 마치면 큐에서 정보를 꺼내 서버에서 처리합니다.
 
 <details>
 <summary>IOCP Thread코드샘플</summary>
@@ -131,7 +133,8 @@ DWORD WINAPI WorkerThread(LPVOID param)
 </details>
 
 
-* Main Thread에서는 패킷들을 BroadCast와 동시에 게임의 로직을 담당합니다.
+*MainThread
+  -Main Thread에서는 패킷들을 BroadCast와 동시에 게임의 로직을 담당합니다.
 
 <details>
 <summary>Main Thread코드샘플</summary>
