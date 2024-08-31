@@ -6,7 +6,7 @@
 
 * 시연 영상 : https://youtu.be/J0OHyz_0OKE
 
-* DownloadLink :
+* DownloadLink : http://naver.me/5N1AfAOS
 
 * 멀티스레딩을 사용한 IOCP 게임서버 및 게임클라이언트 
 
