@@ -79,10 +79,11 @@ bool PlayerObject::Frame()
     {
         InputKey();
         InputAction();  
-        PacketSendProc();
+        
     }
     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
     {
+        PacketSendProc();
         SetProgressBar();
       
  
@@ -134,7 +135,7 @@ bool PlayerObject::Frame()
                             auto t = randstep(-100.0f, 100.0f);
                             auto t1 = randstep(-100.0f, 100.0f);
                             EffectSpwaner::GetInstance().SpawnEffect(m_pActivateSkill->GetEffect(), coll->GetTransform() + TVector3(t1,t,0),0.1*i);
-                            auto dam = randstep(500300, 1503000);
+                            auto dam = randstep(50000, 150000);
                             packDamage += dam;
                             damagelist.push_back(dam);
                         }
@@ -170,8 +171,6 @@ bool PlayerObject::Render()
     {
         m_pActivateSkill->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
         m_pActivateSkill->Render();
-        m_pActivateSkill->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
-        m_pActivateSkill->GetCollider()->Render();
     }
 
   

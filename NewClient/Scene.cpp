@@ -182,22 +182,13 @@ bool Scene::Render()
 				&CameraMgr::GetInstance().GetCamera().GetProjection());
 			ob->Render();
 		}
-
-		if (ob->GetObjectType() == ObejctType::COLLIDER)
-		{
-			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-				&CameraMgr::GetInstance().GetCamera().GetProjection());
-			ob->GetCollider()->Render();
-		}
 	}
 	for (auto& m : m_MonsterList)
 	{
 		m->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
 			&CameraMgr::GetInstance().GetCamera().GetProjection());
 		m->Render();
-		//m->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-		//	&CameraMgr::GetInstance().GetCamera().GetProjection());
-		//m->GetCollider()->Render();
+
 	}
 	for (auto& ob : m_InteractObjectList)
 	{
@@ -206,13 +197,6 @@ bool Scene::Render()
 				&CameraMgr::GetInstance().GetCamera().GetProjection());
 			ob->Render();
 
-
-		if (ob->GetCollider() != nullptr)
-		{
-			ob->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(),
-				&CameraMgr::GetInstance().GetCamera().GetProjection());
-			ob->GetCollider()->Render();
-		}
 	}
 
 	//디버그용

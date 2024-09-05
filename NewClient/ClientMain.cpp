@@ -141,11 +141,7 @@ bool ClientMain::Render()
 		{
 			obj->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
 			obj->Render();
-			if (obj->GetCollider() != nullptr)
-			{
-				obj->GetCollider()->SetMatrix(nullptr, &CameraMgr::GetInstance().GetCamera().GetView(), &CameraMgr::GetInstance().GetCamera().GetProjection());
-				obj->GetCollider()->Render();
-			}
+
 		}
 		
 	}

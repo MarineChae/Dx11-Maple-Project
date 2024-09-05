@@ -122,7 +122,6 @@ void ServerScene::Update()
 						t.x = line->From.x;
 						t.y += 30;
 						player->SetPos(t);
-						player->SetOnLope(true);
 
 					}
 					else if (player->GetLopeUp() == 0 && !once) 
@@ -132,9 +131,9 @@ void ServerScene::Update()
 						t.x = line->From.x;
 						t.y -= 30;
 						player->SetPos(t);
-						player->SetOnLope(true);
-					}
 					
+					}
+					player->SetIsFalling(false);
 					collision = true;
 				}
 

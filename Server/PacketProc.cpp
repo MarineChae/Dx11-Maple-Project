@@ -53,7 +53,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
  
     player->SetLopeUp(lopeUp);
-
+    std::cout << "[" << dwSessionID << "]" << "Recv MoveStartPacket" << "\n";
     return 0; 
 }
 
@@ -102,6 +102,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
    
 
     player->SetLopeUp(lopeUp);
+    std::cout << "[" << dwSessionID << "]" << "Recv MoveEndPacket" << "\n";
     return 0;
 }
 
@@ -151,7 +152,7 @@ BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
     AttackPacket(SendPack, dwSessionID, player->GetPos().x, player->GetPos().y, state, player->GetIsFalling(), player->GetIsJumping(), name, SkillNum);
 
     IOCPServer::GetInstance().Broadcasting({ SendPack,player->GetCurrentScene()});
-
+    std::cout << "[" << dwSessionID << "]" << "Recv PlayerAttackPacket" << "\n";
     return 0;
 }
 
@@ -225,6 +226,7 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
     }
 
-
+    std::cout << "[" << dwSessionID << "]" << "Recv PlayerSceneChange" << "\n";
     return 0;
 }
+ 
