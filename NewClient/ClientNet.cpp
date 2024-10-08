@@ -36,7 +36,7 @@ BOOL connentNetWork()
     SOCKADDR_IN sa;
 
     sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1");
+    sa.sin_addr.s_addr = inet_addr("14.34.20.48");
     sa.sin_port = htons(m_PortNum);
 
     int ret = connect(m_SOCK, (SOCKADDR*)&sa, sizeof(sa));

@@ -20,7 +20,7 @@ enum ObejctType
 
 
 class Collider;
-#define MAX_USER_SIZE 63
+#define MAX_USER_SIZE 10000
 
 class Object : public DxRenderer
 {

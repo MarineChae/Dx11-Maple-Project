@@ -13,7 +13,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
         {
             break;
         }
-        BOOL bRet = GetQueuedCompletionStatus(iocp->m_hIocp, &dwTransfer, &KeyValue, &overlap, 0);
+        BOOL bRet = GetQueuedCompletionStatus(iocp->m_hIocp, &dwTransfer, &KeyValue, &overlap, INFINITE);
 
         if (bRet == TRUE)
         {

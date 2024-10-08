@@ -38,11 +38,6 @@ bool PlayerObject::Frame()
         }
 
     }
-    //if (m_iHP <= 0)
-    //{
-    //    ChangeState(PLAYER_STATE::PS_DIE);
-    //    Input::GetInstance().SetActive(false);
-    //}
     if (Input::GetInstance().GetKeyState(VK_F1) == KEY_PUSH)
     {
         m_iHP = m_iMaxHP;
@@ -57,37 +52,39 @@ bool PlayerObject::Frame()
     }
    
 
-   if (GetDestination() != GetCollider()->GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
-   {
-       auto tr = GetTransform();
-       auto des = GetDestination();
-       SetTransform(GetTransform().Lerp(GetCollider()->GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
-       SetTransform(GetTransform().SmoothStep(GetCollider()->GetTransform(), GetDestination(), 0.10f));
-      
-   }
-   if (GetJumping()) 
-   {
-       if (GetTransform().y - m_vBeforePos.y > fabs(200.0f))
-       {
-           m_vBeforePos = TVector3::Zero;
-           SetJumping(false);
-           SetFalling(true);
-       }
-   }
-
-    if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
-    {
-        InputKey();
-        InputAction();  
+     if (GetDestination() != GetCollider()->GetTransform())//&& ObejctMgr::GetInstance().GetPlayerObject().get() != this)
+     {
+         auto tr = GetTransform();
+         auto des = GetDestination();
+         SetTransform(GetTransform().Lerp(GetCollider()->GetTransform(), GetDestination(), static_cast<float>(Timer::GetInstance().GetSecPerFrame())));
+         SetTransform(GetTransform().SmoothStep(GetCollider()->GetTransform(), GetDestination(), 0.10f));
         
-    }
-    if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
-    {
-        PacketSendProc();
-        SetProgressBar();
-      
+     }
+     if (GetJumping()) 
+     {
+         if (GetTransform().y - m_vBeforePos.y > fabs(200.0f))
+         {
+             m_vBeforePos = TVector3::Zero;
+             SetJumping(false);
+             SetFalling(true);
+         }
+     }
+     InputKey();
+     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this && Input::GetInstance().IsActive())
+     {
+
+         InputAction();
+
+     }
+     if (ObejctMgr::GetInstance().GetPlayerObject().get() == this)
+     {
+        
+         PacketSendProc();
+         SetProgressBar();
+     
+     }
+
  
-    }
 
     //for (auto& obj : ObejctMgr::GetInstance().GetObjectList())
     //{
@@ -220,7 +217,6 @@ void PlayerObject::InputKey()
     if (Input::GetInstance().GetKeyState('Z') >= KEY_PUSH)
     {
 
-
         dwAction = ACTION_ATTACK;
     }
 
@@ -229,11 +225,9 @@ void PlayerObject::InputKey()
         dwAction = ACTION_STAND;
         m_pActivateSkill = nullptr;
     }
-       
 
     if( m_PlayerState ==PLAYER_STATE::PS_DIE)
         dwAction = ACTION_DIE;
-
 
     m_dwActionInput = dwAction;
 
@@ -416,7 +410,7 @@ void PlayerObject::ChangeState(PLAYER_STATE state)
         return;
     if (m_pActivateSkill!=nullptr && m_pActivateSkill->GetEnable())
         return;
-
+    
     m_PlayerState = state;
     InitTexIndex();
     SetSpriteInfo(GetSpriteData(state));

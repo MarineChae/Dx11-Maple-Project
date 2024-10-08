@@ -116,7 +116,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
-		OutputDebugString(L"send\n");
+	
 
 	}
 	delete myov;
@@ -241,9 +241,9 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 					otherplayer->GetHP(), otherplayer->GetCurrentScene());
 
 	
-				Sleep(50);
+
 				IOCPServer::GetInstance().SendPacket(user.get(), playerpack);
-			}
+			} 
 
 		}
 

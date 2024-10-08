@@ -9,7 +9,7 @@ class ObjectPool
 public:
 	enum
 	{
-		POOL_MAX_SIZE = 1024,
+		POOL_MAX_SIZE = 2048,
 		POOL_SIZE_MASK = POOL_MAX_SIZE - 1,
 	};
 
