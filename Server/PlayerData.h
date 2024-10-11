@@ -19,6 +19,7 @@ private:
 	DWORD	m_dwSessionID;
 			
 	PLAYER_STATE	m_dwAction;
+	PLAYER_STATE	m_dwBeforeAction;
 	BYTE	m_byDirection;
 
 	TVector3 m_vPos;
@@ -49,6 +50,7 @@ public:
 	//getter
 	DWORD GetSessionID() const { return m_dwSessionID; };
 	PLAYER_STATE GetAction() const { return m_dwAction; };
+	PLAYER_STATE GetBeforeAction() const { return m_dwBeforeAction; };
 	BYTE  GetDirection()const { return m_byDirection; };
 
 	SceneNum GetCurrentScene()const { return m_PlaceScene; }
@@ -73,6 +75,7 @@ public:
 	void SetIsJumping(bool Jump) { m_bIsJumping = Jump; }
 	void SetIsMove(bool move) { m_bisMove = move; };
 	void SetAction(PLAYER_STATE action)  {  m_dwAction= action; };
+	void SetBeforeAction(PLAYER_STATE action) { m_dwBeforeAction = action; };
 	void SetDirection(BYTE dir) {  m_byDirection =dir; };
 	void SetBeforePos(TVector3 pos) { m_vBeforePos = pos; }
 	void SetOnLope(bool onlope) { m_bOnLope = onlope; }

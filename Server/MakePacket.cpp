@@ -3,7 +3,7 @@
 #include "PlayerData.h"
 #include"MonsterData.h"
 
-void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y, int HP, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
+void MoveStartPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y, int HP, PLAYER_STATE state, BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 
@@ -26,7 +26,7 @@ void MoveStartPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD Session
 
 }
 
-void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionID, float X, float Y,int HP, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
+void MoveStopPacket(Packet* pack, BYTE direction, DWORD SessionID, float X, float Y,int HP, PLAYER_STATE state,BYTE isFalling, BYTE isJump)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -48,7 +48,7 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 
 }
 
-void PlayerGetDamage(std::shared_ptr<Packet> pack, DWORD SessionID, float damage)
+void PlayerGetDamage(Packet* pack, DWORD SessionID, float damage)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -62,7 +62,7 @@ void PlayerGetDamage(std::shared_ptr<Packet> pack, DWORD SessionID, float damage
 	*pack << (BYTE)NETWORK_PACKET_END;
 }
 
-void CreateMyCharacter(std::shared_ptr<Packet> pack, DWORD dwSessionID, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
+void CreateMyCharacter(Packet* pack, DWORD dwSessionID, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -82,7 +82,7 @@ void CreateMyCharacter(std::shared_ptr<Packet> pack, DWORD dwSessionID, BYTE Dir
 
 }
 
-void CreateOtherCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Direction, float X, float Y, int HP,BYTE CurrentScene)
+void CreateOtherCharacter(Packet* pack, DWORD SessionID, BYTE Direction, float X, float Y, int HP,BYTE CurrentScene)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -101,7 +101,7 @@ void CreateOtherCharacter(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Di
 
 }
 
-void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump, char* skillname, char* skillNum)
+void AttackPacket(Packet* pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump, char* skillname, char* skillNum)
 {
 	int namelen = strlen(skillname);
 	int skillnamelen = strlen(skillNum);
@@ -127,7 +127,7 @@ void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float 
 
 }
 
-void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rotate,char* ObjectName, OBJECT_TYPE objectType, BYTE CurrentScene)
+void SpawnObjectPacket(Packet* pack, float X, float Y ,float rotate,char* ObjectName, OBJECT_TYPE objectType, BYTE CurrentScene)
 {
 	int namelen = strlen(ObjectName);
 
@@ -150,7 +150,7 @@ void SpawnObjectPacket(std::shared_ptr<Packet> pack, float X, float Y ,float rot
 
 }
 
-void CreateMonster(std::shared_ptr<Packet> pack, int ID,char* name, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
+void CreateMonster(Packet* pack, int ID,char* name, BYTE Direction, float X, float Y, int HP, BYTE CurrentScene)
 {
 	int namelen = strlen(name);
 	PACKET_HEADER PacketHeader;
@@ -172,7 +172,7 @@ void CreateMonster(std::shared_ptr<Packet> pack, int ID,char* name, BYTE Directi
 	*pack << (BYTE)NETWORK_PACKET_END;
 }
 
-void DisConnectCharacter(std::shared_ptr<Packet> pack, DWORD SessionID)
+void DisConnectCharacter(Packet* pack, DWORD SessionID)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
@@ -186,7 +186,7 @@ void DisConnectCharacter(std::shared_ptr<Packet> pack, DWORD SessionID)
 
 }
 
-void SceneChangePacket(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE SceneNum)
+void SceneChangePacket(Packet* pack, DWORD SessionID, BYTE SceneNum)
 {
 	PACKET_HEADER PacketHeader;
 
@@ -201,7 +201,7 @@ void SceneChangePacket(std::shared_ptr<Packet> pack, DWORD SessionID, BYTE Scene
 	*pack << (BYTE)NETWORK_PACKET_END;
 }
 
-void MonsterStateUpdatePacket(std::shared_ptr<Packet> pack, MonsterData monster)
+void MonsterStateUpdatePacket(Packet* pack, MonsterData monster)
 {
 	PACKET_HEADER PacketHeader;
 	PacketHeader.PacketCode = NETWORK_PACKET_CODE;

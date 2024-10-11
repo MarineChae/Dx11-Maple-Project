@@ -10,6 +10,10 @@ int main()
 {
     int silze = 0;
     std::cin >> silze;
+
+
+    std::vector<SOCKET> socklist(silze);
+
     for (int i = 0; i < silze; ++i)
     {
 
@@ -20,8 +24,8 @@ int main()
             return false;
         }
 
-        SOCKET m_SOCK = socket(AF_INET, SOCK_STREAM, 0);
-        if (INVALID_SOCKET == m_SOCK)
+        socklist[i] = socket(AF_INET, SOCK_STREAM, 0);
+        if (INVALID_SOCKET == socklist[i])
         {
             return false;
         }
@@ -31,7 +35,7 @@ int main()
         sa.sin_addr.s_addr = inet_addr("14.34.20.48");
         sa.sin_port = htons(12345);
 
-        int ret = connect(m_SOCK, (SOCKADDR*)&sa, sizeof(sa));
+        int ret = connect(socklist[i], (SOCKADDR*)&sa, sizeof(sa));
         if (ret == 0)
         {
             OutputDebugString(L"Connection Complete");
@@ -52,7 +56,7 @@ int main()
 
         }
         u_long on = TRUE;
-        if (0 != ioctlsocket(m_SOCK, FIONBIO, &on))
+        if (0 != ioctlsocket(socklist[i], FIONBIO, &on))
         {
             OutputDebugString(L"Connection Faild ioctlsocket");
             return false;
@@ -61,8 +65,13 @@ int main()
 
     while (1)
     {
-        int a = 0;
-        std::cin >> a;
+        for (int i = 0; i < silze; ++i)
+        {
+           
+
+
+        }
+
     }
 
 

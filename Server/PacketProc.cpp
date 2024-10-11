@@ -7,7 +7,7 @@
 #include"ServerScene.h"
 #include"MonsterData.h"
 #include"ObjectData.h"
-BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
+BOOL PacketProc_MoveStart(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -35,7 +35,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
     if (player == nullptr)
         return FALSE;
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    //Packet* SendPack = new Packet();
 
  
     player->SetIsFalling(isFalling);
@@ -46,6 +46,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     }
     player->SetIsJumping(isJump);
     player->SetIsMove(true);
+    player->SetBeforeAction(player->GetAction());
     player->SetAction(state);
     player->SetDirection(byDirection);
     player->SetOnLope(onLope);
@@ -57,7 +58,7 @@ BOOL PacketProc_MoveStart(DWORD Sessionid, std::shared_ptr<Packet> pack)
     return 0; 
 }
 
-BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
+BOOL PacketProc_MoveEnd(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
     BYTE byDirection;
@@ -89,6 +90,7 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
  
     player->SetIsFalling(isFalling);
     player->SetIsMove(false);
+    player->SetBeforeAction(player->GetAction());
     player->SetAction(state);
     player->SetDirection(byDirection);
 
@@ -106,7 +108,26 @@ BOOL PacketProc_MoveEnd(DWORD Sessionid, std::shared_ptr<Packet> pack)
     return 0;
 }
 
-BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
+BOOL PacketProc_Jump(DWORD Sessionid, Packet* pack)
+{
+    DWORD dwSessionID;
+    BYTE jump;
+
+    *pack >> dwSessionID;
+    *pack >> jump;
+    auto player = PlayerDataMgr::GetInstance().GetPlayerData(Sessionid);
+
+    if (player == nullptr)
+        return FALSE;
+
+    player->SetIsJumping(jump);
+
+    std::cout << "[" << dwSessionID << "]" << "Recv JumpPacket" << "\n";
+
+    return 0;
+}
+
+BOOL PacketProc_Attack(DWORD Sessionid, Packet* pack)
 {
     DWORD dwSessionID;
     int namelen;
@@ -138,6 +159,7 @@ BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     player->SetIsFalling(isFalling);
     player->SetIsMove(false);
+    player->SetBeforeAction(player->GetAction());
     player->SetAction(state);
     if (player->GetIsJumping() != isJump && !isFalling)
     {
@@ -147,16 +169,18 @@ BOOL PacketProc_Attack(DWORD Sessionid, std::shared_ptr<Packet> pack)
     player->SetActiveSkillName(name);
 
 
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    Packet* SendPack = new Packet();
 
     AttackPacket(SendPack, dwSessionID, player->GetPos().x, player->GetPos().y, state, player->GetIsFalling(), player->GetIsJumping(), name, SkillNum);
 
+
     IOCPServer::GetInstance().Broadcasting({ SendPack,player->GetCurrentScene()});
+
     std::cout << "[" << dwSessionID << "]" << "Recv PlayerAttackPacket" << "\n";
     return 0;
 }
 
-BOOL PacketProc_MonsterGetDamage(DWORD Sessionid, std::shared_ptr<Packet> pack)
+BOOL PacketProc_MonsterGetDamage(DWORD Sessionid, Packet* pack)
 {
     DWORD sessionID;
     int monsterid;
@@ -179,7 +203,7 @@ BOOL PacketProc_MonsterGetDamage(DWORD Sessionid, std::shared_ptr<Packet> pack)
     return 0;
 }
 
-BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
+BOOL PacketProc_SceneChange(DWORD Sessionid, Packet* pack)
 {
 
     DWORD dwSessionID;
@@ -192,10 +216,11 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     if (player == nullptr)
         return FALSE;
-    std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+    Packet* SendPack = new Packet();
     auto beforeScenenum = player->GetCurrentScene();
     player->SetCurrentScene((SceneNum)Scenenum);
     player->SetPos({ 0,-300,0 });
+    player->SetAction(PLAYER_STATE::PS_JUMP);
     SceneChangePacket(SendPack, dwSessionID, Scenenum);
 
     IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), SendPack);
@@ -209,21 +234,22 @@ BOOL PacketProc_SceneChange(DWORD Sessionid, std::shared_ptr<Packet> pack)
 
     IOCPServer::GetInstance().Broadcasting({ SendPack,Scenenum }, SessionMgr::GetInstance().GetUserList()[dwSessionID]);
     IOCPServer::GetInstance().Broadcasting({ SendPack,beforeScenenum }, SessionMgr::GetInstance().GetUserList()[dwSessionID]);
-    //IOCPServer::GetInstance().AddPacket(SendPack, beforeScenenum);
-    //IOCPServer::GetInstance().AddPacket(SendPack, Scenenum);
 
+    delete SendPack;
     int iId = 0;
     for (auto& monster : curScene->GetSceneMonsterList())
     {
-        std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+        Packet* pack = new Packet();
         CreateMonster(pack, iId++,monster->GetName(), 0, monster->GetCollisionData().GetPos().x, monster->GetCollisionData().GetPos().y, monster->GetMaxHP(), Scenenum);
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
+        delete pack;
     }
     for (auto& obj : curScene->GetSceneObjectList())
     {
-        std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+        Packet* pack = new Packet();
         SpawnObjectPacket(pack, obj->GetPosX(), obj->GetPosY(), obj->GetRotate(), obj->GetName(), obj->GetObjectType(), Scenenum);
         IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[dwSessionID].get(), pack);
+        delete pack;
     }
 
     std::cout << "[" << dwSessionID << "]" << "Recv PlayerSceneChange" << "\n";

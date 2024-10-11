@@ -51,6 +51,23 @@ void MoveStopPacket(std::shared_ptr<Packet> pack, BYTE direction, DWORD SessionI
 
 }
 
+void JumpPacket(std::shared_ptr<Packet> pack, DWORD SessionID, bool Jump)
+{
+	PACKET_HEADER PacketHeader;
+
+	PacketHeader.PacketCode = NETWORK_PACKET_CODE;
+	PacketHeader.PacketSize = 5;
+	PacketHeader.PacketType = PACKET_CS_MOVE_JUMP;
+
+	pack->PutData((char*)&PacketHeader, PACKET_HEADER_SIZE);
+	*pack << SessionID;
+	*pack << Jump;
+	*pack << (BYTE)NETWORK_PACKET_END;
+}
+
+
+
+
 void AttackPacket(std::shared_ptr<Packet> pack, DWORD SessionID, float X, float Y, PLAYER_STATE state, BYTE isFalling, BYTE isJump,char* skillname, char* skillNum)
 {
 	int namelen = strlen(skillname);

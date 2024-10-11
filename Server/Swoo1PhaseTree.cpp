@@ -20,8 +20,6 @@ void Swoo1PhaseTree::Init()
 	GetMonsterData().SetIsFly(true);
 	SetRespawnTime(7777.0f);
 
-	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
-
 	std::string st = "../resource/InteractionObj/Lazer.txt";
 	char c[80];
 	strcpy_s(c, st.c_str());
@@ -47,10 +45,10 @@ void Swoo1PhaseTree::Update()
 {
 	//오브젝트 생성해서 위치 로테이션 다보내
 
-	m_fSpawnTime += 0.0625;
+	m_fSpawnTime += 0.2;
 	if (m_fSpawnTime >= 1.5f)
 	{
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 
 		std::string st = "../resource/InteractionObj/FallObj";
 		int ivalue = rand() % 2;
@@ -61,11 +59,13 @@ void Swoo1PhaseTree::Update()
 		float randx = randstep(-1000, 1000);
 		SpawnObjectPacket(pack,randx,700,0,c, OBJECT_TYPE::FALLING_OBJECT,GetMonsterData().GetCurrentScene());
 		m_fSpawnTime = 0.0f;
+		//IOCPServer::GetInstance().AddPacket(pack, GetMonsterData().GetCurrentScene());
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 	}
-	m_pLazer->AddRotate(0.0625*0.33f);
-	m_pLazerCollider1->AddRotate(0.0625 * 0.33f);
-	m_pLazerCollider2->AddRotate(0.0625 * 0.33f);
+	m_pLazer->AddRotate(0.2*0.33f);
+	m_pLazerCollider1->AddRotate(0.2 * 0.33f);
+	m_pLazerCollider2->AddRotate(0.2 * 0.33f);
 }
 
 ReturnCode Swoo1PhaseTree::AttackPlayer()
@@ -88,7 +88,7 @@ ReturnCode Swoo1PhaseTree::AttackPlayer()
 void Swoo1PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() +0.0625f);
+	SetDieTime(GetDieTime() +0.2f);
 	SetRunState(false);
 	if (GetDieTime() >= 9.72f)
 	{
@@ -98,7 +98,7 @@ void Swoo1PhaseTree::DeathEvent()
 		for (auto& player : ServerSceneMgr::GetInstance().GetSceneList()[2]->GetScenePlayerList())
 		{
 
-			std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+			Packet* SendPack = new Packet();
 			player->SetCurrentScene((SceneNum)3);
 
 			SceneChangePacket(SendPack, player->GetSessionID(), 3);
@@ -110,12 +110,15 @@ void Swoo1PhaseTree::DeathEvent()
 			curScene->AddScenePlayer(player);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,2 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
+
+			delete SendPack;
 			int iId = 0;
 			for (auto& monster : curScene->GetSceneMonsterList())
 			{
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				CreateMonster(pack, iId++, monster->GetName(), 0, monster->GetPos().x, monster->GetPos().y, monster->GetMaxHP(), 3);
 				IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[player->GetSessionID()].get(), pack);
+				delete pack;
 			}
 
 			SetRunState(false);

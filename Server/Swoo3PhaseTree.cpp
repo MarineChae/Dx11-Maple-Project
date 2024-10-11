@@ -46,12 +46,12 @@ void Swoo3PhaseTree::Init()
 
 void Swoo3PhaseTree::Update()
 {
-	m_f1SkillColldown += 0.0625;
-	m_f2SkillColldown += 0.0625;
-	m_fSpawnTime += 0.0625;
+	m_f1SkillColldown += 0.2;
+	m_f2SkillColldown += 0.2;
+	m_fSpawnTime += 0.2;
 	if (m_fSpawnTime >= 1.5f)
 	{
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 
 		std::string st = "../resource/InteractionObj/FallObj";
 		int ivalue = 2 + (rand() % 3);
@@ -63,6 +63,7 @@ void Swoo3PhaseTree::Update()
 		SpawnObjectPacket(pack, randx, 700, 0, c, OBJECT_TYPE::FALLING_OBJECT ,GetMonsterData().GetCurrentScene());
 		m_fSpawnTime = 0.0f;
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 	}
 
 }
@@ -117,18 +118,19 @@ ReturnCode Swoo3PhaseTree::AttackPlayer()
 				}
 				player->SetMovePow(player->GetMovepow() + value);
 				player->SetIsHit(true);
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				PlayerGetDamage(pack, player->GetSessionID(), 20000);
 				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+		
 			}
 
 		}
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		return ReturnCode::RUNNING;
 	}
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -153,13 +155,14 @@ ReturnCode Swoo3PhaseTree::Skill1()
 {
 	if (GetWaitTime() >= 2.6f)
 	{
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 		std::string st = "../resource/InteractionObj/RedBall.txt";
 		char c[80];
 		strcpy_s(c, st.c_str());
 		SpawnObjectPacket(pack, GetMonsterData().GetCollisionData().GetPos().x, GetMonsterData().GetCollisionData().GetPos().y + 300,
 			0, c, OBJECT_TYPE::BALL_OBJECT, GetMonsterData().GetCurrentScene());
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 		SetWaitTime(0.0f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_IDLE);
 		return ReturnCode::SUCCESS;
@@ -167,7 +170,7 @@ ReturnCode Swoo3PhaseTree::Skill1()
 
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_SKILL1);
 		return ReturnCode::RUNNING;
 	}
@@ -177,7 +180,7 @@ ReturnCode Swoo3PhaseTree::Skill1()
 void Swoo3PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() + 0.0625f);
+	SetDieTime(GetDieTime() + 0.2f);
 	SetRunState(false);
 	if (GetDieTime() >= 6.12f)
 	{
@@ -191,7 +194,7 @@ void Swoo3PhaseTree::DeathEvent()
 		for (auto& player : curScene->second->GetScenePlayerList())
 		{
 
-			std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+			Packet* SendPack = new Packet();
 			player->SetCurrentScene((SceneNum)1);
 
 			SceneChangePacket(SendPack, player->GetSessionID(), 1);
@@ -203,12 +206,14 @@ void Swoo3PhaseTree::DeathEvent()
 			curScene->AddScenePlayer(player);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,1 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,4 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
+			delete SendPack;
 			int iId = 0;
 			for (auto& monster : curScene->GetSceneMonsterList())
 			{
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				CreateMonster(pack, iId++, monster->GetName(), 0, monster->GetPos().x, monster->GetPos().y, monster->GetMaxHP(), 1);
 				IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[player->GetSessionID()].get(), pack);
+				delete pack;
 			}
 
 			SetRunState(false);
@@ -254,7 +259,7 @@ ReturnCode Swoo3PhaseTree::Skill2()
 			player->SetMovePow(player->GetMovepow() + value);
 
 		}
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_SKILL2);
 		return ReturnCode::RUNNING;
 	}

@@ -15,7 +15,7 @@ DWORD WINAPI WorkerThread(LPVOID param)
 		{
 			break;
 		}
-		BOOL bRet = GetQueuedCompletionStatus(iocp->GetIocpHandle(), &dwTransfer, &KeyValue, &overlap,INFINITE);
+		BOOL bRet = GetQueuedCompletionStatus(iocp->GetIocpHandle(), &dwTransfer, &KeyValue, &overlap,0);
 		User* pUser = (User*)KeyValue;
 		if (bRet == TRUE)
 		{

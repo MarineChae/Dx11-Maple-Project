@@ -72,18 +72,19 @@ ReturnCode FlyingMonsterTree::AttackPlayer()
 			if (GetMonsterData().GetAttackCollisionData().CheckOBBCollision(player->GetCollisionData()) && !player->GetIsHit())
 			{
 				player->SetIsHit(true);
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				PlayerGetDamage(pack, player->GetSessionID(), 3000);
 				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 			}
 
 		}
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		return ReturnCode::RUNNING;
 	}
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -96,7 +97,7 @@ ReturnCode FlyingMonsterTree::Respon()
 {
 	if (!GetMonsterData().GetIsDead())
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		if (GetWaitTime() >= 0.5f)
 		{
 			
@@ -119,7 +120,7 @@ ReturnCode FlyingMonsterTree::Respon()
 void FlyingMonsterTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() + 0.0625f);
+	SetDieTime(GetDieTime() + 0.2f);
 	if (GetDieTime() >= 0.8f)
 	{
 		SetDieTime(0.0f);

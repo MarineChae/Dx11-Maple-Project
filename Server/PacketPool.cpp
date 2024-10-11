@@ -4,7 +4,7 @@
 
 
 
-void PacketPool::Add(std::shared_ptr<Packet> packet,int CurrentScene)
+void PacketPool::Add(Packet* packet,int CurrentScene)
 {
 	{
 		std::lock_guard<std::shared_mutex>lock(m_pShardMutex);
@@ -12,7 +12,7 @@ void PacketPool::Add(std::shared_ptr<Packet> packet,int CurrentScene)
 	}
 }
 
-void PacketPool::Process(std::shared_ptr<Packet> packet)
+void PacketPool::Process(Packet* packet)
 {
 }
 

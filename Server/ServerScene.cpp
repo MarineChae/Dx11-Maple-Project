@@ -166,7 +166,8 @@ void ServerScene::Update()
 
 		if (player->GetIsMove())
 		{
-			std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+			player->SetBeforeAction(player->GetAction());
+			Packet* pack = new Packet();
 			MoveStartPacket(pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
 				player->GetPos().y,
 				player->GetHP(),
@@ -177,7 +178,7 @@ void ServerScene::Update()
 		}
 		else
 		{
-			std::shared_ptr<Packet> Pack = std::make_shared<Packet>();
+			Packet* Pack = new Packet();
 			MoveStopPacket(Pack, player->GetDirection(), player->GetSessionID(), player->GetPos().x,
 				player->GetPos().y,
 				player->GetHP(),
@@ -212,7 +213,7 @@ void ServerScene::Update()
 
 		}
 
-		m_fTargetChangeTime += 0.0625;
+		m_fTargetChangeTime += 0.2;
 		if (m_fTargetChangeTime >= 5.0f)
 		{
 			m_fTargetChangeTime = 0;
@@ -225,7 +226,7 @@ void ServerScene::Update()
 
 		}
 
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 		MonsterStateUpdatePacket(pack, *mon);
 		IOCPServer::GetInstance().AddPacket(pack, mon->GetCurrentScene());
 	}

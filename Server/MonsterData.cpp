@@ -63,7 +63,7 @@ std::shared_ptr<BehaviorTree> MonsterData::CreateTree(std::string treename)
 
 void MonsterData::Update()
 {
-	//m_colliderData.SetPos(m_vPos);
+
 	m_colliderData.Update();
 
 	if (m_pTargetPlayer != nullptr && MONSTER_STATE::MS_WALK >= m_MonsterState)
@@ -86,8 +86,8 @@ void MonsterData::Update()
 	m_attackColliderData.SetPos(m_colliderData.GetPos() + m_fAttackColliderOffset);
 	if (m_bFalling && !m_bfly)
 	{
-		//m_vPos.y -= static_cast<float>(900 * 0.0625);
-		float y = m_colliderData.GetPos().y - static_cast<float>(900 * 0.0625);
+		//m_vPos.y -= static_cast<float>(900 * 0.2);
+		float y = m_colliderData.GetPos().y - static_cast<float>(900 * 0.2);
 		m_colliderData.SetPos({ m_colliderData.GetPos().x ,y ,m_colliderData.GetPos().z});
 		
 	}
@@ -104,7 +104,7 @@ void MonsterData::Update()
 	if (m_bIsDead)
 	{
 		
-		m_fRemainResponTime += 0.0625f;
+		m_fRemainResponTime += 0.2;
 		if (m_fRemainResponTime >= m_pBehaviorTree->GetRespawnTime())
 		{
 		
@@ -138,7 +138,7 @@ void MonsterData::MoveTo(TVector3 dest,float speed)
 	else
 		m_byDirection = 1;
 
-	auto t =0.0625* speed;
+	auto t = 0.2 * speed;
 	m_colliderData.SetPos(m_colliderData.GetPos() + dir * t);
 
 }

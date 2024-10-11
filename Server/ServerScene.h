@@ -26,6 +26,7 @@ public:
 	std::shared_ptr<MonsterData> GetMonsterData(int id) { return m_vSceneMonsterList[id]; };
 public:
 	void Update();
+	void AddToBroadcastPacket();
 
 };
 

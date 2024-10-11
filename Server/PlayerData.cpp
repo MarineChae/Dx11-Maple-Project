@@ -44,11 +44,9 @@ void PlayerData::Update()
 		//예상수정위치
 
 	}
-	else
+	if(!m_bisMove)
 	{
-		if (!m_bIsFalling && !m_bIsJumping)// && !m_bIsHit)
-			m_vMovePow.x = m_vMovePow.x * (1 - 0.5) + 0 * 0.5;
-
+		m_vMovePow.x = m_vMovePow.x * (1 - 0.4) + 0 * 0.4;
 	}
 	if (m_bIsFalling && !m_bIsJumping)
 	{

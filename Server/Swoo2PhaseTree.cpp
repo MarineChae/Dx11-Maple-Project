@@ -40,13 +40,13 @@ void Swoo2PhaseTree::Init()
 
 void Swoo2PhaseTree::Update()
 {
-	m_f1SkillColldown += 0.0625;
-	m_f2SkillColldown += 0.0625;
-	m_fSpawnTime += 0.0625;
+	m_f1SkillColldown += 0.2;
+	m_f2SkillColldown += 0.2;
+	m_fSpawnTime += 0.2;
 
 	if (m_fSpawnTime >= 1.5f)
 	{
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 
 		std::string st = "../resource/InteractionObj/FallObj";
 		int ivalue = 2+(rand() % 2);
@@ -58,6 +58,7 @@ void Swoo2PhaseTree::Update()
 		SpawnObjectPacket(pack, randx, 700, 0, c, OBJECT_TYPE::FALLING_OBJECT,GetMonsterData().GetCurrentScene());
 		m_fSpawnTime = 0.0f;
 		IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 	}
 
 
@@ -113,18 +114,19 @@ ReturnCode Swoo2PhaseTree::AttackPlayer()
 				}
 				player->SetMovePow(player->GetMovepow() + value);
 				player->SetIsHit(true);
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				PlayerGetDamage(pack,player->GetSessionID(), 20000);
 				IOCPServer::GetInstance().Broadcasting({ pack, GetMonsterData().GetCurrentScene() });
+
 			}
 
 		}
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		return ReturnCode::RUNNING;
 	}
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_ATTACK);
 		return ReturnCode::RUNNING;
 	}
@@ -149,7 +151,7 @@ ReturnCode Swoo2PhaseTree::Skill1()
 {
 	if (GetWaitTime() >= 2.6f)
 	{
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 		std::string st = "../resource/InteractionObj/BlueBall.txt";
 		char c[80];
 		strcpy_s(c, st.c_str());
@@ -165,7 +167,7 @@ ReturnCode Swoo2PhaseTree::Skill1()
 
 	else
 	{
-		SetWaitTime(GetWaitTime() + 0.0625f);
+		SetWaitTime(GetWaitTime() + 0.2f);
 		GetMonsterData().SetMonsterState(MONSTER_STATE::MS_SKILL1);
 		return ReturnCode::RUNNING;
 	}
@@ -175,12 +177,12 @@ ReturnCode Swoo2PhaseTree::Skill1()
 void Swoo2PhaseTree::DeathEvent()
 {
 	GetMonsterData().SetMonsterState(MONSTER_STATE::MS_DIE);
-	SetDieTime(GetDieTime() + 0.0625f);
+	SetDieTime(GetDieTime() + 0.2f);
 	SetRunState(false);
 	if (GetDieTime() >= 6.12f)
 	{
 		SetDieTime(0.0f);
-
+		
 		GetMonsterData().SetIsDead(true);
 		int num = GetMonsterData().GetCurrentScene();
 		auto list = ServerSceneMgr::GetInstance().GetSceneList();
@@ -188,7 +190,7 @@ void Swoo2PhaseTree::DeathEvent()
 		for (auto& player : curScene->second->GetScenePlayerList())
 		{
 
-			std::shared_ptr<Packet> SendPack = std::make_shared<Packet>();
+			Packet* SendPack = new Packet();
 			player->SetCurrentScene((SceneNum)4);
 
 			SceneChangePacket(SendPack, player->GetSessionID(), 4);
@@ -200,12 +202,15 @@ void Swoo2PhaseTree::DeathEvent()
 			curScene->AddScenePlayer(player);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,4 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
 			IOCPServer::GetInstance().Broadcasting({ SendPack,3 }, SessionMgr::GetInstance().GetUserList()[player->GetSessionID()]);
+			delete SendPack;
+			
 			int iId = 0;
 			for (auto& monster : curScene->GetSceneMonsterList())
 			{
-				std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+				Packet* pack = new Packet();
 				CreateMonster(pack, iId++, monster->GetName(), 0, monster->GetPos().x, monster->GetPos().y, monster->GetMaxHP(), 4);
 				IOCPServer::GetInstance().SendPacket(SessionMgr::GetInstance().GetUserList()[player->GetSessionID()].get(), pack);
+				delete pack;
 			}
 
 			SetRunState(false);

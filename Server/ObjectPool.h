@@ -32,7 +32,7 @@ public:
 		{
 			return value;
 		}
-
+		
 		//16바이트 정렬방식으로 메모리를 할당
   		return _aligned_malloc(size, MEMORY_ALLOCATION_ALIGNMENT);
 	

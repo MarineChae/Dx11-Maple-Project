@@ -46,13 +46,13 @@ public:
 
 public:
 
-	void AddPacket(std::shared_ptr<Packet> packet, int currentScene);
+	void AddPacket(Packet* packet, int currentScene);
 	virtual void ChatMsg(Packet& packet);
-	virtual int  SendPacket(User* pUser, std::shared_ptr<Packet> packet);
-	bool		 Broadcasting(std::shared_ptr<Packet> packet);
-	bool		 Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet);
-	bool		 Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, std::shared_ptr<User> pUser);
-	bool		 Broadcasting(std::shared_ptr<Packet>packet, std::shared_ptr<User> pUser);
+	virtual int  SendPacket(User* pUser, Packet* packet);
+	bool		 Broadcasting(Packet* packet);
+	bool		 Broadcasting(std::pair<Packet*, int> packet);
+	bool		 Broadcasting(std::pair<Packet*, int> packet, std::shared_ptr<User> pUser);
+	bool		 Broadcasting(Packet*packet, std::shared_ptr<User> pUser);
 public:
 	bool		 Init();
 	virtual bool ThreadRun() override;

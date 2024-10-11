@@ -6,13 +6,10 @@
 #include"ObjectPool.h"
 #include"ServerScene.h"
 #include"PacketPool.h"
-std::mutex m1;
-std::mutex broadMutex;
 
 bool AcceptIocp::ThreadRun()
 {
-	if (m_pServer == nullptr)return false;
-	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+	if (m_pServer == nullptr) return false;
 	SOCKADDR_IN clientaddr;
 	int addlen = sizeof(clientaddr);
 	SOCKET clientsock = accept(m_pServer->GetNetWork().GetSocket(), (SOCKADDR*)&clientaddr, &addlen);
@@ -51,7 +48,7 @@ bool AcceptIocp::ThreadRun()
 
 
 
-void IOCPServer::AddPacket(std::shared_ptr<Packet> packet, int currentScene)
+void IOCPServer::AddPacket(Packet* packet, int currentScene)
 {
 
 	m_BroadcastPacketPool.Add(packet, currentScene);
@@ -63,7 +60,7 @@ void IOCPServer::ChatMsg(Packet& packet)
 	
 }
 
-int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
+int IOCPServer::SendPacket(User* pUser, Packet* packet)
 {
 	if (pUser == nullptr)
 		return -1;
@@ -71,13 +68,11 @@ int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 	pUser->GetSendBuffer().buf = SendBuffer;
 	pUser->GetSendBuffer().len = packet->GetDataSize();
 
-	//std::shared_ptr<MyOV> ov = std::make_shared<MyOV>(MyOV::MODE_SEND);//new MyOV(MyOV::MODE_SEND);
-	MyOV* ov = new MyOV(MyOV::MODE_SEND);
 	int iSendByte = 0;
 	int iTotalByte = 0;
 	DWORD dwSendByte;
 
-	int iRet = WSASend(pUser->GetUserSock(), &pUser->GetSendBuffer(), 1, &dwSendByte, 0, (LPOVERLAPPED)ov, NULL);
+	int iRet = WSASend(pUser->GetUserSock(), &pUser->GetSendBuffer(), 1, &dwSendByte, 0, nullptr, NULL);
 
 	if (iRet == SOCKET_ERROR)
 	{
@@ -89,11 +84,12 @@ int IOCPServer::SendPacket(User* pUser, std::shared_ptr<Packet> packet)
 		}
 	}
 
-	
-	return packet->GetDataSize();
+	int ret = packet->GetDataSize();
+
+	return ret;
 }
 
-bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
+bool IOCPServer::Broadcasting(Packet* packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
@@ -117,10 +113,11 @@ bool IOCPServer::Broadcasting(std::shared_ptr<Packet> packet)
 			continue;
 		}
 	}
+
 	return true;
 }
 
-bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>,int> packet)
+bool IOCPServer::Broadcasting(std::pair<Packet*,int> packet)
 {
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
 	{
@@ -149,7 +146,7 @@ bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>,int> packet)
 	return true;
 }
 
-bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(std::pair<Packet*, int> packet, std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
@@ -177,7 +174,7 @@ bool IOCPServer::Broadcasting(std::pair<std::shared_ptr<Packet>, int> packet, st
 
 	return true;
 }
-bool IOCPServer::Broadcasting(std::shared_ptr<Packet>packet , std::shared_ptr<User> pUser)
+bool IOCPServer::Broadcasting(Packet*packet , std::shared_ptr<User> pUser)
 {
 
 	for (auto& iterSend : SessionMgr::GetInstance().GetUserList())
@@ -268,20 +265,19 @@ bool IOCPServer::ThreadRun()
 	Timer::GetInstance().Frame();
 	static double threadtimer=0;
 	threadtimer += Timer::GetInstance().GetSecPerFrame();
+
+
 	if (threadtimer <= 0.0625)
 	{
-
+	
 		return true;
 	}
-
-	threadtimer = 0;
+	threadtimer -= 0.0625;
 
 	for (auto& scene : ServerSceneMgr::GetInstance().GetSceneList())
 	{
 		scene.second->Update();
 	}
-
-
 	for (auto& data : m_BroadcastPacketPool.GetPacketList())
 	{
 		
@@ -289,8 +285,7 @@ bool IOCPServer::ThreadRun()
 		{
 			
 		}
-
-		//OutputDebugString(L"send\n");
+		delete data.first;
 	}
 
 	m_BroadcastPacketPool.GetPacketList().clear();

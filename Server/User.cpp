@@ -8,13 +8,13 @@
 #include"StreamPacket.h"
 #include"ServerScene.h"
 #include"ColliderData.h"
-std::mutex m;
+std::shared_mutex connectMutex;
 
 int SessionMgr::m_iSessionCount = 0;
 
 void User::Close()
 {
-	std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+	Packet* pack = new Packet();
 	DisConnectCharacter(pack, m_dwSessionID);
 	
 	for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
@@ -70,7 +70,7 @@ void User::Recv()
 		}
 	}
 
-
+	//delete myov;
  }
 
 void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
@@ -88,31 +88,10 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 		
 		m_pStreamPacket->Put(m_buffer, dwTransfer);
 
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 
 		ParsePacket(pack);
 
-	/*	Packet pack;
-
-		
-		BYTE end;
-		m_StreamPacket.Peek((char*)&hd, PACKET_HEADER_SIZE);
-		m_StreamPacket.RemoveData(PACKET_HEADER_SIZE);
-		OutputDebugString(L"send\n");
-		m_StreamPacket.Get(pack.GetBufferPointer(), hd.PacketSize);
-
-		m_StreamPacket.Get((char*)&end, 1);
-
-		pack.MoveWritePos(hd.PacketSize);
-
-	
-
-		Packet spack;
-
-
-		MoveStopPacket(&spack, 1,1, 444, 444);
-
-		IOCPServer::GetInstance().AddPacket(spack);*/
 	}
 	if (myov->flag == MyOV::MODE_SEND)
 	{
@@ -123,7 +102,7 @@ void User::Dispatch(DWORD dwTransfer, OVERLAPPED* ov)
 	
 }
 
-void User::ParsePacket(std::shared_ptr<Packet> pack)
+void User::ParsePacket(Packet* pack)
 {
 	PACKET_HEADER hd;
 	BYTE end;
@@ -143,7 +122,7 @@ void User::ParsePacket(std::shared_ptr<Packet> pack)
 }
 
 
-BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, std::shared_ptr<Packet> pack)
+BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, Packet* pack)
 {
 
 	switch (PacketType)
@@ -155,6 +134,8 @@ BOOL User::PacketProc(DWORD SessionId, BYTE PacketType, std::shared_ptr<Packet> 
 	case PACKET_CS_MOVE_END:
 		return PacketProc_MoveEnd(SessionId, pack);
 		break;
+	case PACKET_CS_MOVE_JUMP:
+		return PacketProc_Jump(SessionId, pack);
 	case PACKET_CS_SCENE_CHANGE:
 		return PacketProc_SceneChange(SessionId, pack);
 		break;
@@ -198,7 +179,7 @@ User::User(SOCKET sock, SOCKADDR_IN Addr)
 
 bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 {
-	m.lock();
+	std::lock_guard<std::shared_mutex>lock(connectMutex);
 	if (m_vUserList.size() <= MAX_USER_SIZE)
 	{
 		m_vUserList[m_iSessionCount] = user;
@@ -207,22 +188,24 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 		short x = rand() % 500;
 		short y = rand() % 500;
 		BYTE CurrentScene = 1;
-		std::shared_ptr<Packet> pack = std::make_shared<Packet>();
+		Packet* pack = new Packet();
 		CreateMyCharacter(pack, user->GetSessionId(),0,x,y,65493, CurrentScene);
 		IOCPServer::GetInstance().SendPacket(user.get(), pack);
-		
+		delete pack;
 
-		std::shared_ptr<Packet> pack2 = std::make_shared<Packet>();
+		Packet* pack2 = new Packet();
  		CreateOtherCharacter(pack2, user->GetSessionId(), 0, x, y, 65493, CurrentScene);
 		IOCPServer::GetInstance().Broadcasting(pack2, user);
+		delete pack2;
 
 		std::shared_ptr<PlayerData> data = std::make_shared<PlayerData>();
 		data->Init(true, user->GetSessionId(),PLAYER_STATE::PS_STAND,0,x,y, 65493);
- 		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(),data);
-		data->SetCurrentScene((SceneNum)CurrentScene);
+
 		auto scene = ServerSceneMgr::GetInstance().InsertScene(CurrentScene);
 		scene->AddScenePlayer(data);
 
+		PlayerDataMgr::GetInstance().PushPlayerData(user->GetSessionId(), data);
+		data->SetCurrentScene((SceneNum)CurrentScene);
 
  		for (auto& otherplayer : PlayerDataMgr::GetInstance().GetPlayerList())
 		{
@@ -232,23 +215,21 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 			}
 			else if (otherplayer->GetSessionID() != user->GetSessionId())
 			{
-				std::shared_ptr<Packet> playerpack = std::make_shared<Packet>();
+				Packet* playerpack = new Packet();
 				CreateOtherCharacter(playerpack,
 					otherplayer->GetSessionID(),
 					otherplayer->GetDirection(),
 					otherplayer->GetPos().x,
 					otherplayer->GetPos().y,
 					otherplayer->GetHP(), otherplayer->GetCurrentScene());
-
-	
-
 				IOCPServer::GetInstance().SendPacket(user.get(), playerpack);
+				delete playerpack;
 			} 
 
 		}
 
 
-		m.unlock();
+
 		return true;
 	}
 	else
@@ -258,11 +239,11 @@ bool SessionMgr::ConnectUser(std::shared_ptr<User> user)
 			if (!useriter->IsConnected())
 			{
 				useriter = user;
-				m.unlock();
+		
 				return true;
 			}
 		}
 	}
-	m.unlock();
+
 	return false;
 }
